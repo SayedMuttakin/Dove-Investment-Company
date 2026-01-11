@@ -235,8 +235,6 @@ router.get('/assets', authMiddleware, async (req, res) => {
 
         const now = new Date();
         let totalInvested = 0;
-        let availableIncome = 0;
-        let redeemableAmount = user.redeemableBalance || 0;
         let maturedAmount = 0;
         let maturedCount = 0;
 
@@ -260,20 +258,17 @@ router.get('/assets', authMiddleware, async (req, res) => {
             console.log(`[Assets] ${maturedCount} investments matured. Total moved to redeemable: ${maturedAmount} USDT. Current balance: ${user.balance}`);
         }
 
-        // Calculate investment statistics
-        if (user.investments && user.investments.length > 0) {
-            user.investments.forEach(inv => {
-                if (inv.status === 'active') {
-                    // Add to total invested (principal amount)
-                    if (inv.package && inv.package.investmentAmount) {
-                        totalInvested += inv.package.investmentAmount;
-                    }
+        // Calculate investment statistics AFTER maturity processing
+        user.investments.forEach(inv => {
+            if (inv.status === 'active') {
+                if (inv.package && inv.package.investmentAmount) {
+                    totalInvested += inv.package.investmentAmount;
                 }
-            });
-        }
+            }
+        });
 
-        // Available income is the user's current balance (collected earnings + deposits)
-        availableIncome = user.balance || 0;
+        const availableIncome = user.balance || 0;
+        const redeemableAmount = user.redeemableBalance || 0;
         const totalAssets = totalInvested + availableIncome + redeemableAmount;
 
         res.json({
@@ -281,7 +276,7 @@ router.get('/assets', authMiddleware, async (req, res) => {
             availableIncome: availableIncome,
             lendingInvestments: totalInvested,
             redeemable: redeemableAmount,
-            fundInProgress: totalInvested, // Same as lending investments
+            fundInProgress: totalInvested,
             fundRedeemable: redeemableAmount
         });
     } catch (error) {
