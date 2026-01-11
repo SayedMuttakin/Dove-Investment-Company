@@ -398,6 +398,8 @@ const Lend = () => {
                 </div>
             )}
 
+            {/* Bottom Navigation */}
+            <BottomNav />
         </div>
     );
 };
