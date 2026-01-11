@@ -88,58 +88,15 @@ router.post('/approve/:id', async (req, res) => {
         deposit.approvedAt = new Date();
         await deposit.save();
 
-        // AUTO-INVEST LOGIC
+        // ADD TO BALANCE ONLY
         const user = await User.findById(deposit.userId);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Add to balance (record keeping)
-        // user.balance += deposit.amount; // Wait, if we are auto-investing, we usually consume it.
-        // Let's add it first.
+        // Add to balance
         user.balance += deposit.amount;
-
-        // Find matching package
-        // Sort by minAmount desc to match highest valid package first (e.g. if 600, match 500-2000 instead of 100-800 if desired? 
-        // Or strictly strictly ranges. 
-        // 100-800 vs 500-2000. 600 matches both. Usually higher tier is better.
-        const matchingPackage = await Package.findOne({
-            minAmount: { $lte: deposit.amount },
-            maxAmount: { $gte: deposit.amount },
-            isActive: true
-        }).sort({ minAmount: -1 }); // Prefer higher cost packages
-
-        if (matchingPackage) {
-            // Deduct balance
-            user.balance -= deposit.amount;
-
-            // Create Investment
-            const dailyReturn = deposit.amount * (matchingPackage.dailyRate / 100);
-            const totalReturn = deposit.amount + (dailyReturn * matchingPackage.duration);
-            const startDate = new Date();
-            const endDate = new Date(startDate);
-            endDate.setDate(startDate.getDate() + matchingPackage.duration);
-
-            user.investments.push({
-                package: {
-                    packageNumber: matchingPackage.duration,
-                    name: matchingPackage.name,
-                    investmentAmount: deposit.amount,
-                    dailyEarning: dailyReturn,
-                    duration: matchingPackage.duration,
-                    totalReturn: totalReturn
-                },
-                startDate: startDate,
-                endDate: endDate,
-                totalEarned: 0,
-                status: 'active'
-            });
-
-            console.log(`Auto-invested $${deposit.amount} in ${matchingPackage.name} for user ${user.phone}`);
-        } else {
-            // No package matched, money stays in balance
-            console.log(`No matching package for $${deposit.amount}, added to balance.`);
-        }
+        console.log(`[Recharge] $${deposit.amount} added to balance for user ${user.phone}`);
 
         await user.save();
 

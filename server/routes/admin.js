@@ -391,94 +391,25 @@ router.post('/deposit/:id/approve', authMiddleware, adminMiddleware, async (req,
         deposit.approvedAt = new Date();
         await deposit.save();
 
-        // AUTO-INVEST LOGIC
+        // ADD TO BALANCE ONLY
         const user = await User.findById(deposit.userId);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Add to balance temporarily to record the inflow
+        // Add to balance
         user.balance += deposit.amount;
-        user.totalEarnings += deposit.amount; // Optional: track lifetime deposit volume? No, totalEarnings usually means profit. Let's just update balance.
+        console.log(`[Admin] $${deposit.amount} added to balance for user ${user._id}`);
 
-        // Find matching package
-        // If deposit has packageId (from Lend page), use that specific package
-        // Otherwise, search for any matching package based on amount
-        let matchingPackage;
-
-        if (deposit.packageId) {
-            console.log(`[Admin] Processing deposit with specific packageId: ${deposit.packageId}`);
-            matchingPackage = await Package.findOne({
-                _id: deposit.packageId,
-                isActive: true
-            });
-
-            if (matchingPackage) {
-                console.log(`[Admin] Found specific package: ${matchingPackage.name}`);
-            } else {
-                console.log(`[Admin] Specific package not found or inactive: ${deposit.packageId}`);
-            }
-        } else {
-            matchingPackage = await Package.findOne({
-                minAmount: { $lte: deposit.amount },
-                maxAmount: { $gte: deposit.amount },
-                isActive: true,
-                vipLevel: user.vipLevel
-            }).sort({ minAmount: -1 });
-            console.log(`[Admin] Found matching package by amount: ${matchingPackage?.name}`);
-        }
-
-        let message = 'Deposit approved';
-
-        if (matchingPackage) {
-            // Deduct balance for investment
-            user.balance -= deposit.amount;
-
-            // Create Investment
-            const dailyReturn = deposit.amount * (matchingPackage.dailyRate / 100);
-            const totalReturn = deposit.amount + (dailyReturn * matchingPackage.duration);
-            const startDate = new Date();
-            const endDate = new Date(startDate);
-            endDate.setDate(startDate.getDate() + matchingPackage.duration);
-
-            user.investments.push({
-                package: {
-                    packageNumber: matchingPackage.duration,
-                    name: matchingPackage.name,
-                    investmentAmount: deposit.amount,
-                    dailyEarning: dailyReturn,
-                    duration: matchingPackage.duration,
-                    totalReturn: totalReturn
-                },
-                startDate: startDate,
-                endDate: endDate,
-                totalEarned: 0,
-                status: 'active'
-            });
-
-            message = `Deposit approved and auto-invested in ${matchingPackage.name}`;
-            console.log(`Auto-invested $${deposit.amount} for user ${user._id}`);
-
-            await AdminLog.create({
-                adminId: req.userId,
-                action: 'deposit_approved',
-                targetUserId: user._id,
-                description: `Approved deposit ${deposit.amount} and auto-invested`
-            });
-
-        } else {
-            message = `Deposit approved and added to wallet balance (No matching package)`;
-
-            await AdminLog.create({
-                adminId: req.userId,
-                action: 'deposit_approved',
-                targetUserId: user._id,
-                description: `Approved deposit ${deposit.amount} to balance`
-            });
-        }
+        await AdminLog.create({
+            adminId: req.userId,
+            action: 'deposit_approved',
+            targetUserId: user._id,
+            description: `Approved deposit ${deposit.amount} to balance`
+        });
 
         await user.save();
-        res.json({ message, deposit });
+        res.json({ message: 'Deposit approved and added to wallet balance', deposit });
 
     } catch (error) {
         console.error('Approve deposit error:', error);
