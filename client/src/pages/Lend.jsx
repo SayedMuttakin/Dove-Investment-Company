@@ -38,14 +38,8 @@ const Lend = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { user, login } = useAuth(); // Refresh user data after investment
-    const [packages, setPackages] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [investing, setInvesting] = useState(null);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
-
-    // Determine which level to show: active state or current user level
-    const targetLevel = location.state?.viewLevel !== undefined ? location.state.viewLevel : (user?.vipLevel || 0);
+    const [showInvestModal, setShowInvestModal] = useState(null);
+    const [investAmount, setInvestAmount] = useState('');
 
     useEffect(() => {
         const fetchPackages = async () => {
@@ -69,34 +63,28 @@ const Lend = () => {
         }
     }, [user, targetLevel]);
 
-    const handleInvest = async (pkg) => {
-        // Redundant now as we redirect to deposit, but keeping for future ref or backend direct api calls if needed.
+    const handleInvestSubmit = async () => {
+        if (!showInvestModal) return;
+
+        const pkg = showInvestModal;
+        const numAmount = parseFloat(investAmount);
+
         setError('');
         setSuccess('');
-        setInvesting(pkg._id);
 
-        if (user.balance < pkg.minAmount) {
-            setError(`Insufficient balance. Minimum investment is $${pkg.minAmount}`);
-            setInvesting(null);
+        if (isNaN(numAmount) || numAmount < pkg.minAmount || numAmount > pkg.maxAmount) {
+            setError(`Amount must be between $${pkg.minAmount} and $${pkg.maxAmount}`);
             return;
         }
 
+        if (user.balance < numAmount) {
+            setError(`Insufficient balance. Minimum investment for this plan is $${pkg.minAmount}. Your balance: $${user.balance.toFixed(2)}`);
+            return;
+        }
+
+        setInvesting(pkg._id);
         try {
             const token = localStorage.getItem('token');
-            const amount = prompt(`Enter investment amount ($${pkg.minAmount} - $${pkg.maxAmount}):`, pkg.minAmount);
-
-            if (!amount) {
-                setInvesting(null);
-                return;
-            }
-
-            const numAmount = parseFloat(amount);
-            if (isNaN(numAmount) || numAmount < pkg.minAmount || numAmount > pkg.maxAmount) {
-                setError(`Amount must be between $${pkg.minAmount} and $${pkg.maxAmount}`);
-                setInvesting(null);
-                return;
-            }
-
             const response = await axios.post(
                 '/api/invest/create',
                 { packageId: pkg._id, amount: numAmount },
@@ -104,7 +92,13 @@ const Lend = () => {
             );
 
             setSuccess('Investment successful! You can check it in your assets.');
-            window.location.reload();
+            setShowInvestModal(null);
+            setInvestAmount('');
+
+            // Wait a bit then refresh or update user state
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
 
         } catch (err) {
             setError(err.response?.data?.message || 'Investment failed');
@@ -146,8 +140,18 @@ const Lend = () => {
             {/* Content */}
             <div className="max-w-md mx-auto px-4 py-4 space-y-4">
 
-                {error && <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-xs text-center">{error}</div>}
-                {success && <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg text-green-400 text-xs text-center">{success}</div>}
+                {error && (
+                    <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 text-sm flex items-start gap-3 animate-shake">
+                        <Info size={18} className="mt-0.5 shrink-0" />
+                        <p>{error}</p>
+                    </div>
+                )}
+                {success && (
+                    <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-2xl text-green-400 text-sm flex items-start gap-3">
+                        <TrendingUp size={18} className="mt-0.5 shrink-0" />
+                        <p>{success}</p>
+                    </div>
+                )}
 
                 {loading ? (
                     <div className="text-white/60 text-center py-20 animate-pulse">
@@ -281,15 +285,8 @@ const Lend = () => {
                                     <button
                                         onClick={() => {
                                             if (!isActive) {
-                                                navigate('/deposit', {
-                                                    state: {
-                                                        packageId: pkg._id,
-                                                        packageName: pkg.name,
-                                                        minAmount: pkg.minAmount,
-                                                        maxAmount: pkg.maxAmount,
-                                                        vipLevel: currentLevel
-                                                    }
-                                                });
+                                                setShowInvestModal(pkg);
+                                                setInvestAmount(pkg.minAmount.toString());
                                             }
                                         }}
                                         disabled={isActive}
@@ -318,8 +315,75 @@ const Lend = () => {
                 )}
             </div>
 
-            {/* Bottom Navigation */}
-            <BottomNav />
+            {/* Investment Modal */}
+            {showInvestModal && (
+                <div className="fixed inset-0 z-50 flex items-end justify-center px-4 pb-10 sm:items-center sm:p-0">
+                    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setShowInvestModal(null)}></div>
+                    <div className="relative bg-dark-200 border border-white/10 w-full max-w-md rounded-3xl overflow-hidden shadow-2xl transform transition-all animate-slide-up">
+                        <div className="p-6">
+                            <div className="flex items-center justify-between mb-6">
+                                <h3 className="text-xl font-bold text-white">Select Investment</h3>
+                                <button onClick={() => setShowInvestModal(null)} className="text-white/40 hover:text-white">
+                                    <ChevronLeft className="rotate-[-90deg]" size={24} />
+                                </button>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div className="bg-dark-300 rounded-2xl p-4 border border-white/5">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <span className="text-white/40 text-xs">Available Balance</span>
+                                        <span className="text-primary font-bold">{user?.balance?.toFixed(2)} USDT</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-white/40 text-xs">Plan Range</span>
+                                        <span className="text-white font-medium text-xs">{showInvestModal.minAmount} - {showInvestModal.maxAmount} USDT</span>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label className="block text-white/60 text-xs font-medium mb-2 ml-1">Investment Amount (USDT)</label>
+                                    <div className="relative">
+                                        <input
+                                            type="number"
+                                            value={investAmount}
+                                            onChange={(e) => setInvestAmount(e.target.value)}
+                                            className="w-full bg-dark-300 border border-white/10 rounded-xl py-4 px-4 text-white font-bold focus:border-primary outline-none transition-all"
+                                            placeholder="Enter amount"
+                                        />
+                                        <button
+                                            onClick={() => setInvestAmount(showInvestModal.maxAmount.toString())}
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-primary text-xs font-bold uppercase tracking-wider"
+                                        >
+                                            Max
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="bg-primary/5 rounded-2xl p-4 border border-primary/10">
+                                    <div className="flex items-center gap-3 text-primary">
+                                        <TrendingUp size={20} />
+                                        <div>
+                                            <p className="text-[10px] text-primary/60 uppercase font-bold">Estimated Daily Income</p>
+                                            <p className="text-lg font-black tracking-tight">
+                                                + {((parseFloat(investAmount) || 0) * (showInvestModal.dailyRate / 100)).toFixed(2)} USDT
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={handleInvestSubmit}
+                                    disabled={investing}
+                                    className="w-full py-4 bg-gradient-to-r from-primary to-secondary rounded-xl text-black font-black text-base shadow-glow hover:shadow-glow-lg transition-all active:scale-[0.98] disabled:opacity-50"
+                                >
+                                    {investing ? 'Processing...' : 'CONFIRM INVESTMENT'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 };
