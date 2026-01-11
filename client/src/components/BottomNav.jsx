@@ -10,7 +10,7 @@ const BottomNav = () => {
         { icon: Home, label: 'Home', path: '/home' },
         { icon: Briefcase, label: 'Lend', path: '/lend' },
         { icon: DollarSign, label: 'Income', path: '/income', isCenter: true },
-        { icon: Wallet, label: 'Assets', path: '/assets' },
+        { icon: Wallet, label: 'Assets', path: '/wallet' },
         { icon: User, label: 'Me', path: '/me' },
     ];
 

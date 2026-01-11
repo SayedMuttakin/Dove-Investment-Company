@@ -78,7 +78,7 @@ function App() {
             <Route path="/income" element={<ProtectedRoute><Income /></ProtectedRoute>} />
             <Route path="/me" element={<ProtectedRoute><Me /></ProtectedRoute>} />
             <Route path="/market" element={<ProtectedRoute><Market /></ProtectedRoute>} />
-            <Route path="/assets" element={<ProtectedRoute><Assets /></ProtectedRoute>} />
+            <Route path="/wallet" element={<ProtectedRoute><Assets /></ProtectedRoute>} />
             <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
             <Route path="/mine" element={<ProtectedRoute><Mine /></ProtectedRoute>} />
 
