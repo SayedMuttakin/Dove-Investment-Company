@@ -186,8 +186,8 @@ router.post('/collect', authMiddleware, async (req, res) => {
                 // Expiration Logic
                 if (new Date(inv.endDate) <= now) {
                     inv.status = 'completed';
-                    // Return Principal
-                    user.balance += inv.package.investmentAmount;
+                    // Move Principal to Redeemable
+                    user.redeemableBalance += inv.package.investmentAmount;
                     completedPackages.push(inv.package.name);
 
                     // Log completion
@@ -236,7 +236,7 @@ router.get('/assets', authMiddleware, async (req, res) => {
         const now = new Date();
         let totalInvested = 0;
         let availableIncome = 0;
-        let redeemableAmount = 0;
+        let redeemableAmount = user.redeemableBalance || 0;
         let maturedAmount = 0;
         let maturedCount = 0;
 
@@ -245,8 +245,8 @@ router.get('/assets', authMiddleware, async (req, res) => {
             if (inv.status === 'active' && new Date(inv.endDate) <= now) {
                 // Investment has matured/completed
                 inv.status = 'completed';
-                // Return principal amount to balance
-                user.balance += inv.package.investmentAmount;
+                // Move principal amount to redeemable balance
+                user.redeemableBalance += inv.package.investmentAmount;
                 maturedAmount += inv.package.investmentAmount;
                 maturedCount++;
 
@@ -257,7 +257,7 @@ router.get('/assets', authMiddleware, async (req, res) => {
         // Save if any investments were matured
         if (maturedCount > 0) {
             await user.save();
-            console.log(`[Assets] ${maturedCount} investments matured. Total returned: ${maturedAmount} USDT. New balance: ${user.balance}`);
+            console.log(`[Assets] ${maturedCount} investments matured. Total moved to redeemable: ${maturedAmount} USDT. Current balance: ${user.balance}`);
         }
 
         // Calculate investment statistics
@@ -287,6 +287,36 @@ router.get('/assets', authMiddleware, async (req, res) => {
     } catch (error) {
         console.error('Get assets error:', error);
         res.status(500).json({ message: 'Server error fetching assets' });
+    }
+});
+
+// Redeem matured assets
+router.post('/redeem', authMiddleware, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        if (user.redeemableBalance <= 0) {
+            return res.status(400).json({ message: 'No assets available to redeem' });
+        }
+
+        const amountToRedeem = user.redeemableBalance;
+        user.balance += amountToRedeem;
+        user.redeemableBalance = 0;
+
+        await user.save();
+
+        res.json({
+            success: true,
+            message: 'Assets redeemed successfully',
+            redeemed: amountToRedeem,
+            newBalance: user.balance
+        });
+    } catch (error) {
+        console.error('Redeem error:', error);
+        res.status(500).json({ message: 'Server error redeeming assets' });
     }
 });
 

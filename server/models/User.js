@@ -126,6 +126,10 @@ const userSchema = new mongoose.Schema({
     vipLevel: {
         type: Number,
         default: 0
+    },
+    redeemableBalance: {
+        type: Number,
+        default: 0
     }
 }, {
     timestamps: true

@@ -45,19 +45,34 @@ const Assets = () => {
         }
     };
 
-    useEffect(() => {
-        const fetchAssets = async () => {
-            try {
-                // Ensure no caching by adding timestamp
-                const response = await axios.get(`/api/invest/assets?t=${new Date().getTime()}`);
-                console.log('Assets Data Fetched:', response.data);
-                setAssetsData(response.data);
-            } catch (error) {
-                console.error('Fetch assets error:', error);
-            } finally {
-                setLoading(false);
+    const handleRedeem = async () => {
+        try {
+            const response = await axios.post('/api/invest/redeem');
+            if (response.data.success) {
+                // Refresh assets data
+                fetchAssets();
+                alert(`Successfully redeemed ${response.data.redeemed} USDT to your balance.`);
             }
-        };
+        } catch (error) {
+            console.error('Redeem error:', error);
+            alert(error.response?.data?.message || 'Failed to redeem assets');
+        }
+    };
+
+    const fetchAssets = async () => {
+        try {
+            // Ensure no caching by adding timestamp
+            const response = await axios.get(`/api/invest/assets?t=${new Date().getTime()}`);
+            console.log('Assets Data Fetched:', response.data);
+            setAssetsData(response.data);
+        } catch (error) {
+            console.error('Fetch assets error:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
         fetchAssets();
     }, []);
 
@@ -130,15 +145,26 @@ const Assets = () => {
 
                     {/* Bottom Stats */}
                     <div className="space-y-1 text-sm text-gray-400">
-                        <div className="flex justify-between">
+                        <div className="flex justify-between text-[11px]">
                             <span>Fund investment in progress</span>
                             <span>{loading ? '...' : assetsData.fundInProgress.toFixed(0)} USDT</span>
                         </div>
-                        <div className="flex justify-between">
+                        <div className="flex justify-between text-[11px]">
                             <span>Fund redeemable</span>
                             <span>{loading ? '...' : assetsData.fundRedeemable.toFixed(0)} USDT</span>
                         </div>
                     </div>
+
+                    {/* Redeem Button if balance exists */}
+                    {assetsData.redeemable > 0 && (
+                        <button
+                            onClick={handleRedeem}
+                            className="w-full mt-4 py-3 bg-white/5 border border-white/20 rounded-xl text-[#b4f000] font-bold text-sm hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+                        >
+                            <span>Redeem Matured Assets</span>
+                            <ArrowUpRight size={16} />
+                        </button>
+                    )}
                 </div>
 
                 {/* Action Buttons */}
