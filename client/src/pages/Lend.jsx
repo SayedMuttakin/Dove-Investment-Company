@@ -38,8 +38,16 @@ const Lend = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { user, login } = useAuth(); // Refresh user data after investment
+    const [packages, setPackages] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [investing, setInvesting] = useState(null);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
     const [showInvestModal, setShowInvestModal] = useState(null);
     const [investAmount, setInvestAmount] = useState('');
+
+    // Determine which level to show: active state or current user level
+    const targetLevel = location.state?.viewLevel !== undefined ? location.state.viewLevel : (user?.vipLevel || 0);
 
     useEffect(() => {
         const fetchPackages = async () => {
