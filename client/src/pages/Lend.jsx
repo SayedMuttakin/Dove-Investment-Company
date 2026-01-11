@@ -174,21 +174,28 @@ const Lend = () => {
                             const currentLevel = targetLevel;
                             const dispayName = pkg.name.replace(/Plan/i, '').trim();
 
-                            // Check if user has an active investment for this package
-                            const activeInvestment = user?.investments?.find(inv =>
+                            // Check if user has active investments for this package
+                            const activeInvestments = user?.investments?.filter(inv =>
                                 inv.package.name === pkg.name && inv.status === 'active'
-                            );
-                            const isActive = !!activeInvestment;
+                            ) || [];
+
+                            const activeCount = activeInvestments.length;
+                            const earliestEnding = activeCount > 0
+                                ? [...activeInvestments].sort((a, b) => new Date(a.endDate) - new Date(b.endDate))[0]
+                                : null;
 
                             return (
                                 <div
                                     key={pkg._id}
-                                    className={`bg-dark-200 rounded-3xl p-5 shadow-xl border relative overflow-hidden group ${isActive ? 'border-primary/50' : 'border-white/5'}`}
+                                    className={`bg-dark-200 rounded-3xl p-5 shadow-xl border relative overflow-hidden group ${activeCount > 0 ? 'border-primary/50' : 'border-white/5'}`}
                                 >
                                     {/* Active Badge if applicable */}
-                                    {isActive && (
-                                        <div className="absolute top-3 right-3 z-20 bg-green-500 text-black text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg shadow-green-500/20">
-                                            ACTIVE
+                                    {activeCount > 0 && (
+                                        <div className="absolute top-3 right-3 z-20 flex flex-col items-end gap-1">
+                                            <div className="bg-green-500 text-black text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg shadow-green-500/20 flex items-center gap-1">
+                                                <div className="w-1 h-1 bg-black rounded-full animate-pulse"></div>
+                                                {activeCount} ACTIVE
+                                            </div>
                                         </div>
                                     )}
 
@@ -290,26 +297,25 @@ const Lend = () => {
                                     </div>
 
                                     {/* Action Button */}
-                                    <button
-                                        onClick={() => {
-                                            if (!isActive) {
+                                    <div className="space-y-3">
+                                        {activeCount > 0 && (
+                                            <div className="bg-green-500/5 border border-green-500/10 rounded-xl p-2.5 flex items-center justify-between text-[11px]">
+                                                <span className="text-white/40">Next Maturity</span>
+                                                <div className="text-green-400 font-mono">
+                                                    <PackageTimer endDate={earliestEnding.endDate} />
+                                                </div>
+                                            </div>
+                                        )}
+                                        <button
+                                            onClick={() => {
                                                 setShowInvestModal(pkg);
                                                 setInvestAmount(pkg.minAmount.toString());
-                                            }
-                                        }}
-                                        disabled={isActive}
-                                        className={`relative z-10 w-full py-3 rounded-lg font-bold text-sm transition-all ${isActive
-                                            ? 'bg-green-500/20 text-green-500 border border-green-500/50 cursor-default'
-                                            : 'text-black bg-gradient-to-r from-primary to-secondary hover:shadow-glow-lg active:scale-[0.98]'
-                                            }`}
-                                    >
-                                        {isActive ? (
-                                            <div className="flex items-center justify-center gap-2">
-                                                <span>Ends in:</span>
-                                                <PackageTimer endDate={activeInvestment.endDate} />
-                                            </div>
-                                        ) : 'Details'}
-                                    </button>
+                                            }}
+                                            className="relative z-10 w-full py-3 rounded-lg font-bold text-sm transition-all text-black bg-gradient-to-r from-primary to-secondary hover:shadow-glow-lg active:scale-[0.98]"
+                                        >
+                                            {activeCount > 0 ? 'Lend Again' : 'Details'}
+                                        </button>
+                                    </div>
                                 </div>
                             );
                         })}
