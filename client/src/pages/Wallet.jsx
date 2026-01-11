@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import BottomNav from '../components/BottomNav';
 import PinModal from '../components/PinModal';
 
-const Assets = () => {
+const WalletPage = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
     const [showPinModal, setShowModal] = useState(false);
@@ -224,4 +224,4 @@ const Assets = () => {
     );
 };
 
-export default Assets;
+export default WalletPage;
