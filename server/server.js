@@ -44,7 +44,7 @@ app.use('/api/home', homeRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
-    res.json({ status: 'OK', message: 'NovaEarn API is running' });
+    res.json({ status: 'OK', message: 'Dove Investment API is running' });
 });
 
 // MongoDB Connection
@@ -67,6 +67,6 @@ app.use((err, req, res, next) => {
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-    console.log(`🚀 NovaEarn Server running on port ${PORT}`);
+    console.log(`🚀 Dove Investment Server running on port ${PORT}`);
     console.log(`🌐 API URL: http://localhost:${PORT}/api`);
 });

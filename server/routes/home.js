@@ -111,7 +111,7 @@ router.get('/notifications', authMiddleware, async (req, res) => {
             {
                 id: '1',
                 type: 'system',
-                title: 'Welcome to NovaEarn',
+                title: 'Welcome to Dove Investment',
                 message: 'Start investing today and earn daily returns!',
                 read: false,
                 createdAt: new Date()

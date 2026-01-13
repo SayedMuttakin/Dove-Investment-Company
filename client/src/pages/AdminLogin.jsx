@@ -66,7 +66,7 @@ const AdminLogin = () => {
                         <ShieldCheck size={40} className="text-white" />
                     </div>
                     <h1 className="text-3xl font-bold text-white mb-2">Admin Portal</h1>
-                    <p className="text-white/60">NovaEarn Control Panel</p>
+                    <p className="text-white/60">Dove Investment Control Panel</p>
                 </div>
 
                 {/* Login Form */}

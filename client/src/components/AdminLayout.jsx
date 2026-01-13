@@ -70,7 +70,7 @@ const AdminLayout = () => {
                     </div>
                     <div>
                         <h1 className="text-white font-bold text-lg">Admin Panel</h1>
-                        <p className="text-white/40 text-xs">NovaEarn Control</p>
+                        <p className="text-white/40 text-xs">Dove Investment</p>
                     </div>
                 </div>
 
