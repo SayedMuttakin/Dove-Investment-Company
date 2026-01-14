@@ -27,6 +27,18 @@ const Register = () => {
     const [captchaCode, setCaptchaCode] = useState(generateCaptcha());
     const { isInstallable, installApp } = usePWA();
 
+    // Auto-fill invitation code from URL parameter
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const refCode = urlParams.get('ref');
+        if (refCode) {
+            setFormData(prev => ({
+                ...prev,
+                invitationCode: refCode
+            }));
+        }
+    }, []);
+
     const handleDownload = async () => {
         const installed = await installApp();
         if (installed) {

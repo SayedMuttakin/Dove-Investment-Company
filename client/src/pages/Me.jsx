@@ -24,8 +24,9 @@ const Me = () => {
     };
 
     const copyInvitationCode = () => {
-        navigator.clipboard.writeText(user?.invitationCode || '');
-        alert('Invitation code copied!');
+        const referralLink = `${window.location.origin}/register?ref=${user?.invitationCode || ''}`;
+        navigator.clipboard.writeText(referralLink);
+        alert('Referral link copied! Share this link with your friends.');
     };
 
     const getVIPBadge = (level) => {
@@ -291,17 +292,23 @@ const Me = () => {
                         <Gift size={12} className="text-primary" />
                         Invitation Code
                     </h2>
-                    <div className="flex items-center gap-2 bg-dark-200/50 rounded-lg p-2">
-                        <div className="flex-1">
-                            <div className="text-white/60 text-[8px] mb-0.5">Your Code</div>
-                            <div className="text-white font-bold text-sm tracking-wider">{user?.invitationCode || 'N/A'}</div>
+                    <div className="glass-card p-4">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-white/60 text-sm">Referral Link</span>
+                            <button
+                                onClick={copyInvitationCode}
+                                className="flex items-center gap-1 text-primary hover:text-primary-light transition-colors"
+                            >
+                                <Copy size={16} />
+                                <span className="text-xs">Copy Link</span>
+                            </button>
                         </div>
-                        <button
-                            onClick={copyInvitationCode}
-                            className="p-1.5 rounded-lg bg-primary/20 hover:bg-primary/30 transition-colors"
-                        >
-                            <Copy className="text-primary" size={14} />
-                        </button>
+                        <div className="bg-dark-300 rounded-lg p-3 border border-white/10">
+                            <p className="text-white font-mono text-xs break-all">
+                                {`${window.location.origin}/register?ref=${user?.invitationCode || ''}`}
+                            </p>
+                        </div>
+                        <p className="text-white/40 text-xs mt-2">Share this link to invite friends and earn rewards!</p>
                     </div>
                 </div>
 
