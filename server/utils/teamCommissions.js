@@ -73,13 +73,7 @@ export async function distributeCommissions(investor, investmentAmount) {
         );
 
         if (commissionAmount > 0) {
-            // Add commission to referrer's balance and teamEarnings
-            referrer.balance += commissionAmount;
-            referrer.teamEarnings = (referrer.teamEarnings || 0) + commissionAmount;
-            referrer.teamIncome = (referrer.teamIncome || 0) + commissionAmount;
-            await referrer.save();
-
-            // Create commission record
+            // Create CLAIMABLE commission record (not added to balance yet)
             const commissionRecord = await Commission.create({
                 fromUser: investor._id,
                 toUser: referrer._id,
@@ -87,7 +81,8 @@ export async function distributeCommissions(investor, investmentAmount) {
                 level: level,
                 investmentAmount: investmentAmount,
                 percentage: COMMISSION_RATES[referrer.vipLevel][level - 1] * 100,
-                vipLevel: referrer.vipLevel
+                vipLevel: referrer.vipLevel,
+                claimed: false
             });
 
             commissions.push(commissionRecord);

@@ -12,6 +12,7 @@ import rechargeRoutes from './routes/recharge.js';
 import adminRoutes from './routes/admin.js';
 import withdrawalRoutes from './routes/withdrawal.js';
 import homeRoutes from './routes/home.js';
+import commissionRoutes from './routes/commission.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -41,6 +42,7 @@ app.use('/api/recharge', rechargeRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/withdrawal', withdrawalRoutes);
 app.use('/api/home', homeRoutes);
+app.use('/api/commission', commissionRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

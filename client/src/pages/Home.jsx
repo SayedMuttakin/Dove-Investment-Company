@@ -71,6 +71,7 @@ const Home = () => {
     const [actionType, setActionType] = useState(null); // 'deposit' or 'withdraw'
     const [stats, setStats] = useState(null);
     const [companyInfo, setCompanyInfo] = useState(null);
+    const [teamBenefits, setTeamBenefits] = useState({ count: 0, totalAmount: 0 });
 
     useEffect(() => {
         fetchData();
@@ -78,12 +79,17 @@ const Home = () => {
 
     const fetchData = async () => {
         try {
-            const [statsRes, infoRes] = await Promise.all([
+            const [statsRes, infoRes, teamRes] = await Promise.all([
                 axios.get('/api/home/stats'),
-                axios.get('/api/home/company-info')
+                axios.get('/api/home/company-info'),
+                axios.get('/api/commission/unclaimed')
             ]);
             setStats(statsRes.data);
             setCompanyInfo(infoRes.data);
+            setTeamBenefits({
+                count: teamRes.data.count,
+                totalAmount: teamRes.data.totalAmount
+            });
         } catch (error) {
             console.error('Error fetching home data:', error);
         }

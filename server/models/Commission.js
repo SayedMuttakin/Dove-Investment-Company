@@ -31,6 +31,14 @@ const commissionSchema = new mongoose.Schema({
     vipLevel: {
         type: Number,
         required: true
+    },
+    claimed: {
+        type: Boolean,
+        default: false
+    },
+    claimedAt: {
+        type: Date,
+        default: null
     }
 }, {
     timestamps: true
