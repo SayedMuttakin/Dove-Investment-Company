@@ -21,7 +21,6 @@ const WalletPage = () => {
         fundRedeemable: 0
     });
     const [loading, setLoading] = useState(true);
-    const [teamBenefits, setTeamBenefits] = useState({ count: 0, totalAmount: 0 });
 
     const handleActionClick = (type) => {
         setActionType(type);
@@ -63,16 +62,9 @@ const WalletPage = () => {
     const fetchAssets = async () => {
         try {
             // Ensure no caching by adding timestamp
-            const [assetsRes, teamRes] = await Promise.all([
-                axios.get(`/api/invest/assets?t=${new Date().getTime()}`),
-                axios.get('/api/commission/unclaimed')
-            ]);
-            console.log('Assets Data Fetched:', assetsRes.data);
-            setAssetsData(assetsRes.data);
-            setTeamBenefits({
-                count: teamRes.data.count,
-                totalAmount: teamRes.data.totalAmount
-            });
+            const response = await axios.get(`/api/invest/assets?t=${new Date().getTime()}`);
+            console.log('Assets Data Fetched:', response.data);
+            setAssetsData(response.data);
         } catch (error) {
             console.error('Fetch assets error:', error);
         } finally {

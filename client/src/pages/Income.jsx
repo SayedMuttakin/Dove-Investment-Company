@@ -20,15 +20,21 @@ const Income = () => {
     });
     const [loading, setLoading] = useState(false);
     const [collecting, setCollecting] = useState(false);
+    const [teamBenefits, setTeamBenefits] = useState({ count: 0, totalAmount: 0 });
 
     // Fetch income data
     const fetchIncome = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.get('/api/invest/income', {
-                headers: { Authorization: `Bearer ${token}` }
+            const [incomeRes, teamRes] = await Promise.all([
+                axios.get('/api/invest/income', { headers: { Authorization: `Bearer ${token}` } }),
+                axios.get('/api/commission/unclaimed')
+            ]);
+            setIncomeData(incomeRes.data);
+            setTeamBenefits({
+                count: teamRes.data.count,
+                totalAmount: teamRes.data.totalAmount
             });
-            setIncomeData(response.data);
         } catch (error) {
             console.error('Fetch income error:', error);
         }
