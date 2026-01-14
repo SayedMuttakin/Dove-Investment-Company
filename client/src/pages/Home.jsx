@@ -71,7 +71,6 @@ const Home = () => {
     const [actionType, setActionType] = useState(null); // 'deposit' or 'withdraw'
     const [stats, setStats] = useState(null);
     const [companyInfo, setCompanyInfo] = useState(null);
-    const [teamBenefits, setTeamBenefits] = useState({ count: 0, totalAmount: 0 });
 
     useEffect(() => {
         fetchData();
@@ -79,17 +78,12 @@ const Home = () => {
 
     const fetchData = async () => {
         try {
-            const [statsRes, infoRes, teamRes] = await Promise.all([
+            const [statsRes, infoRes] = await Promise.all([
                 axios.get('/api/home/stats'),
-                axios.get('/api/home/company-info'),
-                axios.get('/api/commission/unclaimed')
+                axios.get('/api/home/company-info')
             ]);
             setStats(statsRes.data);
             setCompanyInfo(infoRes.data);
-            setTeamBenefits({
-                count: teamRes.data.count,
-                totalAmount: teamRes.data.totalAmount
-            });
         } catch (error) {
             console.error('Error fetching home data:', error);
         }
@@ -179,44 +173,6 @@ const Home = () => {
                             </div>
                             <h3 className="text-white font-semibold mb-1">Deposit</h3>
                             <p className="text-white/60 text-xs">Quick deposit</p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Team Benefits */}
-                <div className="px-4">
-                    <div className="glass-card p-4">
-                        <div className="flex items-center justify-between mb-3">
-                            <h2 className="text-white font-bold text-sm flex items-center gap-2">
-                                <span>✓</span>
-                                <span>Team Benefits</span>
-                            </h2>
-                            <span className="text-primary font-bold">${teamBenefits.totalAmount.toFixed(2)}</span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <p className="text-white/60 text-xs mb-1">{teamBenefits.count} items</p>
-                                <p className="text-white/80 text-xs">Received</p>
-                            </div>
-                            <button
-                                onClick={async () => {
-                                    if (teamBenefits.count === 0) {
-                                        alert('No commissions to claim');
-                                        return;
-                                    }
-                                    try {
-                                        const res = await axios.post('/api/commission/claim');
-                                        alert(`Claimed $${res.data.amount.toFixed(2)}!`);
-                                        fetchData();
-                                    } catch (error) {
-                                        alert(error.response?.data?.message || 'Failed to claim');
-                                    }
-                                }}
-                                disabled={teamBenefits.count === 0}
-                                className="bg-gradient-primary text-black font-bold px-6 py-2 rounded-full hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                Receive
-                            </button>
                         </div>
                     </div>
                 </div>
