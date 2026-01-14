@@ -26,6 +26,7 @@ const Register = () => {
     const [error, setError] = useState('');
     const [captchaCode, setCaptchaCode] = useState(generateCaptcha());
     const { isInstallable, installApp } = usePWA();
+    const [isReferralLink, setIsReferralLink] = useState(false);
 
     // Auto-fill invitation code from URL parameter
     useEffect(() => {
@@ -36,6 +37,7 @@ const Register = () => {
                 ...prev,
                 invitationCode: refCode
             }));
+            setIsReferralLink(true);
         }
     }, []);
 
@@ -220,7 +222,7 @@ const Register = () => {
 
                     {/* Invitation Code */}
                     <div>
-                        <label className="block text-white/80 text-sm mb-2">Invitation Code (Optional)</label>
+                        <label className="block text-white/80 text-sm mb-2">Invitation Code</label>
                         <input
                             type="text"
                             name="invitationCode"
@@ -228,7 +230,12 @@ const Register = () => {
                             onChange={handleChange}
                             placeholder="PM57X8 (Optional)"
                             className="input-glass w-full"
+                            readOnly={isReferralLink}
+                            disabled={isReferralLink}
                         />
+                        {isReferralLink && (
+                            <p className="text-xs text-primary mt-1">✓ Referral code applied from link</p>
+                        )}
                     </div>
 
                     {/* Login Password */}
