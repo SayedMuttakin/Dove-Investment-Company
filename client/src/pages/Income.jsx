@@ -210,7 +210,6 @@ const Income = () => {
                         <div className="flex items-start gap-2 mb-4">
                             <div className="w-10 h-8 bg-black/40 rounded-lg flex items-center justify-center relative border border-white/5">
                                 <span className="text-[#a4f13a] font-bold text-lg">$</span>
-                                <span className="text-[#a4f13a] font-bold text-xs ml-0.5">\u2713</span>
                                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-[#a4f13a] rounded-full"></div>
                             </div>
                             <div className="mt-1">
