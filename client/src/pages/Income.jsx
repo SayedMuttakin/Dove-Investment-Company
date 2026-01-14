@@ -244,27 +244,6 @@ const Income = () => {
                             {teamBenefits.count > 0 ? 'Received' : 'Received'}
                         </button>
                     </div>
-
-                    <div className="bg-dark-200 rounded-2xl p-4 shadow-lg relative border border-white/5">
-                        <div className="absolute top-4 right-2 text-gray-500">
-                            <ChevronRight size={16} />
-                        </div>
-                        <div className="flex items-start gap-2 mb-4">
-                            <div className="w-10 h-8 bg-black/40 rounded-lg flex items-center justify-center relative border border-white/5">
-                                <span className="text-white font-bold text-lg">$</span>
-                                <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-[#a4f13a] rounded-sm flex items-center justify-center">
-                                    <span className="text-[8px] text-black">✓</span>
-                                </div>
-                            </div>
-                            <div className="mt-1">
-                                <span className="text-xs text-gray-400 block">Team Benefits</span>
-                                <span className="text-sm font-bold text-white block">0 items</span>
-                            </div>
-                        </div>
-                        <button className="w-full bg-white/5 text-white/20 py-1.5 rounded-full text-xs font-medium cursor-not-allowed">
-                            Received
-                        </button>
-                    </div>
                 </div>
 
                 {/* Daily Income Chart */}
