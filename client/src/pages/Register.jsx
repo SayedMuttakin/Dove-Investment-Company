@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { Eye, EyeOff, ArrowLeft, RefreshCw, Globe, Download } from 'lucide-react';
 import AuthLayout from '../components/AuthLayout';
 import CountrySelector from '../components/CountrySelector';
+import { usePWA } from '../hooks/usePWA';
 
 const Register = () => {
     const navigate = useNavigate();
@@ -24,21 +25,14 @@ const Register = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [captchaCode, setCaptchaCode] = useState(generateCaptcha());
-    const [appLink, setAppLink] = useState('#');
+    const { isInstallable, installApp } = usePWA();
 
-    useEffect(() => {
-        const fetchCompanyInfo = async () => {
-            try {
-                const res = await axios.get('/api/home/company-info');
-                if (res.data.appDownloadUrl) {
-                    setAppLink(res.data.appDownloadUrl);
-                }
-            } catch (err) {
-                console.error('Failed to fetch app link:', err);
-            }
-        };
-        fetchCompanyInfo();
-    }, []);
+    const handleDownload = async () => {
+        const installed = await installApp();
+        if (installed) {
+            console.log('App installed successfully');
+        }
+    };
 
     function generateCaptcha() {
         const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
@@ -312,17 +306,17 @@ const Register = () => {
                 </form>
 
                 {/* App Download Button */}
-                <div className="pt-4 border-t border-white/10">
-                    <a
-                        href={appLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn-glass w-full flex items-center justify-center gap-2 hover:shadow-glow"
-                    >
-                        <Download size={20} className="text-primary" />
-                        <span>Download App</span>
-                    </a>
-                </div>
+                {isInstallable && (
+                    <div className="pt-4 border-t border-white/10">
+                        <button
+                            onClick={handleDownload}
+                            className="btn-glass w-full flex items-center justify-center gap-2 hover:shadow-glow"
+                        >
+                            <Download size={20} className="text-primary" />
+                            <span>Install App</span>
+                        </button>
+                    </div>
+                )}
             </div>
 
             {/* Login Link */}
