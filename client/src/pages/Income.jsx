@@ -202,6 +202,49 @@ const Income = () => {
                         </button>
                     </div>
 
+                    {/* Team Benefits Section */}
+                    <div className="bg-dark-200 rounded-2xl p-4 shadow-lg relative border border-white/5">
+                        <div className="absolute top-4 right-2 text-gray-500">
+                            <ChevronRight size={16} />
+                        </div>
+                        <div className="flex items-start gap-2 mb-4">
+                            <div className="w-10 h-8 bg-black/40 rounded-lg flex items-center justify-center relative border border-white/5">
+                                <span className="text-[#a4f13a] font-bold text-lg">$</span>
+                                <span className="text-[#a4f13a] font-bold text-xs ml-0.5">\u2713</span>
+                                <div className="absolute -top-1 -right-1 w-3 h-3 bg-[#a4f13a] rounded-full"></div>
+                            </div>
+                            <div className="mt-1">
+                                <span className="text-xs text-gray-400 block">Team Benefits</span>
+                                <span className="text-sm font-bold text-white block">
+                                    {teamBenefits.count} items
+                                    {teamBenefits.totalAmount > 0 && <span className="text-[#a4f13a] ml-1">(${teamBenefits.totalAmount.toFixed(2)})</span>}
+                                </span>
+                            </div>
+                        </div>
+                        <button
+                            onClick={async () => {
+                                if (teamBenefits.count === 0) {
+                                    alert('No commissions to claim');
+                                    return;
+                                }
+                                try {
+                                    const res = await axios.post('/api/commission/claim');
+                                    alert(`Claimed $${res.data.amount.toFixed(2)}!`);
+                                    fetchIncome();
+                                } catch (error) {
+                                    alert(error.response?.data?.message || 'Failed to claim');
+                                }
+                            }}
+                            disabled={teamBenefits.count === 0}
+                            className={`w-full py-1.5 rounded-full text-xs font-medium transition-all ${teamBenefits.count > 0
+                                ? 'bg-[#a4f13a] text-black hover:bg-[#93d934] shadow-lg shadow-[#a4f13a]/20'
+                                : 'bg-white/5 text-white/20 cursor-not-allowed'
+                                }`}
+                        >
+                            {teamBenefits.count > 0 ? 'Received' : 'Received'}
+                        </button>
+                    </div>
+
                     <div className="bg-dark-200 rounded-2xl p-4 shadow-lg relative border border-white/5">
                         <div className="absolute top-4 right-2 text-gray-500">
                             <ChevronRight size={16} />
