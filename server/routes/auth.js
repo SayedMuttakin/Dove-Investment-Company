@@ -234,6 +234,7 @@ router.get('/me', authMiddleware, async (req, res) => {
             referredBy: user.referredBy,
             hasTransactionPin: !!user.transactionPin,
             role: user.role,
+            teamEarnings: user.teamEarnings || 0,
             stats: {
                 directResults: directCount,
                 teamMembers: teamCount,

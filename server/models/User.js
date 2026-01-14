@@ -97,6 +97,10 @@ const userSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    teamEarnings: {
+        type: Number,
+        default: 0
+    },
     bonusIncome: {
         type: Number,
         default: 0

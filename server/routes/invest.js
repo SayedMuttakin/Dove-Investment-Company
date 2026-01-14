@@ -2,6 +2,7 @@ import express from 'express';
 import Package from '../models/Package.js';
 import User from '../models/User.js';
 import { authMiddleware } from '../middleware/auth.js';
+import { distributeCommissions } from '../utils/teamCommissions.js';
 
 const router = express.Router();
 
@@ -82,6 +83,15 @@ router.post('/create', authMiddleware, async (req, res) => {
         });
 
         await user.save();
+
+        // Distribute team commissions to upline users
+        try {
+            await distributeCommissions(user, selectedPackage.price);
+            console.log(`✅ Commissions distributed for investment of $${selectedPackage.price}`);
+        } catch (commissionError) {
+            console.error('Commission distribution error:', commissionError);
+            // Don't fail the investment if commission fails
+        }
 
         res.status(201).json({
             message: 'Investment created successfully',
