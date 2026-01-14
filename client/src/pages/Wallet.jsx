@@ -153,43 +153,6 @@ const WalletPage = () => {
                             <span>Fund redeemable</span>
                             <span>{loading ? '...' : assetsData.fundRedeemable.toFixed(0)} USDT</span>
                         </div>
-
-                        {/* Team Benefits */}
-                        <div className="glass-card p-4 mb-4">
-                            <div className="flex items-center justify-between mb-3">
-                                <h2 className="text-white font-bold text-sm flex items-center gap-2">
-                                    <span className="text-primary">$</span>
-                                    <span>✓</span>
-                                    <span>Team Benefits</span>
-                                </h2>
-                                <span className="text-primary font-bold">${teamBenefits.totalAmount.toFixed(2)}</span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-white/60 text-xs mb-1">{teamBenefits.count} items</p>
-                                    <p className="text-white/80 text-xs">Received</p>
-                                </div>
-                                <button
-                                    onClick={async () => {
-                                        if (teamBenefits.count === 0) {
-                                            alert('No commissions to claim');
-                                            return;
-                                        }
-                                        try {
-                                            const res = await axios.post('/api/commission/claim');
-                                            alert(`Claimed $${res.data.amount.toFixed(2)}!`);
-                                            fetchAssets(); // Refresh data
-                                        } catch (error) {
-                                            alert(error.response?.data?.message || 'Failed to claim');
-                                        }
-                                    }}
-                                    disabled={teamBenefits.count === 0}
-                                    className="bg-gradient-primary text-black font-bold px-6 py-2 rounded-full hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    Receive
-                                </button>
-                            </div>
-                        </div>
                     </div>
 
                     {/* Redeem Button if balance exists */}
