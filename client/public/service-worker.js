@@ -1,9 +1,10 @@
-const CACHE_NAME = 'dove-investment-v1';
+const CACHE_NAME = 'dove-investment-v2';
 const urlsToCache = [
     '/',
     '/index.html',
-    '/assets/index.css',
-    '/assets/index.js'
+    '/manifest.json',
+    '/pwa-icon-192.png',
+    '/pwa-icon-512.png'
 ];
 
 // Install service worker
@@ -11,23 +12,29 @@ self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
-                console.log('Opened cache');
                 return cache.addAll(urlsToCache);
             })
     );
     self.skipWaiting();
 });
 
-// Fetch from cache
+// Network First Strategy
 self.addEventListener('fetch', (event) => {
     event.respondWith(
-        caches.match(event.request)
+        fetch(event.request)
             .then((response) => {
-                // Cache hit - return response
-                if (response) {
-                    return response;
+                // If network request succeeds, update the cache
+                if (response && response.status === 200 && response.type === 'basic') {
+                    const responseToCache = response.clone();
+                    caches.open(CACHE_NAME).then((cache) => {
+                        cache.put(event.request, responseToCache);
+                    });
                 }
-                return fetch(event.request);
+                return response;
+            })
+            .catch(() => {
+                // If network fails, try the cache
+                return caches.match(event.request);
             })
     );
 });
