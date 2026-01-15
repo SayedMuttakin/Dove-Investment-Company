@@ -4,6 +4,7 @@ import { adminMiddleware } from '../middleware/admin.js';
 import Withdrawal from '../models/Withdrawal.js';
 import User from '../models/User.js';
 import AdminLog from '../models/AdminLog.js';
+import { createNotification } from '../utils/notifications.js';
 
 const router = express.Router();
 
@@ -71,6 +72,16 @@ router.post('/request', authMiddleware, async (req, res) => {
         });
 
         await withdrawal.save();
+
+        // Notification: Withdrawal Requested
+        await createNotification({
+            userId,
+            title: 'Withdrawal Requested',
+            message: `Your withdrawal request for $${amount} has been submitted.`,
+            type: 'withdrawal',
+            amount,
+            relatedId: withdrawal._id
+        });
 
         res.status(201).json({
             message: 'Withdrawal request submitted successfully',
@@ -181,6 +192,16 @@ router.post('/admin/:id/approve', authMiddleware, adminMiddleware, async (req, r
         withdrawal.adminNote = adminNote;
         await withdrawal.save();
 
+        // Notification: Withdrawal Approved
+        await createNotification({
+            userId: user._id,
+            title: 'Withdrawal Approved',
+            message: `Your withdrawal of $${withdrawal.amount} has been approved and processed.`,
+            type: 'withdrawal',
+            amount: withdrawal.amount,
+            relatedId: withdrawal._id
+        });
+
         // Log admin action
         const log = new AdminLog({
             adminId,
@@ -237,6 +258,16 @@ router.post('/admin/:id/reject', authMiddleware, adminMiddleware, async (req, re
         withdrawal.processedAt = new Date();
         withdrawal.adminNote = adminNote;
         await withdrawal.save();
+
+        // Notification: Withdrawal Rejected
+        await createNotification({
+            userId: withdrawal.userId,
+            title: 'Withdrawal Rejected',
+            message: `Your withdrawal of $${withdrawal.amount} has been rejected. Reason: ${withdrawal.rejectionReason}`,
+            type: 'withdrawal',
+            amount: withdrawal.amount,
+            relatedId: withdrawal._id
+        });
 
         // Log admin action
         const log = new AdminLog({

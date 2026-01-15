@@ -13,6 +13,8 @@ import adminRoutes from './routes/admin.js';
 import withdrawalRoutes from './routes/withdrawal.js';
 import homeRoutes from './routes/home.js';
 import commissionRoutes from './routes/commission.js';
+import notificationRoutes from './routes/notification.js';
+import profileRoutes from './routes/profile.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,8 +25,12 @@ const app = express();
 
 // Create uploads directory if it doesn't exist
 const uploadsDir = path.join(__dirname, 'uploads/packages');
+const profileDir = path.join(__dirname, 'uploads/profile');
 if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
+}
+if (!fs.existsSync(profileDir)) {
+    fs.mkdirSync(profileDir, { recursive: true });
 }
 
 // Middleware
@@ -43,6 +49,8 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/withdrawal', withdrawalRoutes);
 app.use('/api/home', homeRoutes);
 app.use('/api/commission', commissionRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/profile', profileRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

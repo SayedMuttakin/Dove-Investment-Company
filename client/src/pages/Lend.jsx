@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, Info, TrendingUp, Calendar, DollarSign, Bell } from 'lucide-react';
+import { ChevronLeft, Info, TrendingUp, Calendar, DollarSign, Bell, HelpCircle } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import BottomNav from '../components/BottomNav';
 import axios from 'axios';
@@ -134,12 +134,18 @@ const Lend = () => {
                         <h1 className="text-white font-bold text-lg">Lend</h1>
                     </div>
                     <div className="flex items-center gap-3">
-                        <button className="relative p-2 text-white/60 hover:text-white transition-colors">
+                        <button
+                            onClick={() => navigate('/notifications')}
+                            className="relative p-2 text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full"
+                        >
                             <Bell size={20} />
-                            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                            {/* Unread count dot could be dynamic later */}
                         </button>
-                        <button className="relative p-2 text-white/60 hover:text-white transition-colors">
-                            <Info size={20} />
+                        <button
+                            onClick={() => navigate('/help')}
+                            className="relative p-2 text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full"
+                        >
+                            <HelpCircle size={20} />
                         </button>
                     </div>
                 </div>

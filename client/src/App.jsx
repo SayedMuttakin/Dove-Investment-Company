@@ -19,6 +19,8 @@ import AdminWithdrawals from './pages/admin/AdminWithdrawals';
 import AdminSettings from './pages/admin/AdminSettings';
 import AdminReports from './pages/admin/AdminReports';
 import WalletPage from './pages/Wallet';
+import Notifications from './pages/Notifications';
+import Help from './pages/Help';
 
 // Restoring Placeholder components
 const Market = () => <div className="min-h-screen bg-dark-300 text-white flex items-center justify-center"><h1 className="text-2xl">Market Page - Coming Soon</h1></div>;
@@ -81,6 +83,8 @@ function App() {
             <Route path="/wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
             <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
             <Route path="/mine" element={<ProtectedRoute><Mine /></ProtectedRoute>} />
+            <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+            <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
 
             {/* Admin Login */}
             <Route path="/admin/login" element={<AdminLogin />} />

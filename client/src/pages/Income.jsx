@@ -28,7 +28,7 @@ const Income = () => {
             const token = localStorage.getItem('token');
             const [incomeRes, teamRes] = await Promise.all([
                 axios.get('/api/invest/income', { headers: { Authorization: `Bearer ${token}` } }),
-                axios.get('/api/commission/unclaimed')
+                axios.get('/api/commission/unclaimed', { headers: { Authorization: `Bearer ${token}` } })
             ]);
             setIncomeData(incomeRes.data);
             setTeamBenefits({
@@ -108,11 +108,17 @@ const Income = () => {
 
                     {/* Icons - Right Side */}
                     <div className="flex items-center gap-3">
-                        <button className="relative p-2 text-white/60 hover:text-white transition-colors">
+                        <button
+                            onClick={() => navigate('/notifications')}
+                            className="relative p-2 text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full"
+                        >
                             <Bell size={20} />
-                            <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                            {/* Unread count dot could be dynamic later */}
                         </button>
-                        <button className="relative p-2 text-white/60 hover:text-white transition-colors">
+                        <button
+                            onClick={() => navigate('/help')}
+                            className="relative p-2 text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full"
+                        >
                             <HelpCircle size={20} />
                         </button>
                     </div>
@@ -227,7 +233,10 @@ const Income = () => {
                                     return;
                                 }
                                 try {
-                                    const res = await axios.post('/api/commission/claim');
+                                    const token = localStorage.getItem('token');
+                                    const res = await axios.post('/api/commission/claim', {}, {
+                                        headers: { Authorization: `Bearer ${token}` }
+                                    });
                                     alert(`Claimed $${res.data.amount.toFixed(2)}!`);
                                     fetchIncome();
                                 } catch (error) {

@@ -10,6 +10,7 @@ import Banner from '../models/Banner.js';
 import multer from 'multer';
 import path from 'path';
 import AdminLog from '../models/AdminLog.js';
+import { createNotification } from '../utils/notifications.js';
 
 const router = express.Router();
 
@@ -409,6 +410,17 @@ router.post('/deposit/:id/approve', authMiddleware, adminMiddleware, async (req,
         });
 
         await user.save();
+
+        // Notification: Deposit Approved
+        await createNotification({
+            userId: user._id,
+            title: 'Deposit Approved',
+            message: `Your deposit of $${deposit.amount} has been approved and added to your balance.`,
+            type: 'deposit',
+            amount: deposit.amount,
+            relatedId: deposit._id
+        });
+
         res.json({ message: 'Deposit approved and added to wallet balance', deposit });
 
     } catch (error) {
@@ -433,6 +445,16 @@ router.post('/deposit/:id/reject', authMiddleware, adminMiddleware, async (req, 
 
         deposit.status = 'rejected';
         await deposit.save();
+
+        // Notification: Deposit Rejected
+        await createNotification({
+            userId: deposit.userId,
+            title: 'Deposit Rejected',
+            message: `Your deposit of $${deposit.amount} has been rejected. Please contact support for details.`,
+            type: 'deposit',
+            amount: deposit.amount,
+            relatedId: deposit._id
+        });
 
         await AdminLog.create({
             adminId: req.userId,

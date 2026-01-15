@@ -3,6 +3,7 @@ import Package from '../models/Package.js';
 import User from '../models/User.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { distributeCommissions } from '../utils/teamCommissions.js';
+import { createNotification } from '../utils/notifications.js';
 
 const router = express.Router();
 
@@ -83,6 +84,16 @@ router.post('/create', authMiddleware, async (req, res) => {
         });
 
         await user.save();
+
+        // Notification: Investment Started
+        await createNotification({
+            userId: user._id,
+            title: 'Investment Started',
+            message: `You have successfully invested $${amount} in ${pkg.name}.`,
+            type: 'investment',
+            amount,
+            relatedId: user.investments[user.investments.length - 1]._id
+        });
 
         // Distribute team commissions to upline users
         try {
@@ -211,6 +222,15 @@ router.post('/collect', authMiddleware, async (req, res) => {
             user.totalEarnings += collectedTotal;
             user.interestIncome += collectedTotal; // Track specifically as interest income
             await user.save();
+
+            // Notification: Income Collected
+            await createNotification({
+                userId: user._id,
+                title: 'Income Collected',
+                message: `You have collected $${collectedTotal} from your daily earnings.`,
+                type: 'investment',
+                amount: collectedTotal
+            });
 
             res.json({
                 success: true,

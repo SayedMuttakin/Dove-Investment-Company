@@ -2,6 +2,7 @@ import express from 'express';
 import { authMiddleware } from '../middleware/auth.js';
 import Commission from '../models/Commission.js';
 import User from '../models/User.js';
+import { createNotification } from '../utils/notifications.js';
 
 const router = express.Router();
 
@@ -63,6 +64,15 @@ router.post('/claim', authMiddleware, async (req, res) => {
         user.teamIncome = (user.teamIncome || 0) + totalAmount;
         user.teamEarnings = (user.teamEarnings || 0) + totalAmount;
         await user.save();
+
+        // Notification: Commission Claimed
+        await createNotification({
+            userId: user._id,
+            title: 'Commission Claimed',
+            message: `You have successfully claimed $${totalAmount} in team benefits.`,
+            type: 'commission',
+            amount: totalAmount
+        });
 
         res.json({
             message: 'Commissions claimed successfully',

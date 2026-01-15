@@ -4,6 +4,7 @@ import User from '../models/User.js';
 import Package from '../models/Package.js';
 import { authMiddleware } from '../middleware/auth.js';
 import SystemSettings from '../models/SystemSettings.js';
+import { createNotification } from '../utils/notifications.js';
 
 const router = express.Router();
 
@@ -56,6 +57,16 @@ router.post('/submit', authMiddleware, async (req, res) => {
         });
 
         await deposit.save();
+
+        // Notification: Deposit Submitted
+        await createNotification({
+            userId: req.userId,
+            title: 'Deposit Submitted',
+            message: `Your deposit request for $${amount} has been submitted and is pending review.`,
+            type: 'deposit',
+            amount,
+            relatedId: deposit._id
+        });
 
         res.status(201).json({ message: 'Deposit submitted successfully', deposit });
 

@@ -64,12 +64,20 @@ export const AuthProvider = ({ children }) => {
         delete axios.defaults.headers.common['Authorization'];
     };
 
+    const updateUserInfo = (newData) => {
+        setUser(prevUser => ({
+            ...prevUser,
+            ...newData
+        }));
+    };
+
     const value = {
         user,
         loading,
         login,
         register,
         logout,
+        updateUserInfo,
         isAuthenticated: !!user
     };
 

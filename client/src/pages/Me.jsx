@@ -12,14 +12,52 @@ import {
     Star,
     Users,
     DollarSign,
-    Download
+    Download,
+    Camera,
+    HelpCircle,
+    Bell
 } from 'lucide-react';
+import axios from 'axios';
 import { usePWA } from '../hooks/usePWA';
 
 const Me = () => {
     const navigate = useNavigate();
-    const { user, logout } = useAuth();
+    const { user, logout, updateUserInfo } = useAuth();
     const { isInstallable, installApp } = usePWA();
+    const [uploading, setUploading] = React.useState(false);
+    const fileInputRef = React.useRef(null);
+
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        setUploading(true);
+        try {
+            const token = localStorage.getItem('authToken');
+            const res = await axios.post('/api/profile/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            // Update user in context
+            if (updateUserInfo) {
+                updateUserInfo({ profileImage: res.data.user.profileImage });
+            }
+            alert('Profile updated successfully!');
+            // Refresh page to show new image (or just let context update if it does)
+            window.location.reload();
+        } catch (error) {
+            console.error('Upload error:', error);
+            alert(error.response?.data?.message || 'Failed to upload image');
+        } finally {
+            setUploading(false);
+        }
+    };
 
     const handleDownload = async () => {
         const installed = await installApp();
@@ -116,19 +154,59 @@ const Me = () => {
                     {/* Profile Info */}
                     <div className="flex items-center justify-between mb-3">
                         <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-cyan-400 flex items-center justify-center shadow-lg">
-                                <User className="text-white" size={24} />
+                            <div
+                                onClick={() => fileInputRef.current?.click()}
+                                className="relative group cursor-pointer"
+                            >
+                                <div className="w-14 h-14 rounded-full border-2 border-white/20 overflow-hidden bg-gradient-to-br from-primary to-cyan-400 flex items-center justify-center shadow-lg transition-transform group-active:scale-95">
+                                    {user?.profileImage ? (
+                                        <img
+                                            src={user.profileImage}
+                                            alt="Profile"
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => {
+                                                e.target.src = '';
+                                                e.target.parentElement.innerHTML = '<User class="text-white" size={28} />';
+                                            }}
+                                        />
+                                    ) : (
+                                        <User className="text-white" size={28} />
+                                    )}
+                                </div>
+                                <div className="absolute -bottom-1 -right-1 bg-primary p-1.5 rounded-full border-2 border-dark-200 shadow-md">
+                                    <Camera size={10} className="text-black" />
+                                </div>
+                                {uploading && (
+                                    <div className="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center">
+                                        <div className="w-5 h-5 border-2 border-primary border-t-transparent animate-spin rounded-full"></div>
+                                    </div>
+                                )}
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    className="hidden"
+                                    accept="image/*"
+                                    onChange={handleImageUpload}
+                                />
                             </div>
                             <div>
-                                <h1 className="text-white font-bold text-base">{user?.fullName || user?.phone || 'User'}</h1>
+                                <h1 className="text-white font-black text-lg tracking-tight">{user?.fullName || user?.phone || 'User'}</h1>
                                 <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r ${vipBadge.color} ${vipBadge.textColor} mt-0.5`}>
                                     {vipBadge.name}
                                 </div>
                             </div>
                         </div>
-                        <button onClick={() => navigate('/change-pin')} className="p-2 text-white/60 hover:text-white">
-                            <Shield size={20} />
-                        </button>
+                        <div className="flex items-center gap-1">
+                            <button onClick={() => navigate('/notifications')} className="p-2 text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full">
+                                <Bell size={20} />
+                            </button>
+                            <button onClick={() => navigate('/help')} className="p-2 text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full">
+                                <HelpCircle size={20} />
+                            </button>
+                            <button onClick={() => navigate('/change-pin')} className="p-2 text-white/60 hover:text-white transition-colors hover:bg-white/5 rounded-full">
+                                <Shield size={20} />
+                            </button>
+                        </div>
                     </div>
 
                     {/* Stats */}
