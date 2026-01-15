@@ -11,12 +11,22 @@ import {
     ChevronRight,
     Star,
     Users,
-    DollarSign
+    DollarSign,
+    Download
 } from 'lucide-react';
+import { usePWA } from '../hooks/usePWA';
 
 const Me = () => {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
+    const { isInstallable, installApp } = usePWA();
+
+    const handleDownload = async () => {
+        const installed = await installApp();
+        if (installed) {
+            console.log('App installed successfully');
+        }
+    };
 
     const handleLogout = () => {
         logout();
@@ -311,6 +321,22 @@ const Me = () => {
                         <p className="text-white/40 text-xs mt-2">Share this link to invite friends and earn rewards!</p>
                     </div>
                 </div>
+
+                {/* App Download */}
+                {isInstallable && (
+                    <div className="glass-card overflow-hidden mb-3">
+                        <button
+                            onClick={handleDownload}
+                            className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-primary/10 transition-colors"
+                        >
+                            <div className="flex items-center gap-2">
+                                <Download size={16} className="text-primary" />
+                                <span className="text-white text-sm font-medium">App Download</span>
+                            </div>
+                            <ChevronRight size={14} className="text-white/40" />
+                        </button>
+                    </div>
+                )}
 
                 {/* Logout */}
                 <div className="glass-card overflow-hidden">
