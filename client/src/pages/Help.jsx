@@ -20,10 +20,15 @@ const Help = () => {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const [loading, setLoading] = useState(false);
-    const chatEndRef = useRef(null);
+    const chatContainerRef = useRef(null);
 
     const scrollToBottom = () => {
-        chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTo({
+                top: chatContainerRef.current.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
     };
 
     const fetchMessages = async () => {
@@ -131,7 +136,10 @@ const Help = () => {
                     </div>
 
                     {/* Chat Messages */}
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide">
+                    <div
+                        ref={chatContainerRef}
+                        className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide"
+                    >
                         {messages.length === 0 ? (
                             <div className="h-full flex flex-col items-center justify-center text-center opacity-40 py-10">
                                 <MessageCircle size={40} className="mb-2" />
@@ -152,7 +160,6 @@ const Help = () => {
                                 </div>
                             ))
                         )}
-                        <div ref={chatEndRef} />
                     </div>
 
                     {/* Chat Input */}
