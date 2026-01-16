@@ -3,12 +3,12 @@ import { authMiddleware } from '../middleware/auth.js';
 import User from '../models/User.js';
 import Package from '../models/Package.js';
 import SystemSettings from '../models/SystemSettings.js';
-import Banner from '../models/Banner.js';
+import Notification from '../models/Notification.js';
 
 const router = express.Router();
 
 // Get platform statistics
-router.get('/stats', async (req, res) => {
+router.get('/stats', authMiddleware, async (req, res) => {
     try {
         // Get total users
         const totalUsers = await User.countDocuments({ role: 'user' });
@@ -31,6 +31,13 @@ router.get('/stats', async (req, res) => {
 
         const totalEarnings = earningsData[0]?.total || 0;
 
+        // Get unread notifications for current user
+        // Note: req.userId comes from authMiddleware
+        const unreadNotifications = await Notification.countDocuments({
+            userId: req.userId,
+            status: 'unread'
+        });
+
         // Get system settings for additional info
         let settings = await SystemSettings.findOne();
         if (!settings) {
@@ -43,7 +50,8 @@ router.get('/stats', async (req, res) => {
             totalUsers,
             activeInvestments,
             totalEarningsDistributed: totalEarnings,
-            platformStatus: settings.maintenanceMode ? 'maintenance' : 'operational'
+            platformStatus: settings.maintenanceMode ? 'maintenance' : 'operational',
+            unreadNotifications // Added this field
         });
 
     } catch (error) {

@@ -78,8 +78,11 @@ const Home = () => {
 
     const fetchData = async () => {
         try {
+            const token = localStorage.getItem('token');
             const [statsRes, infoRes] = await Promise.all([
-                axios.get('/api/home/stats'),
+                axios.get('/api/home/stats', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                }),
                 axios.get('/api/home/company-info')
             ]);
             setStats(statsRes.data);
