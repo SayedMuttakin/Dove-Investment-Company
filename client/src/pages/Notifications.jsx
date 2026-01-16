@@ -23,7 +23,7 @@ const Notifications = () => {
 
     const fetchNotifications = async () => {
         try {
-            const token = localStorage.getItem('authToken');
+            const token = localStorage.getItem('token');
             const res = await axios.get('/api/notifications', {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -42,7 +42,7 @@ const Notifications = () => {
 
     const markAllAsRead = async () => {
         try {
-            const token = localStorage.getItem('authToken');
+            const token = localStorage.getItem('token');
             await axios.put('/api/notifications/read-all', {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -54,7 +54,7 @@ const Notifications = () => {
 
     const markAsRead = async (id) => {
         try {
-            const token = localStorage.getItem('authToken');
+            const token = localStorage.getItem('token');
             await axios.put(`/api/notifications/${id}/read`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -67,7 +67,7 @@ const Notifications = () => {
     const deleteNotification = async (id, e) => {
         e.stopPropagation();
         try {
-            const token = localStorage.getItem('authToken');
+            const token = localStorage.getItem('token');
             await axios.delete(`/api/notifications/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });

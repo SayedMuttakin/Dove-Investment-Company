@@ -36,7 +36,7 @@ const Me = () => {
 
         setUploading(true);
         try {
-            const token = localStorage.getItem('authToken');
+            const token = localStorage.getItem('token');
             const res = await axios.post('/api/profile/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
