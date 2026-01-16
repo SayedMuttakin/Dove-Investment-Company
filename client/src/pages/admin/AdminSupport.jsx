@@ -66,7 +66,7 @@ const AdminSupport = () => {
     }, [messages]);
 
     const handleSelectUser = (conv) => {
-        setSelectedUser(conv.userInfo);
+        setSelectedUser({ ...conv.userInfo, _id: conv._id });
         fetchMessages(conv._id);
     };
 

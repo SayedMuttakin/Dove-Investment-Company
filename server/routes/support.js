@@ -72,6 +72,7 @@ router.get('/admin/conversations', authMiddleware, async (req, res) => {
                     _id: 1,
                     lastMessage: 1,
                     lastMessageAt: 1,
+                    'userInfo._id': 1,
                     'userInfo.fullName': 1,
                     'userInfo.phone': 1,
                     'userInfo.profileImage': 1
