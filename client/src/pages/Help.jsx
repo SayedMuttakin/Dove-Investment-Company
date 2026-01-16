@@ -45,7 +45,9 @@ const Help = () => {
     }, []);
 
     useEffect(() => {
-        scrollToBottom();
+        // Use a small timeout to ensure DOM is updated before scrolling
+        const timer = setTimeout(scrollToBottom, 50);
+        return () => clearTimeout(timer);
     }, [messages]);
 
     const handleSendMessage = async (e) => {

@@ -138,12 +138,13 @@ const AdminSupport = () => {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="flex justify-between items-start mb-0.5">
-                                        <p className="text-sm font-bold text-white truncate">{conv.userInfo.fullName}</p>
+                                        <p className="text-sm font-black text-white truncate">{conv.userInfo.fullName}</p>
                                         <span className="text-[10px] text-white/40 whitespace-nowrap">
                                             {formatDistanceToNow(new Date(conv.lastMessageAt), { addSuffix: true })}
                                         </span>
                                     </div>
-                                    <p className="text-[11px] text-white/60 truncate">{conv.lastMessage}</p>
+                                    <p className="text-[10px] text-primary mb-1 font-bold">{conv.userInfo.phone}</p>
+                                    <p className="text-[11px] text-white/60 truncate italic">"{conv.lastMessage}"</p>
                                 </div>
                             </button>
                         ))

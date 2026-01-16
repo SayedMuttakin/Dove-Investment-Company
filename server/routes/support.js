@@ -2,6 +2,7 @@ import express from 'express';
 import { authMiddleware } from '../middleware/auth.js';
 import SupportMessage from '../models/SupportMessage.js';
 import User from '../models/User.js';
+import { createNotification } from '../utils/notifications.js';
 
 const router = express.Router();
 
@@ -124,6 +125,15 @@ router.post('/admin/reply', authMiddleware, async (req, res) => {
         });
 
         await newMessage.save();
+
+        // Trigger notification for user
+        await createNotification({
+            userId,
+            title: 'New Support Message',
+            message: 'An administrator has replied to your support request.',
+            type: 'system'
+        });
+
         res.status(201).json(newMessage);
     } catch (error) {
         console.error('Admin support reply error:', error);
