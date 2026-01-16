@@ -35,15 +35,17 @@ router.get('/wallets', async (req, res) => {
 router.post('/submit', authMiddleware, async (req, res) => {
     try {
         const { amount, transactionHash, network, packageId, packageName } = req.body;
-        console.log(`[Recharge] New deposit submission: User ${req.userId}, Amount: ${amount}, TX: ${transactionHash}`);
+        console.log(`[Recharge] Debug - User: ${req.userId}, Body:`, req.body);
 
         if (!amount || !transactionHash || !network) {
+            console.log(`[Recharge] Missing fields: amount=${amount}, tx=${transactionHash}, network=${network}`);
             return res.status(400).json({ message: 'All fields are required' });
         }
 
         // Check if transaction hash already exists
         const existingDeposit = await Deposit.findOne({ transactionHash });
         if (existingDeposit) {
+            console.log(`[Recharge] Duplicate TX: ${transactionHash}`);
             return res.status(400).json({ message: 'Transaction ID already submitted' });
         }
 
