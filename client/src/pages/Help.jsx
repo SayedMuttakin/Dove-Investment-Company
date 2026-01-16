@@ -139,8 +139,8 @@ const Help = () => {
                             messages.map((msg, i) => (
                                 <div key={i} className={`flex ${msg.isAdmin ? 'justify-start' : 'justify-end'}`}>
                                     <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${msg.isAdmin
-                                            ? 'bg-dark-200 text-white rounded-tl-none border border-white/5'
-                                            : 'bg-primary text-black font-medium rounded-tr-none'
+                                        ? 'bg-dark-200 text-white rounded-tl-none border border-white/5'
+                                        : 'bg-primary text-black font-medium rounded-tr-none'
                                         }`}>
                                         <p className="leading-relaxed">{msg.message}</p>
                                         <div className={`text-[9px] mt-1 opacity-50 ${msg.isAdmin ? 'text-white/60' : 'text-black/60'}`}>
@@ -173,23 +173,6 @@ const Help = () => {
                             </button>
                         </div>
                     </form>
-                </div>
-
-                {/* Support Channels */}
-                <div className="grid grid-cols-2 gap-3">
-                    {supportChannels.map((channel, i) => (
-                        <a
-                            key={i}
-                            href={channel.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={`glass-card p-4 transition-all block ${channel.color}`}
-                        >
-                            <div className="mb-3">{channel.icon}</div>
-                            <h3 className="text-sm font-bold text-white mb-0.5">{channel.name}</h3>
-                            <p className="text-[10px] text-white/40">{channel.desc}</p>
-                        </a>
-                    ))}
                 </div>
 
                 <div className="text-center pb-10">

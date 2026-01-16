@@ -91,10 +91,12 @@ const AdminSupport = () => {
         }
     };
 
-    const filteredConversations = conversations.filter(conv =>
-        conv.userInfo.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        conv.userInfo.phone.includes(searchTerm)
-    );
+    const filteredConversations = conversations.filter(conv => {
+        const fullName = conv.userInfo?.fullName || '';
+        const phone = conv.userInfo?.phone || '';
+        return fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            phone.includes(searchTerm);
+    });
 
     return (
         <div className="h-[calc(100vh-160px)] flex flex-col md:flex-row gap-6">
@@ -181,8 +183,8 @@ const AdminSupport = () => {
                             {messages.map((msg, i) => (
                                 <div key={i} className={`flex ${msg.isAdmin ? 'justify-end' : 'justify-start'}`}>
                                     <div className={`max-w-[70%] rounded-2xl px-4 py-2.5 text-sm ${msg.isAdmin
-                                            ? 'bg-primary text-black font-medium rounded-tr-none'
-                                            : 'bg-dark-300 text-white rounded-tl-none border border-white/5'
+                                        ? 'bg-primary text-black font-medium rounded-tr-none'
+                                        : 'bg-dark-300 text-white rounded-tl-none border border-white/5'
                                         }`}>
                                         <p className="leading-relaxed">{msg.message}</p>
                                         <div className={`text-[9px] mt-1 opacity-50 flex items-center gap-1 ${msg.isAdmin ? 'text-black/60' : 'text-white/60'}`}>
