@@ -97,7 +97,12 @@ router.get('/admin/messages/:userId', authMiddleware, async (req, res) => {
             return res.status(403).json({ message: 'Access denied' });
         }
 
-        const messages = await SupportMessage.find({ userId: req.params.userId })
+        const { userId } = req.params;
+        if (!userId || userId === 'undefined' || !userId.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({ message: 'Invalid User ID' });
+        }
+
+        const messages = await SupportMessage.find({ userId })
             .sort({ createdAt: 1 });
         res.json(messages);
     } catch (error) {
