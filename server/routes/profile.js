@@ -50,7 +50,7 @@ router.post('/upload', authMiddleware, upload.single('image'), async (req, res) 
         const imagePath = `/uploads/profile/${req.file.filename}`;
 
         const user = await User.findByIdAndUpdate(
-            req.user._id,
+            req.userId,
             { profileImage: imagePath },
             { new: true }
         ).select('-password');

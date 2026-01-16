@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import Deposit from './pages/Deposit';
 import Lend from './pages/Lend';
 import Income from './pages/Income';
+import LendFunding from './pages/LendFunding';
 import Me from './pages/Me';
 import AdminLayout from './components/AdminLayout';
 import AdminLogin from './pages/AdminLogin';
@@ -78,6 +79,7 @@ function App() {
             <Route path="/deposit" element={<ProtectedRoute><Deposit /></ProtectedRoute>} />
             <Route path="/withdraw" element={<ProtectedRoute><Withdraw /></ProtectedRoute>} />
             <Route path="/lend" element={<ProtectedRoute><Lend /></ProtectedRoute>} />
+            <Route path="/lend-funding" element={<ProtectedRoute><LendFunding /></ProtectedRoute>} />
             <Route path="/income" element={<ProtectedRoute><Income /></ProtectedRoute>} />
             <Route path="/me" element={<ProtectedRoute><Me /></ProtectedRoute>} />
             <Route path="/market" element={<ProtectedRoute><Market /></ProtectedRoute>} />

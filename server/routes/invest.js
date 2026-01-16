@@ -10,7 +10,7 @@ const router = express.Router();
 // Get all investment packages
 router.get('/packages', authMiddleware, async (req, res) => {
     try {
-        const user = await User.findById(req.user.userId);
+        const user = await User.findById(req.userId);
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -26,6 +26,24 @@ router.get('/packages', authMiddleware, async (req, res) => {
         res.json(packages);
     } catch (error) {
         console.error('Get packages error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Get user's investment history (Lend Funding)
+router.get('/my-investments', authMiddleware, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Return investments sorted by date (newest first)
+        const investments = user.investments.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+
+        res.json(investments);
+    } catch (error) {
+        console.error('Get my investments error:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });
@@ -51,7 +69,7 @@ router.post('/create', authMiddleware, async (req, res) => {
             });
         }
 
-        const user = await User.findById(req.user.userId);
+        const user = await User.findById(req.userId);
         if (user.balance < amount) {
             return res.status(400).json({ message: 'Insufficient balance' });
         }
