@@ -7,12 +7,12 @@ const router = express.Router();
 // Get all notifications for user
 router.get('/', authMiddleware, async (req, res) => {
     try {
-        const notifications = await Notification.find({ userId: req.user._id })
+        const notifications = await Notification.find({ userId: req.userId })
             .sort({ createdAt: -1 })
             .limit(50);
 
         const unreadCount = await Notification.countDocuments({
-            userId: req.user._id,
+            userId: req.userId,
             status: 'unread'
         });
 
@@ -29,7 +29,7 @@ router.get('/', authMiddleware, async (req, res) => {
 router.put('/read-all', authMiddleware, async (req, res) => {
     try {
         await Notification.updateMany(
-            { userId: req.user._id, status: 'unread' },
+            { userId: req.userId, status: 'unread' },
             { status: 'read' }
         );
         res.json({ message: 'All notifications marked as read' });
@@ -42,7 +42,7 @@ router.put('/read-all', authMiddleware, async (req, res) => {
 router.put('/:id/read', authMiddleware, async (req, res) => {
     try {
         const notification = await Notification.findOneAndUpdate(
-            { _id: req.params.id, userId: req.user._id },
+            { _id: req.params.id, userId: req.userId },
             { status: 'read' },
             { new: true }
         );
@@ -60,7 +60,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     try {
         const notification = await Notification.findOneAndDelete({
             _id: req.params.id,
-            userId: req.user._id
+            userId: req.userId
         });
         if (!notification) {
             return res.status(404).json({ message: 'Notification not found' });
