@@ -133,7 +133,9 @@ const Home = () => {
                             className="relative p-2 text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full"
                         >
                             <Bell size={20} />
-                            {/* Unread count dot could be dynamic later */}
+                            {stats?.unreadNotifications > 0 && (
+                                <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-dark-200 animate-pulse"></span>
+                            )}
                         </button>
                         <button
                             onClick={() => navigate('/help')}
