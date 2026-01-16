@@ -23,8 +23,8 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
         fetch(event.request)
             .then((response) => {
-                // If network request succeeds, update the cache
-                if (response && response.status === 200 && response.type === 'basic') {
+                // Only cache GET requests (Cache API doesn't support POST, PUT, etc.)
+                if (event.request.method === 'GET' && response && response.status === 200 && response.type === 'basic') {
                     const responseToCache = response.clone();
                     caches.open(CACHE_NAME).then((cache) => {
                         cache.put(event.request, responseToCache);
