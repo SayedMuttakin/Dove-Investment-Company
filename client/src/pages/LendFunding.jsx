@@ -45,14 +45,16 @@ const LendFunding = () => {
     return (
         <div className="min-h-screen bg-dark-300 pb-6">
             {/* Header */}
-            <div className="bg-dark-200 border-b border-white/10 sticky top-0 z-10 px-4 py-4 flex items-center gap-3 shadow-lg">
-                <button
-                    onClick={() => navigate(-1)}
-                    className="p-2 -ml-2 text-white/60 hover:text-white hover:bg-white/5 rounded-full transition-colors"
-                >
-                    <ArrowLeft size={20} />
-                </button>
-                <h1 className="text-white font-bold text-lg flex-1">My Investments</h1>
+            <div className="bg-dark-200 border-b border-white/10 sticky top-0 z-10 shadow-lg">
+                <div className="max-w-md mx-auto px-4 py-4 relative flex items-center justify-center">
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="absolute left-4 p-2 text-white/60 hover:text-white hover:bg-white/5 rounded-full transition-colors"
+                    >
+                        <ArrowLeft size={20} />
+                    </button>
+                    <h1 className="text-white font-bold text-lg">My Investments</h1>
+                </div>
             </div>
 
             {/* Content */}
@@ -82,8 +84,8 @@ const LendFunding = () => {
                             <div key={index} className={`glass-card p-4 relative overflow-hidden ${isCompleted ? 'opacity-80' : ''}`}>
                                 {/* Status Badge */}
                                 <div className={`absolute top-0 right-0 px-3 py-1 text-[10px] font-bold rounded-bl-xl border-l border-b border-white/10 ${isCompleted
-                                        ? 'bg-green-500/20 text-green-400'
-                                        : 'bg-primary/20 text-primary'
+                                    ? 'bg-green-500/20 text-green-400'
+                                    : 'bg-primary/20 text-primary'
                                     }`}>
                                     {isCompleted ? 'COMPLETED' : 'ACTIVE'}
                                 </div>
