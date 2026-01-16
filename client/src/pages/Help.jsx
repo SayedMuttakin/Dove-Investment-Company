@@ -116,17 +116,8 @@ const Help = () => {
             </div>
 
             <div className="max-w-md mx-auto px-4 pt-6 space-y-6">
-                {/* Hero Section */}
-                <div className="bg-gradient-to-br from-primary/20 to-dark-200 rounded-3xl p-6 border border-white/5 text-center">
-                    <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <HelpCircle size={32} className="text-primary" />
-                    </div>
-                    <h2 className="text-xl font-black text-white mb-2">How can we help?</h2>
-                    <p className="text-sm text-white/60">Find answers to frequently asked questions or contact our team.</p>
-                </div>
-
                 {/* Live Chat Section */}
-                <div className="glass-card rounded-[2rem] overflow-hidden flex flex-col h-[500px] border border-white/5 bg-black/20">
+                <div className="glass-card rounded-[2rem] overflow-hidden flex flex-col h-[550px] border border-white/5 bg-black/20 shadow-2xl">
                     <div className="bg-white/5 px-6 py-4 border-b border-white/5 flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary">
                             <Shield size={16} />
@@ -142,7 +133,7 @@ const Help = () => {
                         {messages.length === 0 ? (
                             <div className="h-full flex flex-col items-center justify-center text-center opacity-40 py-10">
                                 <MessageCircle size={40} className="mb-2" />
-                                <p className="text-xs">No messages yet. Send a message to start chatting with support.</p>
+                                <p className="text-xs px-10">No messages yet. Send a message to start chatting with support.</p>
                             </div>
                         ) : (
                             messages.map((msg, i) => (
@@ -170,7 +161,7 @@ const Help = () => {
                                 value={newMessage}
                                 onChange={(e) => setNewMessage(e.target.value)}
                                 placeholder="Write a message..."
-                                className="w-full bg-dark-300 border border-white/10 rounded-full py-3 px-5 pr-12 text-sm text-white placeholder:text-white/20 focus:outline-none focus:border-primary/50 transition-all"
+                                className="w-full bg-dark-300 border border-white/10 rounded-full py-3 px-5 pr-12 text-sm text-white focus:outline-none focus:border-primary/50 transition-all"
                             />
                             <button
                                 type="submit"
@@ -199,44 +190,6 @@ const Help = () => {
                             <p className="text-[10px] text-white/40">{channel.desc}</p>
                         </a>
                     ))}
-                </div>
-
-                {/* Quick Guides */}
-                <div>
-                    <h3 className="text-white/60 text-[10px] font-bold uppercase tracking-widest mb-3 px-1">Quick Guides</h3>
-                    <div className="space-y-2">
-                        <button className="w-full glass-card p-4 flex items-center justify-between group">
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-cyan-400/10 flex items-center justify-center text-cyan-400">
-                                    <PlayCircle size={18} />
-                                </div>
-                                <span className="text-sm font-medium text-white/80">Platform Overview</span>
-                            </div>
-                            <ChevronRight size={16} className="text-white/20 group-hover:text-primary transition-colors" />
-                        </button>
-                        <button className="w-full glass-card p-4 flex items-center justify-between group">
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-purple-400/10 flex items-center justify-center text-purple-400">
-                                    <ShieldCheck size={18} />
-                                </div>
-                                <span className="text-sm font-medium text-white/80">Safety & Security</span>
-                            </div>
-                            <ChevronRight size={16} className="text-white/20 group-hover:text-primary transition-colors" />
-                        </button>
-                    </div>
-                </div>
-
-                {/* FAQ Section */}
-                <div>
-                    <h3 className="text-white/60 text-[10px] font-bold uppercase tracking-widest mb-3 px-1">Common Questions</h3>
-                    <div className="space-y-3">
-                        {faqs.map((faq, i) => (
-                            <div key={i} className="glass-card p-4">
-                                <h4 className="text-sm font-bold text-white mb-2">{faq.q}</h4>
-                                <p className="text-xs text-white/60 leading-relaxed">{faq.a}</p>
-                            </div>
-                        ))}
-                    </div>
                 </div>
 
                 <div className="text-center pb-10">
