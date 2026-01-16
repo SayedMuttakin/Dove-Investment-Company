@@ -18,6 +18,7 @@ import AdminPackages from './pages/admin/AdminPackages';
 import AdminWithdrawals from './pages/admin/AdminWithdrawals';
 import AdminSettings from './pages/admin/AdminSettings';
 import AdminReports from './pages/admin/AdminReports';
+import AdminSupport from './pages/admin/AdminSupport';
 import WalletPage from './pages/Wallet';
 import Notifications from './pages/Notifications';
 import Help from './pages/Help';
@@ -98,6 +99,7 @@ function App() {
                 <Route path="withdrawals" element={<AdminWithdrawals />} />
                 <Route path="settings" element={<AdminSettings />} />
                 <Route path="reports" element={<AdminReports />} />
+                <Route path="support" element={<AdminSupport />} />
             </Route>
 
             {/* Default Route */}

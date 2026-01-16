@@ -91,7 +91,7 @@ const Notifications = () => {
         <div className="min-h-screen bg-dark-300 pb-20">
             {/* Header */}
             <div className="sticky top-0 z-50 bg-dark-200/80 backdrop-blur-md border-b border-white/5 py-4 px-4 shadow-lg">
-                <div className="flex items-center justify-between">
+                <div className="max-w-md mx-auto flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <button
                             onClick={() => navigate(-1)}

@@ -15,6 +15,7 @@ import homeRoutes from './routes/home.js';
 import commissionRoutes from './routes/commission.js';
 import notificationRoutes from './routes/notification.js';
 import profileRoutes from './routes/profile.js';
+import supportRoutes from './routes/support.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -51,6 +52,7 @@ app.use('/api/home', homeRoutes);
 app.use('/api/commission', commissionRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/profile', profileRoutes);
+app.use('/api/support', supportRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
