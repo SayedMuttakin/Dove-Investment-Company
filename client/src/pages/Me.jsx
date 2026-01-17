@@ -29,6 +29,10 @@ const Me = () => {
     const [uploading, setUploading] = React.useState(false);
     const fileInputRef = React.useRef(null);
 
+    React.useEffect(() => {
+        console.log('Current User Data in Me.jsx:', user);
+    }, [user]);
+
     const handleImageUpload = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -198,7 +202,7 @@ const Me = () => {
                                         ID: {user?.memberId || 'N/A'}
                                     </span>
                                     <span className="text-white/40 text-[10px] font-medium leading-tight">
-                                        {user?.fullName || 'User'}
+                                        {user?.fullName || user?.phone || 'User'}
                                     </span>
                                 </div>
                             </div>

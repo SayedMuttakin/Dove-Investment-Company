@@ -193,6 +193,7 @@ router.get('/me', authMiddleware, async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
+        console.log(`[Auth] /me called for ${user.phone}. memberId: ${user.memberId}`);
 
         // Calculate Referral Stats (Gen 1 + Gen 2)
         // 1. Direct Referrals (Gen 1)
