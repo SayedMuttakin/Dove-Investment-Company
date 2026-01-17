@@ -63,6 +63,7 @@ router.post('/register', async (req, res) => {
                 phone: user.phone,
                 fullName: user.fullName,
                 invitationCode: user.invitationCode,
+                memberId: user.memberId,
                 balance: user.balance,
                 totalEarnings: user.totalEarnings
             }

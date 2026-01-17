@@ -202,7 +202,7 @@ const Me = () => {
                                         ID: {user?.memberId || 'N/A'}
                                     </span>
                                     <span className="text-white/40 text-[10px] font-medium leading-tight">
-                                        {user?.fullName || user?.phone || 'User'}
+                                        User : {user?.fullName || user?.phone || 'User'}
                                     </span>
                                 </div>
                             </div>
