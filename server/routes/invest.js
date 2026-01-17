@@ -115,8 +115,8 @@ router.post('/create', authMiddleware, async (req, res) => {
 
         // Distribute team commissions to upline users
         try {
-            await distributeCommissions(user, selectedPackage.price);
-            console.log(`✅ Commissions distributed for investment of $${selectedPackage.price}`);
+            await distributeCommissions(user, amount);
+            console.log(`✅ Commissions distributed for investment of $${amount}`);
         } catch (commissionError) {
             console.error('Commission distribution error:', commissionError);
             // Don't fail the investment if commission fails

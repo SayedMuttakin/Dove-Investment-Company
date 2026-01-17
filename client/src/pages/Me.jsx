@@ -210,25 +210,29 @@ const Me = () => {
                         </div>
                     </div>
 
-                    {/* Stats */}
-                    <div className="flex gap-2">
-                        <div className="glass-card p-2 flex-1">
-                            <div className="text-white/60 text-[8px] mb-0.5">Balance</div>
-                            <div className="text-white font-bold text-xs">${user?.balance?.toFixed(2) || '0.00'}</div>
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-4 gap-1.5">
+                        <div className="glass-card p-2">
+                            <div className="text-white/40 text-[7px] uppercase mb-0.5">Balance</div>
+                            <div className="text-white font-bold text-[10px]">${user?.balance?.toFixed(2) || '0.00'}</div>
                         </div>
-                        <div className="glass-card p-2 flex-1">
-                            <div className="text-white/60 text-[8px] mb-0.5">Team</div>
-                            <div className="text-white font-bold text-xs">{currentTeam}</div>
+                        <div className="glass-card p-2">
+                            <div className="text-white/40 text-[7px] uppercase mb-0.5">Team</div>
+                            <div className="text-white font-bold text-[10px]">{currentTeam}</div>
+                        </div>
+                        <div className="glass-card p-2">
+                            <div className="text-white/40 text-[7px] uppercase mb-0.5">Direct</div>
+                            <div className="text-white font-bold text-[10px]">{user?.stats?.directReferrals || 0}</div>
                         </div>
                         <div
                             onClick={() => navigate('/lend-funding')}
-                            className="glass-card p-2 flex-1 cursor-pointer hover:bg-white/5 transition-colors"
+                            className="glass-card p-2 cursor-pointer hover:bg-white/5 transition-colors border-primary/20"
                         >
-                            <div className="text-white/60 text-[8px] mb-0.5 flex items-center gap-1">
+                            <div className="text-primary/60 text-[7px] uppercase mb-0.5 flex items-center gap-1">
                                 <Briefcase size={8} />
-                                Lend Funding
+                                Funding
                             </div>
-                            <div className="text-primary font-bold text-[10px]">View Details</div>
+                            <div className="text-primary font-bold text-[9px] whitespace-nowrap">Details</div>
                         </div>
                     </div>
                 </div>
