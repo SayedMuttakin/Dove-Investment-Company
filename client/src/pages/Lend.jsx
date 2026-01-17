@@ -314,12 +314,17 @@ const Lend = () => {
                                         )}
                                         <button
                                             onClick={() => {
+                                                if (activeCount > 0) return;
                                                 setShowInvestModal(pkg);
                                                 setInvestAmount(pkg.minAmount.toString());
                                             }}
-                                            className="relative z-10 w-full py-3 rounded-lg font-bold text-sm transition-all text-black bg-gradient-to-r from-primary to-secondary hover:shadow-glow-lg active:scale-[0.98]"
+                                            disabled={activeCount > 0}
+                                            className={`relative z-10 w-full py-3 rounded-lg font-bold text-sm transition-all active:scale-[0.98] ${activeCount > 0
+                                                    ? 'bg-white/5 text-white/20 cursor-not-allowed border border-white/5'
+                                                    : 'text-black bg-gradient-to-r from-primary to-secondary hover:shadow-glow-lg'
+                                                }`}
                                         >
-                                            {activeCount > 0 ? 'Lend Again' : 'Details'}
+                                            {activeCount > 0 ? 'Active Plan' : 'Details'}
                                         </button>
                                     </div>
                                 </div>

@@ -70,6 +70,18 @@ router.post('/create', authMiddleware, async (req, res) => {
         }
 
         const user = await User.findById(req.userId);
+
+        // Check for existing active investment of the same package
+        const hasActivePackage = user.investments.some(inv =>
+            inv.package.name === pkg.name && inv.status === 'active'
+        );
+
+        if (hasActivePackage) {
+            return res.status(400).json({
+                message: `You already have an active investment for ${pkg.name}. Please wait for it to mature before investing again.`
+            });
+        }
+
         if (user.balance < amount) {
             return res.status(400).json({ message: 'Insufficient balance' });
         }
