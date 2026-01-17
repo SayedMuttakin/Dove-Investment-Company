@@ -211,7 +211,7 @@ const Me = () => {
                     </div>
 
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-4 gap-1.5">
+                    <div className="grid grid-cols-3 gap-1.5">
                         <div className="glass-card p-2">
                             <div className="text-white/40 text-[7px] uppercase mb-0.5">Balance</div>
                             <div className="text-white font-bold text-[10px]">${user?.balance?.toFixed(2) || '0.00'}</div>
@@ -219,10 +219,6 @@ const Me = () => {
                         <div className="glass-card p-2">
                             <div className="text-white/40 text-[7px] uppercase mb-0.5">Team</div>
                             <div className="text-white font-bold text-[10px]">{currentTeam}</div>
-                        </div>
-                        <div className="glass-card p-2">
-                            <div className="text-white/40 text-[7px] uppercase mb-0.5">Direct</div>
-                            <div className="text-white font-bold text-[10px]">{user?.stats?.directReferrals || 0}</div>
                         </div>
                         <div
                             onClick={() => navigate('/lend-funding')}
@@ -279,7 +275,7 @@ const Me = () => {
                                         {/* Status Badge Overlay */}
                                         <div className="absolute bottom-3 right-3">
                                             <div className="inline-flex bg-black/60 px-2.5 py-0.5 rounded text-[#a4f13a] text-[9px] font-bold tracking-wider uppercase backdrop-blur-sm">
-                                                {isCompleted ? 'Unlocked Zone' : isCurrentLevel ? 'Current Zone' : 'Locked Zone'}
+                                                {isCurrentLevel ? 'Unlocked Zone' : 'Locked Zone'}
                                             </div>
                                         </div>
                                     </div>
@@ -287,6 +283,10 @@ const Me = () => {
                                     {/* Stats & Actions Panel (Below the banner - Same Width) */}
                                     <div className={`bg-dark-200 border-2 border-t-0 rounded-b-2xl p-4 pt-4 relative z-0 ${isCurrentLevel ? 'border-[#a4f13a] shadow-[0_10px_20px_rgba(164,241,58,0.1)]' : 'border-white/10'
                                         }`}>
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <span className="text-white font-bold text-xs">VIP Level {level.to}</span>
+                                            {!isCurrentLevel && <Shield size={12} className="text-white/20" />}
+                                        </div>
 
                                         {/* Progress Bar (if active) */}
                                         {isCurrentLevel && (
@@ -370,13 +370,14 @@ const Me = () => {
 
                                         {/* Action Button */}
                                         <button
-                                            onClick={() => navigate('/lend', { state: { viewLevel: level.from } })}
+                                            onClick={() => isCurrentLevel && navigate('/lend', { state: { viewLevel: level.from } })}
+                                            disabled={!isCurrentLevel}
                                             className={`w-full py-3 rounded-lg font-black text-xs tracking-wider uppercase shadow-lg transition-all ${isCurrentLevel
                                                 ? 'bg-gradient-to-r from-[#a4f13a] to-[#82c91e] text-black hover:shadow-[#a4f13a]/20 active:scale-[0.98]'
-                                                : 'bg-white/10 text-white hover:bg-white/20 active:scale-[0.98] border border-white/10'
+                                                : 'bg-white/5 text-white/20 cursor-not-allowed border border-white/5'
                                                 }`}
                                         >
-                                            {isCurrentLevel ? 'Details & Upgrade' : 'Details'}
+                                            {isCurrentLevel ? 'Details & Upgrade' : 'Locked'}
                                         </button>
                                     </div>
                                 </div>

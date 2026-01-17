@@ -202,15 +202,17 @@ router.get('/me', authMiddleware, async (req, res) => {
         // Auto-Upgrade Logic (Check from highest level down)
         let newLevel = user.vipLevel;
 
-        if (directCount >= 30 && teamCount >= 90) {
+        if (directCount >= 120) {
+            newLevel = 6;
+        } else if (directCount >= 90) {
             newLevel = 5;
-        } else if (directCount >= 24 && teamCount >= 72) {
+        } else if (directCount >= 72) {
             newLevel = 4;
-        } else if (directCount >= 16 && teamCount >= 48) {
+        } else if (directCount >= 48) {
             newLevel = 3;
-        } else if (directCount >= 8 && teamCount >= 24) {
+        } else if (directCount >= 24) {
             newLevel = 2;
-        } else if (directCount >= 4 && teamCount >= 12) {
+        } else if (directCount >= 12) {
             newLevel = 1;
         }
 
