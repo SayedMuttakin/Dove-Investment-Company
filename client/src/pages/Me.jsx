@@ -192,9 +192,14 @@ const Me = () => {
                                 />
                             </div>
                             <div>
-                                <h1 className="text-white font-black text-lg tracking-tight">{user?.fullName || user?.phone || 'User'}</h1>
-                                <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r ${vipBadge.color} ${vipBadge.textColor} mt-0.5`}>
-                                    {vipBadge.name}
+                                <h1 className="text-white font-black text-lg tracking-tight">Dove</h1>
+                                <div className="flex flex-col mt-0.5">
+                                    <span className="text-white/60 text-[11px] font-bold uppercase tracking-wider">
+                                        ID: {user?.memberId || 'N/A'}
+                                    </span>
+                                    <span className="text-white/40 text-[10px] font-medium leading-tight">
+                                        {user?.fullName || 'User'}
+                                    </span>
                                 </div>
                             </div>
                         </div>

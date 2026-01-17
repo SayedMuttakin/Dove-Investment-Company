@@ -33,13 +33,17 @@ router.post('/register', async (req, res) => {
         // Generate unique invitation code for new user
         const newInvitationCode = await User.generateInvitationCode();
 
+        // Get total users to assign next memberId
+        const userCount = await User.countDocuments();
+
         // Create user
         const user = new User({
             phone,
             fullName,
             password: hashedPassword,
             invitationCode: newInvitationCode,
-            referredBy
+            referredBy,
+            memberId: userCount + 1
         });
 
         await user.save();
@@ -121,6 +125,7 @@ router.post('/login', async (req, res) => {
                 phone: user.phone,
                 fullName: user.fullName,
                 invitationCode: user.invitationCode,
+                memberId: user.memberId,
                 balance: user.balance,
                 totalEarnings: user.totalEarnings,
                 investments: user.investments,
@@ -226,6 +231,7 @@ router.get('/me', authMiddleware, async (req, res) => {
             id: user._id,
             phone: user.phone,
             fullName: user.fullName,
+            memberId: user.memberId,
             invitationCode: user.invitationCode,
             balance: user.balance,
             totalEarnings: user.totalEarnings,

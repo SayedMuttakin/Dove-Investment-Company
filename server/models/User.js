@@ -62,6 +62,11 @@ const userSchema = new mongoose.Schema({
         unique: true,
         trim: true
     },
+    memberId: {
+        type: Number,
+        unique: true,
+        sparse: true // Allows existing users to have null until migration
+    },
     fullName: {
         type: String,
         default: null,
