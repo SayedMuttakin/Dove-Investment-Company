@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeft, Wallet, AlertCircle, Bell, HelpCircle, CheckCircle2, Lock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { toast } from 'react-toastify';
 
 const Withdraw = () => {
     const navigate = useNavigate();
@@ -16,7 +17,6 @@ const Withdraw = () => {
     });
 
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState({ type: '', text: '' });
 
     const methods = [
         { id: 'trc20', name: 'USDT (TRC20)', logo: 'https://cryptologos.cc/logos/tether-usdt-logo.png' },
@@ -34,7 +34,6 @@ const Withdraw = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        setMessage({ type: '', text: '' });
 
         try {
             const token = localStorage.getItem('token');
@@ -52,13 +51,10 @@ const Withdraw = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            setMessage({ type: 'success', text: 'Withdrawal request submitted successfully!' });
+            toast.success('Withdrawal request submitted successfully!');
             setTimeout(() => navigate('/me'), 2000);
         } catch (error) {
-            setMessage({
-                type: 'error',
-                text: error.response?.data?.message || 'Failed to submit request'
-            });
+            toast.error(error.response?.data?.message || 'Failed to submit request');
         } finally {
             setLoading(false);
         }
@@ -97,13 +93,7 @@ const Withdraw = () => {
                     </div>
                 </div>
 
-                {message.text && (
-                    <div className={`p-4 rounded-xl flex items-center gap-3 animate-slide-up ${message.type === 'success' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'
-                        }`}>
-                        {message.type === 'success' ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
-                        <span className="text-sm font-medium">{message.text}</span>
-                    </div>
-                )}
+
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Amount */}

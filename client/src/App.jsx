@@ -23,6 +23,8 @@ import AdminSupport from './pages/admin/AdminSupport';
 import WalletPage from './pages/Wallet';
 import Notifications from './pages/Notifications';
 import Help from './pages/Help';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Restoring Placeholder components
 const Market = () => <div className="min-h-screen bg-dark-300 text-white flex items-center justify-center"><h1 className="text-2xl">Market Page - Coming Soon</h1></div>;
@@ -69,45 +71,59 @@ const AdminRoute = ({ children }) => {
 
 function App() {
     return (
-        <Routes>
-            {/* Public Routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+        <>
+            <Routes>
+                {/* Public Routes */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
 
-            {/* Protected User Routes */}
-            <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
-            <Route path="/deposit" element={<ProtectedRoute><Deposit /></ProtectedRoute>} />
-            <Route path="/withdraw" element={<ProtectedRoute><Withdraw /></ProtectedRoute>} />
-            <Route path="/lend" element={<ProtectedRoute><Lend /></ProtectedRoute>} />
-            <Route path="/lend-funding" element={<ProtectedRoute><LendFunding /></ProtectedRoute>} />
-            <Route path="/income" element={<ProtectedRoute><Income /></ProtectedRoute>} />
-            <Route path="/me" element={<ProtectedRoute><Me /></ProtectedRoute>} />
-            <Route path="/market" element={<ProtectedRoute><Market /></ProtectedRoute>} />
-            <Route path="/wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
-            <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
-            <Route path="/mine" element={<ProtectedRoute><Mine /></ProtectedRoute>} />
-            <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
-            <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
+                {/* Protected User Routes */}
+                <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+                <Route path="/deposit" element={<ProtectedRoute><Deposit /></ProtectedRoute>} />
+                <Route path="/withdraw" element={<ProtectedRoute><Withdraw /></ProtectedRoute>} />
+                <Route path="/lend" element={<ProtectedRoute><Lend /></ProtectedRoute>} />
+                <Route path="/lend-funding" element={<ProtectedRoute><LendFunding /></ProtectedRoute>} />
+                <Route path="/income" element={<ProtectedRoute><Income /></ProtectedRoute>} />
+                <Route path="/me" element={<ProtectedRoute><Me /></ProtectedRoute>} />
+                <Route path="/market" element={<ProtectedRoute><Market /></ProtectedRoute>} />
+                <Route path="/wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
+                <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
+                <Route path="/mine" element={<ProtectedRoute><Mine /></ProtectedRoute>} />
+                <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+                <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
 
-            {/* Admin Login */}
-            <Route path="/admin/login" element={<AdminLogin />} />
+                {/* Admin Login */}
+                <Route path="/admin/login" element={<AdminLogin />} />
 
-            {/* Protected Admin Routes */}
-            <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
-                <Route index element={<AdminDashboard />} />
-                <Route path="deposits" element={<AdminDeposits />} />
-                <Route path="users" element={<AdminUsers />} />
-                <Route path="packages" element={<AdminPackages />} />
-                <Route path="withdrawals" element={<AdminWithdrawals />} />
-                <Route path="settings" element={<AdminSettings />} />
-                <Route path="reports" element={<AdminReports />} />
-                <Route path="support" element={<AdminSupport />} />
-            </Route>
+                {/* Protected Admin Routes */}
+                <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
+                    <Route index element={<AdminDashboard />} />
+                    <Route path="deposits" element={<AdminDeposits />} />
+                    <Route path="users" element={<AdminUsers />} />
+                    <Route path="packages" element={<AdminPackages />} />
+                    <Route path="withdrawals" element={<AdminWithdrawals />} />
+                    <Route path="settings" element={<AdminSettings />} />
+                    <Route path="reports" element={<AdminReports />} />
+                    <Route path="support" element={<AdminSupport />} />
+                </Route>
 
-            {/* Default Route */}
-            <Route path="/" element={<Navigate to="/home" replace />} />
-            <Route path="*" element={<Navigate to="/home" replace />} />
-        </Routes>
+                {/* Default Route */}
+                <Route path="/" element={<Navigate to="/home" replace />} />
+                <Route path="*" element={<Navigate to="/home" replace />} />
+            </Routes>
+            <ToastContainer
+                position="bottom-right"
+                autoClose={3000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+            />
+        </>
     );
 }
 

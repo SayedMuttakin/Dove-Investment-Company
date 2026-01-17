@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import axios from 'axios';
 import { usePWA } from '../hooks/usePWA';
+import { toast } from 'react-toastify';
 
 const Me = () => {
     const navigate = useNavigate();
@@ -49,12 +50,12 @@ const Me = () => {
             if (updateUserInfo) {
                 updateUserInfo({ profileImage: res.data.user.profileImage });
             }
-            alert('Profile updated successfully!');
+            toast.success('Profile updated successfully!');
             // Refresh page to show new image (or just let context update if it does)
-            window.location.reload();
+            setTimeout(() => window.location.reload(), 1500);
         } catch (error) {
             console.error('Upload error:', error);
-            alert(error.response?.data?.message || 'Failed to upload image');
+            toast.error(error.response?.data?.message || 'Failed to upload image');
         } finally {
             setUploading(false);
         }
@@ -75,7 +76,7 @@ const Me = () => {
     const copyInvitationCode = () => {
         const referralLink = `${window.location.origin}/register?ref=${user?.invitationCode || ''}`;
         navigator.clipboard.writeText(referralLink);
-        alert('Referral link copied! Share this link with your friends.');
+        toast.info('Referral link copied!');
     };
 
     const getVIPBadge = (level) => {

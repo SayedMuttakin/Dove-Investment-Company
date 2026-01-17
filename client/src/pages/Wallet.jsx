@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { HelpCircle, ArrowUpRight, ArrowDownLeft, Bell } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
 import BottomNav from '../components/BottomNav';
 import PinModal from '../components/PinModal';
@@ -51,11 +52,11 @@ const WalletPage = () => {
             if (response.data.success) {
                 // Refresh assets data
                 fetchAssets();
-                alert(`Successfully redeemed ${response.data.redeemed} USDT to your balance.`);
+                toast.success(`Successfully redeemed ${response.data.redeemed} USDT to your balance.`);
             }
         } catch (error) {
             console.error('Redeem error:', error);
-            alert(error.response?.data?.message || 'Failed to redeem assets');
+            toast.error(error.response?.data?.message || 'Failed to redeem assets');
         }
     };
 

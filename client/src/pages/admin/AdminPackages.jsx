@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Package, Plus, Edit2, Trash2, CheckCircle, XCircle, Upload } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const AdminPackages = () => {
     const [packages, setPackages] = useState([]);
@@ -56,9 +57,10 @@ const AdminPackages = () => {
             setEditingPackage(null);
             fetchPackages();
             resetForm();
+            toast.success(editingPackage ? 'Package updated' : 'Package created');
         } catch (error) {
             console.error('Error saving package:', error);
-            alert('Failed to save package');
+            toast.error('Failed to save package');
         }
     };
 
@@ -78,9 +80,10 @@ const AdminPackages = () => {
                 }
             });
             setFormData(prev => ({ ...prev, image: res.data.url }));
+            toast.success('Image uploaded');
         } catch (error) {
             console.error('Upload failed:', error);
-            alert('Image upload failed');
+            toast.error('Image upload failed');
         }
     };
 

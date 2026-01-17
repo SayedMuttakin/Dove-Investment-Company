@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ArrowLeft, ChevronRight, ChevronDown, Wallet, Users, Gift, TrendingUp, CreditCard, Bell, HelpCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import BottomNav from '../components/BottomNav';
 
 const Income = () => {
@@ -53,15 +54,14 @@ const Income = () => {
             });
 
             if (response.data.success) {
-                // Show toast manually since we didn't import toast here yet, but let's just refresh for now
-                // Or better, add simple alert or status update
                 fetchIncome(); // Refresh data
-                // Reload page to update balance in global state (or use context if available here)
-                window.location.reload();
+                // Reload page to update balance in global state
+                toast.success('Income collected successfully!');
+                setTimeout(() => window.location.reload(), 1500);
             }
         } catch (error) {
             console.error('Collect error:', error);
-            // alert(error.response?.data?.message || 'Collection failed');
+            toast.error(error.response?.data?.message || 'Collection failed');
         } finally {
             setCollecting(false);
         }
@@ -229,7 +229,7 @@ const Income = () => {
                         <button
                             onClick={async () => {
                                 if (teamBenefits.count === 0) {
-                                    alert('No commissions to claim');
+                                    toast.info('No commissions to claim');
                                     return;
                                 }
                                 try {
@@ -237,10 +237,10 @@ const Income = () => {
                                     const res = await axios.post('/api/commission/claim', {}, {
                                         headers: { Authorization: `Bearer ${token}` }
                                     });
-                                    alert(`Claimed $${res.data.amount.toFixed(2)}!`);
+                                    toast.success(`Claimed $${res.data.amount.toFixed(2)}!`);
                                     fetchIncome();
                                 } catch (error) {
-                                    alert(error.response?.data?.message || 'Failed to claim');
+                                    toast.error(error.response?.data?.message || 'Failed to claim');
                                 }
                             }}
                             disabled={teamBenefits.count === 0}

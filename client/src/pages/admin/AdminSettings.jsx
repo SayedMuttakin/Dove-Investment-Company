@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Settings, Save, AlertCircle } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const AdminSettings = () => {
     const [settings, setSettings] = useState({
@@ -44,10 +45,10 @@ const AdminSettings = () => {
             await axios.put('/api/admin/settings', settings, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            alert('Settings updated successfully');
+            toast.success('Settings updated successfully');
         } catch (error) {
             console.error('Error updating settings:', error);
-            alert('Failed to update settings');
+            toast.error('Failed to update settings');
         }
     };
 

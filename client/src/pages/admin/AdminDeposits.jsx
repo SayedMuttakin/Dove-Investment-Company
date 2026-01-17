@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Check, X, Search, Filter } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const AdminDeposits = () => {
     const [deposits, setDeposits] = useState([]);
@@ -35,9 +36,9 @@ const AdminDeposits = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
             fetchDeposits(); // Refresh list
-            alert('Deposit approved successfully!');
+            toast.success('Deposit approved successfully!');
         } catch (error) {
-            alert(error.response?.data?.message || 'Approval failed');
+            toast.error(error.response?.data?.message || 'Approval failed');
         }
     };
 
@@ -49,9 +50,9 @@ const AdminDeposits = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
             fetchDeposits(); // Refresh list
-            alert('Deposit rejected.');
+            toast.success('Deposit rejected.');
         } catch (error) {
-            alert(error.response?.data?.message || 'Rejection failed');
+            toast.error(error.response?.data?.message || 'Rejection failed');
         }
     };
 

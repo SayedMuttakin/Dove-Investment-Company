@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Download, CheckCircle, XCircle, Clock, Search } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const AdminWithdrawals = () => {
     const [withdrawals, setWithdrawals] = useState([]);
@@ -41,10 +42,10 @@ const AdminWithdrawals = () => {
             );
 
             fetchWithdrawals();
-            alert('Withdrawal approved successfully');
+            toast.success('Withdrawal approved successfully');
         } catch (error) {
             console.error('Error approving withdrawal:', error);
-            alert(error.response?.data?.message || 'Failed to approve');
+            toast.error(error.response?.data?.message || 'Failed to approve');
         } finally {
             setProcessingId(null);
         }
@@ -65,7 +66,7 @@ const AdminWithdrawals = () => {
             fetchWithdrawals();
         } catch (error) {
             console.error('Error rejecting withdrawal:', error);
-            alert('Failed to reject');
+            toast.error('Failed to reject');
         } finally {
             setProcessingId(null);
         }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Edit2, Search } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 const AdminUsers = () => {
     const [users, setUsers] = useState([]);
@@ -49,10 +50,10 @@ const AdminUsers = () => {
             setShowModal(false);
             setEditingUser(null);
             fetchUsers();
-            alert('User updated successfully');
+            toast.success('User updated successfully');
         } catch (error) {
             console.error('Error updating user:', error);
-            alert('Failed to update user');
+            toast.error('Failed to update user');
         }
     };
 
