@@ -1,4 +1,5 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import Package from '../models/Package.js';
 import User from '../models/User.js';
 import { authMiddleware } from '../middleware/auth.js';
@@ -372,6 +373,59 @@ router.post('/redeem', authMiddleware, async (req, res) => {
     } catch (error) {
         console.error('Redeem error:', error);
         res.status(500).json({ message: 'Server error redeeming assets' });
+    }
+});
+
+// Get daily stats for income graph
+router.get('/daily-stats', authMiddleware, async (req, res) => {
+    try {
+        const userId = req.userId;
+        const now = new Date();
+        const sevenDaysAgo = new Date(now);
+        sevenDaysAgo.setDate(now.getDate() - 6);
+        sevenDaysAgo.setHours(0, 0, 0, 0);
+
+        // Aggregate income from notifications
+        const stats = await Notification.aggregate([
+            {
+                $match: {
+                    userId: new mongoose.Types.ObjectId(userId),
+                    type: { $in: ['investment', 'commission', 'bonus'] },
+                    createdAt: { $gte: sevenDaysAgo }
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        year: { $year: '$createdAt' },
+                        month: { $month: '$createdAt' },
+                        day: { $dayOfMonth: '$createdAt' }
+                    },
+                    total: { $sum: '$amount' }
+                }
+            },
+            { $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 } }
+        ]);
+
+        // Create an array for the last 7 days, filling gaps with 0
+        const result = [];
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(sevenDaysAgo);
+            date.setDate(sevenDaysAgo.getDate() + i);
+
+            const dayStat = stats.find(s =>
+                s._id.year === date.getFullYear() &&
+                s._id.month === (date.getMonth() + 1) &&
+                s._id.day === date.getDate()
+            );
+
+            result.push(dayStat ? dayStat.total : 0);
+        }
+
+        res.json(result);
+    } catch (error) {
+        console.error('Daily stats error:', error);
+        res.status(500).json({ message: 'Server error fetching stats' });
     }
 });
 

@@ -22,20 +22,25 @@ const Income = () => {
     const [loading, setLoading] = useState(false);
     const [collecting, setCollecting] = useState(false);
     const [teamBenefits, setTeamBenefits] = useState({ count: 0, totalAmount: 0 });
+    const [chartData, setChartData] = useState([0, 0, 0, 0, 0, 0, 0]);
 
     // Fetch income data
     const fetchIncome = async () => {
         try {
             const token = localStorage.getItem('token');
-            const [incomeRes, teamRes] = await Promise.all([
+            const [incomeRes, teamRes, statsRes] = await Promise.all([
                 axios.get('/api/invest/income', { headers: { Authorization: `Bearer ${token}` } }),
-                axios.get('/api/commission/unclaimed', { headers: { Authorization: `Bearer ${token}` } })
+                axios.get('/api/commission/unclaimed', { headers: { Authorization: `Bearer ${token}` } }),
+                axios.get('/api/invest/daily-stats', { headers: { Authorization: `Bearer ${token}` } })
             ]);
             setIncomeData(incomeRes.data);
             setTeamBenefits({
                 count: teamRes.data.count,
                 totalAmount: teamRes.data.totalAmount
             });
+            if (Array.isArray(statsRes.data)) {
+                setChartData(statsRes.data);
+            }
         } catch (error) {
             console.error('Fetch income error:', error);
         }
@@ -67,9 +72,8 @@ const Income = () => {
         }
     };
 
-    // Mock data for the chart
-    const chartData = [85, 84, 83, 85, 185, 85, 80];
-    const maxVal = Math.max(...chartData, 200);
+    // Use real data from backend for the chart
+    const maxVal = Math.max(...chartData, 10); // Minimum scale of 10 USDT
 
     // Generate SVG path for the area chart
     const generateChartPath = () => {
@@ -267,13 +271,13 @@ const Income = () => {
                     <div className="relative h-64 w-full">
                         {/* Y-axis labels */}
                         <div className="absolute left-0 top-0 bottom-0 w-8 flex flex-col justify-between text-[10px] text-gray-500 font-medium">
-                            <span>200</span>
-                            <span>180</span>
-                            <span>160</span>
-                            <span>140</span>
-                            <span>120</span>
-                            <span>100</span>
-                            <span>80</span>
+                            <span>{(maxVal).toFixed(0)}</span>
+                            <span>{(maxVal * 0.83).toFixed(0)}</span>
+                            <span>{(maxVal * 0.66).toFixed(0)}</span>
+                            <span>{(maxVal * 0.5).toFixed(0)}</span>
+                            <span>{(maxVal * 0.33).toFixed(0)}</span>
+                            <span>{(maxVal * 0.16).toFixed(0)}</span>
+                            <span>0</span>
                         </div>
 
                         {/* Chart Area */}
