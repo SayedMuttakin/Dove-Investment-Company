@@ -11,6 +11,8 @@ import multer from 'multer';
 import path from 'path';
 import AdminLog from '../models/AdminLog.js';
 import { createNotification } from '../utils/notifications.js';
+import { distributeCommissions } from '../utils/teamCommissions.js';
+import Commission from '../models/Commission.js';
 
 const router = express.Router();
 
@@ -410,6 +412,15 @@ router.post('/deposit/:id/approve', authMiddleware, adminMiddleware, async (req,
         });
 
         await user.save();
+
+        // Distribute team commissions for the deposit
+        try {
+            await distributeCommissions(user, deposit.amount);
+            console.log(`✅ Commissions distributed for deposit of $${deposit.amount} for user ${user._id}`);
+        } catch (commissionError) {
+            console.error('Commission distribution error:', commissionError);
+            // Don't fail the approval if commission fails
+        }
 
         // Notification: Deposit Approved
         await createNotification({
