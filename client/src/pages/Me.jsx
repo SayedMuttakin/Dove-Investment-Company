@@ -16,7 +16,8 @@ import {
     Camera,
     HelpCircle,
     Bell,
-    Briefcase
+    Briefcase,
+    History
 } from 'lucide-react';
 import axios from 'axios';
 import { usePWA } from '../hooks/usePWA';
@@ -226,9 +227,15 @@ const Me = () => {
                             <div className="text-white/40 text-[7px] uppercase mb-0.5">Balance</div>
                             <div className="text-white font-bold text-[10px]">${user?.balance?.toFixed(2) || '0.00'}</div>
                         </div>
-                        <div className="glass-card p-2">
-                            <div className="text-white/40 text-[7px] uppercase mb-0.5">Team</div>
-                            <div className="text-white font-bold text-[10px]">{currentTeam}</div>
+                        <div
+                            onClick={() => navigate('/history')}
+                            className="glass-card p-2 cursor-pointer hover:bg-white/5 transition-colors border-white/5"
+                        >
+                            <div className="text-white/40 text-[7px] uppercase mb-0.5 flex items-center gap-1">
+                                <History size={8} />
+                                History
+                            </div>
+                            <div className="text-white font-bold text-[10px]">View Detail</div>
                         </div>
                         <div
                             onClick={() => navigate('/lend-funding')}

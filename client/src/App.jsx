@@ -23,6 +23,7 @@ import AdminSupport from './pages/admin/AdminSupport';
 import WalletPage from './pages/Wallet';
 import Notifications from './pages/Notifications';
 import Help from './pages/Help';
+import History from './pages/History';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -91,6 +92,7 @@ function App() {
                 <Route path="/mine" element={<ProtectedRoute><Mine /></ProtectedRoute>} />
                 <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
                 <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
+                <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>} />
 
                 {/* Admin Login */}
                 <Route path="/admin/login" element={<AdminLogin />} />
