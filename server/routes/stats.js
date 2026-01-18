@@ -51,6 +51,9 @@ router.get('/user-history', authMiddleware, async (req, res) => {
             totalDeposited,
             totalWithdrawn,
             totalEarned: user.totalEarnings || 0,
+            interestIncome: user.interestIncome || 0,
+            teamIncome: user.teamIncome || 0,
+            bonusIncome: user.bonusIncome || 0,
             balance: user.balance,
             team: {
                 gen1: gen1Count,
