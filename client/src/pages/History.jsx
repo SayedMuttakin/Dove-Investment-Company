@@ -2,17 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
-    ArrowLeft,
-    TrendingUp,
-    TrendingDown,
-    Users,
-    Activity,
-    Clock,
-    DollarSign,
-    Award,
-    Shield,
-    ChevronRight,
-    LucideChevronRight
+    ArrowLeft
 } from 'lucide-react';
 import BottomNav from '../components/BottomNav';
 import { toast } from 'react-toastify';
@@ -96,17 +86,9 @@ const History = () => {
                     </div>
                 </div>
 
-                {/* Screenshot Match: Detailed Income List */}
+                {/* Detailed Income List */}
                 <div className="glass-card p-0 overflow-hidden border-white/10">
                     <div className="divide-y divide-white/5">
-                        <div className="flex justify-between items-center p-4 hover:bg-white/5 transition-colors">
-                            <span className="text-white/60 text-sm font-medium">Lost Sapphire</span>
-                            <span className="text-white font-bold text-sm">0</span>
-                        </div>
-                        <div className="flex justify-between items-center p-4 hover:bg-white/5 transition-colors">
-                            <span className="text-white/60 text-sm font-medium">Lost Ruby</span>
-                            <span className="text-white font-bold text-sm">0</span>
-                        </div>
                         <div className="flex justify-between items-center p-4 hover:bg-white/5 transition-colors bg-white/[0.02]">
                             <span className="text-white/60 text-sm font-medium">Lending Income</span>
                             <span className="text-white font-black text-sm">{data?.interestIncome?.toFixed(1) || '0.0'}</span>
@@ -127,77 +109,6 @@ const History = () => {
                             <span className="text-primary font-black text-sm uppercase tracking-widest">Total Income</span>
                             <span className="text-primary font-black text-lg">{(data?.interestIncome + data?.teamIncome + data?.bonusIncome + data?.totalEarned)?.toFixed(2)}</span>
                         </div>
-                    </div>
-                </div>
-
-                {/* Team Section (User's extra request from previous turn) */}
-                <div className="glass-card p-5">
-                    <h3 className="text-white font-black text-sm flex items-center gap-2 mb-6 italic">
-                        <Users size={18} className="text-primary" />
-                        TEAM NETWORK ANALYSIS
-                    </h3>
-                    <div className="grid grid-cols-3 gap-3">
-                        <div className="bg-black/40 rounded-xl p-3 border border-white/5 text-center">
-                            <div className="text-primary font-black text-sm mb-1">{data?.team?.gen1 || 0}</div>
-                            <div className="text-[9px] text-white/40 uppercase font-bold">1st Level</div>
-                        </div>
-                        <div className="bg-black/40 rounded-xl p-3 border border-white/5 text-center">
-                            <div className="text-blue-400 font-black text-sm mb-1">{data?.team?.gen2 || 0}</div>
-                            <div className="text-[9px] text-white/40 uppercase font-bold">2nd Level</div>
-                        </div>
-                        <div className="bg-black/40 rounded-xl p-3 border border-white/5 text-center">
-                            <div className="text-purple-400 font-black text-sm mb-1">{data?.team?.gen3 || 0}</div>
-                            <div className="text-[9px] text-white/40 uppercase font-bold">3rd Level</div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Live Transactions (Keeping for professionalism) */}
-                <div className="space-y-4">
-                    <h3 className="text-white font-black text-sm flex items-center gap-2 italic px-1">
-                        <Activity size={18} className="text-primary" />
-                        LIVE TRANSACTION LOG
-                    </h3>
-                    <div className="space-y-3">
-                        {data?.history?.length > 0 ? (
-                            data.history.map((log, index) => (
-                                <div key={log._id || index} className="glass-card p-4 hover:bg-white/5 transition-all border-white/5 active:scale-[0.98]">
-                                    <div className="flex items-center gap-4">
-                                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${getStatusColor(log.type)}`}>
-                                            {log.type === 'deposit' && <TrendingUp size={20} />}
-                                            {log.type === 'withdrawal' && <TrendingDown size={20} />}
-                                            {log.type === 'investment' && <Award size={20} />}
-                                            {log.type === 'commission' && <Users size={20} />}
-                                            {log.type === 'bonus' && <DollarSign size={20} />}
-                                            {log.type === 'system' && <Activity size={20} />}
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex justify-between items-start mb-1">
-                                                <h4 className="text-white font-bold text-[11px] truncate uppercase tracking-tight">{log.title}</h4>
-                                                <span className="text-white font-black text-sm">
-                                                    {log.amount > 0 ? (log.type === 'withdrawal' ? '-' : '+') : ''}
-                                                    ${log.amount?.toFixed(2)}
-                                                </span>
-                                            </div>
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-white/30 text-[9px] font-medium flex items-center gap-1.5">
-                                                    <Clock size={10} />
-                                                    {new Date(log.createdAt).toLocaleDateString()} {new Date(log.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                                </span>
-                                                <span className={`text-[8px] font-black uppercase tracking-tighter px-2 py-0.5 rounded-md ${getStatusColor(log.type)}`}>
-                                                    {log.type}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))
-                        ) : (
-                            <div className="text-center py-12 glass-card">
-                                <Activity className="mx-auto text-white/10 mb-2" size={32} />
-                                <p className="text-white/20 text-[10px] font-bold uppercase tracking-widest">No history found</p>
-                            </div>
-                        )}
                     </div>
                 </div>
 
