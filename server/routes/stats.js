@@ -25,18 +25,20 @@ router.get('/user-history', authMiddleware, async (req, res) => {
 
         // 2. Team Breakdown (3 Generations)
         // Gen 1
-        const gen1 = await User.find({ referredBy: user.invitationCode }, 'invitationCode');
-        const gen1Count = gen1.length;
+        const gen1 = await User.find({ referredBy: user.invitationCode }, 'invitationCode isTeamMember');
+        const gen1Count = gen1.filter(u => u.isTeamMember).length;
         const gen1Codes = gen1.map(u => u.invitationCode);
 
         // Gen 2
-        const gen2 = await User.find({ referredBy: { $in: gen1Codes } }, 'invitationCode');
-        const gen2Count = gen2.length;
+        const gen2 = await User.find({ referredBy: { $in: gen1Codes } }, 'invitationCode isTeamMember');
+        const gen2Count = gen2.filter(u => u.isTeamMember).length;
         const gen2Codes = gen2.map(u => u.invitationCode);
 
         // Gen 3
-        const gen3 = await User.find({ referredBy: { $in: gen2Codes } });
-        const gen3Count = gen3.length;
+        const gen3Count = await User.countDocuments({
+            referredBy: { $in: gen2Codes },
+            isTeamMember: true
+        });
 
         // 3. Transaction History (Recent Notifications)
         const history = await Notification.find({

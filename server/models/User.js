@@ -139,6 +139,10 @@ const userSchema = new mongoose.Schema({
     redeemableBalance: {
         type: Number,
         default: 0
+    },
+    isTeamMember: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

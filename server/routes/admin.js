@@ -402,7 +402,8 @@ router.post('/deposit/:id/approve', authMiddleware, adminMiddleware, async (req,
 
         // Add to balance
         user.balance += deposit.amount;
-        console.log(`[Admin] $${deposit.amount} added to balance for user ${user._id}`);
+        user.isTeamMember = true; // Mark as active team member on first deposit
+        console.log(`[Admin] $${deposit.amount} added to balance and marked as team member for user ${user._id}`);
 
         await AdminLog.create({
             adminId: req.userId,
