@@ -129,7 +129,7 @@ const Lend = () => {
         <div className="min-h-screen bg-dark-300 pb-20">
             {/* Header - Matching Home.jsx but simplified */}
             <div className="bg-dark-200 border-b border-white/10 sticky top-0 z-20">
-                <div className="max-w-md mx-auto px-4 py-4 flex items-center justify-between">
+                <div className="max-w-md mx-auto px-4 py-2.5 flex items-center justify-between">
                     <div className="flex-1 text-center">
                         <h1 className="text-white font-bold text-lg">Lend</h1>
                     </div>
@@ -320,8 +320,8 @@ const Lend = () => {
                                             }}
                                             disabled={activeCount > 0}
                                             className={`relative z-10 w-full py-3 rounded-lg font-bold text-sm transition-all active:scale-[0.98] ${activeCount > 0
-                                                    ? 'bg-white/5 text-white/20 cursor-not-allowed border border-white/5'
-                                                    : 'text-black bg-gradient-to-r from-primary to-secondary hover:shadow-glow-lg'
+                                                ? 'bg-white/5 text-white/20 cursor-not-allowed border border-white/5'
+                                                : 'text-black bg-gradient-to-r from-primary to-secondary hover:shadow-glow-lg'
                                                 }`}
                                         >
                                             {activeCount > 0 ? 'Active Plan' : 'Details'}

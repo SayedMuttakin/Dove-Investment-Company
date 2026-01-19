@@ -102,7 +102,7 @@ const Deposit = () => {
         <div className="min-h-screen bg-dark-300 pb-20">
             {/* Header */}
             <div className="bg-dark-200 border-b border-white/10">
-                <div className="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+                <div className="max-w-md mx-auto px-4 py-2 flex items-center justify-between">
                     <button
                         onClick={() => navigate(-1)}
                         className="p-1.5 text-white hover:text-primary transition-colors"

@@ -126,7 +126,7 @@ const Home = () => {
 
             {/* Header */}
             <div className="bg-dark-200 border-b border-white/10">
-                <div className="max-w-md mx-auto px-4 py-4 flex items-center justify-between">
+                <div className="max-w-md mx-auto px-4 py-2.5 flex items-center justify-between">
                     <div className="flex-1 text-center">
                         <h1 className="text-white font-bold text-lg">Home</h1>
                     </div>

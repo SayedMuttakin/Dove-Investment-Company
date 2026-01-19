@@ -156,7 +156,7 @@ const Me = () => {
     return (
         <div className="min-h-screen bg-dark-300 pb-20">
             {/* Compact Header */}
-            <div className="bg-gradient-to-br from-primary/20 via-dark-200 to-dark-200 pt-4 pb-6">
+            <div className="bg-gradient-to-br from-primary/20 via-dark-200 to-dark-200 pt-3 pb-4">
                 <div className="max-w-md mx-auto px-4">
                     {/* Profile Info */}
                     <div className="flex items-center justify-between mb-3">
