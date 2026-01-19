@@ -10,11 +10,13 @@ const router = express.Router();
 router.post('/register', async (req, res) => {
     try {
         const { phone, password, invitationCode, fullName } = req.body;
+        const isEmail = phone.includes('@');
 
         // Check if user already exists
-        const existingUser = await User.findOne({ phone });
+        const query = isEmail ? { email: phone.toLowerCase() } : { phone };
+        const existingUser = await User.findOne(query);
         if (existingUser) {
-            return res.status(400).json({ message: 'Phone number already registered' });
+            return res.status(400).json({ message: isEmail ? 'Email already registered' : 'Phone number already registered' });
         }
 
         // Verify invitation code if provided (optional)
@@ -37,14 +39,21 @@ router.post('/register', async (req, res) => {
         const userCount = await User.countDocuments();
 
         // Create user
-        const user = new User({
-            phone,
+        const userData = {
             fullName,
             password: hashedPassword,
             invitationCode: newInvitationCode,
             referredBy,
             memberId: userCount + 1
-        });
+        };
+
+        if (isEmail) {
+            userData.email = phone.toLowerCase();
+        } else {
+            userData.phone = phone;
+        }
+
+        const user = new User(userData);
 
         await user.save();
 
@@ -60,7 +69,7 @@ router.post('/register', async (req, res) => {
             token,
             user: {
                 id: user._id,
-                phone: user.phone,
+                phone: user.phone || user.email,
                 fullName: user.fullName,
                 invitationCode: user.invitationCode,
                 memberId: user.memberId,
@@ -78,13 +87,15 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { phone, password } = req.body;
-        console.log(`[Auth] Login attempt for phone: ${phone}`);
+        const isEmail = phone.includes('@');
+        console.log(`[Auth] Login attempt for ${isEmail ? 'email' : 'phone'}: ${phone}`);
 
         // Find user
-        const user = await User.findOne({ phone });
+        const query = isEmail ? { email: phone.toLowerCase() } : { phone };
+        const user = await User.findOne(query);
         if (!user) {
             console.log(`[Auth] User not found: ${phone}`);
-            return res.status(400).json({ message: 'Invalid phone number or password' });
+            return res.status(400).json({ message: `Invalid ${isEmail ? 'email' : 'phone number'} or password` });
         }
 
         // Check password
@@ -123,7 +134,7 @@ router.post('/login', async (req, res) => {
             token,
             user: {
                 id: user._id,
-                phone: user.phone,
+                phone: user.phone || user.email,
                 fullName: user.fullName,
                 invitationCode: user.invitationCode,
                 memberId: user.memberId,
@@ -194,7 +205,7 @@ router.get('/me', authMiddleware, async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-        console.log(`[Auth] /me called for ${user.phone}. memberId: ${user.memberId}`);
+        console.log(`[Auth] /me called for ${user.phone || user.email}. memberId: ${user.memberId}`);
 
         // Calculate Referral Stats (Gen 1 + Gen 2)
         // 1. Direct Referrals (Gen 1)
@@ -231,7 +242,7 @@ router.get('/me', authMiddleware, async (req, res) => {
 
         res.json({
             id: user._id,
-            phone: user.phone,
+            phone: user.phone || user.email,
             fullName: user.fullName,
             memberId: user.memberId,
             invitationCode: user.invitationCode,

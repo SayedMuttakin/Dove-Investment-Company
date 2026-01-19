@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { Eye, EyeOff, ArrowLeft, RefreshCw, Globe, Download } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft, RefreshCw, Globe, Download, Bird } from 'lucide-react';
 import AuthLayout from '../components/AuthLayout';
 import CountrySelector from '../components/CountrySelector';
 import { usePWA } from '../hooks/usePWA';
@@ -42,7 +42,10 @@ const Login = () => {
         setLoading(true);
 
         try {
-            const fullPhone = formData.countryCode + formData.phone;
+            let fullPhone = formData.phone;
+            if (!formData.phone.includes('@')) {
+                fullPhone = formData.countryCode + formData.phone;
+            }
             await login(fullPhone, formData.password);
             navigate('/home');
         } catch (err) {
@@ -70,13 +73,8 @@ const Login = () => {
 
                 <div className="flex items-center justify-center gap-3 mb-3">
                     {/* Logo */}
-                    <div className="w-12 h-12 bg-gradient-primary rounded-lg flex items-center justify-center shadow-glow">
-                        <div className="w-8 h-8 grid grid-cols-2 gap-0.5">
-                            <div className="bg-white rounded-sm"></div>
-                            <div className="bg-white/70 rounded-sm"></div>
-                            <div className="bg-white/70 rounded-sm"></div>
-                            <div className="bg-white rounded-sm"></div>
-                        </div>
+                    <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-glow-lg transition-transform hover:scale-110">
+                        <Bird size={40} className="text-white" />
                     </div>
                 </div>
 
@@ -95,21 +93,23 @@ const Login = () => {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* Mobile Phone */}
+                    {/* Email or Phone Number */}
                     <div>
-                        <label className="block text-white/80 text-sm mb-2">Mobile Phone</label>
+                        <label className="block text-white/80 text-sm mb-2">Email or Phone Number</label>
                         <div className="flex gap-2">
-                            <CountrySelector
-                                value={formData.countryCode}
-                                onChange={handleChange}
-                                name="countryCode"
-                            />
+                            {!formData.phone.includes('@') && (
+                                <CountrySelector
+                                    value={formData.countryCode}
+                                    onChange={handleChange}
+                                    name="countryCode"
+                                />
+                            )}
                             <input
-                                type="tel"
+                                type="text"
                                 name="phone"
                                 value={formData.phone}
                                 onChange={handleChange}
-                                placeholder="Please enter your phone number"
+                                placeholder="Email or phone number"
                                 className="input-glass flex-1"
                                 required
                             />

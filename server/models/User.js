@@ -58,9 +58,16 @@ const userInvestmentSchema = new mongoose.Schema({
 const userSchema = new mongoose.Schema({
     phone: {
         type: String,
-        required: true,
         unique: true,
+        sparse: true,
         trim: true
+    },
+    email: {
+        type: String,
+        unique: true,
+        sparse: true,
+        trim: true,
+        lowercase: true
     },
     memberId: {
         type: Number,
