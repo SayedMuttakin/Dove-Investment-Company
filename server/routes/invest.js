@@ -5,6 +5,7 @@ import User from '../models/User.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { distributeCommissions } from '../utils/teamCommissions.js';
 import { createNotification } from '../utils/notifications.js';
+import Notification from '../models/Notification.js';
 
 const router = express.Router();
 
