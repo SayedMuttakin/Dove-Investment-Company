@@ -64,9 +64,9 @@ router.get('/stats', authMiddleware, async (req, res) => {
 // Get about page statistics
 router.get('/about-stats', async (req, res) => {
     try {
-        // 1. Total Users (Base 1,000 + actual count)
+        // 1. Total Users (Base 100 + actual count)
         const actualUserCount = await User.countDocuments({ role: 'user' });
-        const displayUsers = 1000 + actualUserCount;
+        const displayUsers = 100 + actualUserCount;
 
         // 2. Capital Pool (Base 2623.13 + actual approved deposits)
         // Note: Deposits are in USD now ($10 minimum)
