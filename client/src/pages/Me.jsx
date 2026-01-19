@@ -7,7 +7,6 @@ import {
     Copy,
     LogOut,
     Shield,
-    Gift,
     ChevronRight,
     Star,
     Users,
@@ -145,7 +144,7 @@ const Me = () => {
             {/* Compact Header */}
             <div className="bg-gradient-to-br from-primary/20 via-dark-200 to-dark-200 pt-3 pb-4">
                 <div className="max-w-md mx-auto px-4">
-                    {/* Profile Info */}
+                    {/* Profile Info Row */}
                     <div className="flex items-center justify-between mb-3 relative">
                         <div className="flex items-center gap-3 relative z-10">
                             <div
@@ -194,6 +193,7 @@ const Me = () => {
                             </div>
                         </div>
 
+                        {/* Action Buttons & Invite */}
                         <div className="flex items-center gap-1 relative z-10 justify-end">
                             <button onClick={() => navigate('/notifications')} className="p-2 text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full">
                                 <Bell size={18} />
@@ -205,7 +205,7 @@ const Me = () => {
                                 <Shield size={18} />
                             </button>
 
-                            {/* Invite Friends Button moved to the end */}
+                            {/* Invite Button at the end */}
                             <button
                                 onClick={copyInvitationCode}
                                 className="flex flex-col items-center gap-0.5 ml-1 group"
@@ -217,209 +217,208 @@ const Me = () => {
                             </button>
                         </div>
                     </div>
-                </div>
 
-                {/* Stats Grid */}
-                <div className="grid grid-cols-3 gap-1.5">
-                    <div className="glass-card p-2">
-                        <div className="text-white/40 text-[7px] uppercase mb-0.5">Balance</div>
-                        <div className="text-white font-bold text-[10px]">${user?.balance?.toFixed(2) || '0.00'}</div>
-                    </div>
-                    <div
-                        onClick={() => navigate('/history')}
-                        className="glass-card p-2 cursor-pointer hover:bg-white/5 transition-colors border-white/5"
-                    >
-                        <div className="text-white/40 text-[7px] uppercase mb-0.5 flex items-center gap-1">
-                            <History size={8} />
-                            History
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-3 gap-1.5">
+                        <div className="glass-card p-2">
+                            <div className="text-white/40 text-[7px] uppercase mb-0.5">Balance</div>
+                            <div className="text-white font-bold text-[10px]">${user?.balance?.toFixed(2) || '0.00'}</div>
                         </div>
-                        <div className="text-white font-bold text-[10px]">View Detail</div>
-                    </div>
-                    <div
-                        onClick={() => navigate('/lend-funding')}
-                        className="glass-card p-2 cursor-pointer hover:bg-white/5 transition-colors border-white/5"
-                    >
-                        <div className="text-white/40 text-[7px] uppercase mb-0.5 flex items-center gap-1">
-                            <Briefcase size={8} />
-                            Profits
-                        </div>
-                        <div className="text-white font-bold text-[10px]">Record</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-            {/* Main Content */ }
-    <div className="max-w-md mx-auto px-4 -mt-3 space-y-3">
-        {/* All Level Requirements */}
-        <div>
-            <h2 className="text-white font-bold text-sm mb-3 flex items-center gap-2">
-                <Star size={14} className="text-primary" />
-                VIP Level Requirements
-            </h2>
-
-            <div className="space-y-4">
-                {levelRequirements.map((level) => {
-                    const isCurrentLevel = currentLevel === level.from;
-                    const progress = isCurrentLevel ? Math.min((currentTeam / level.members) * 100, 100) : 0;
-
-                    return (
-                        <div key={`${level.from}-${level.to}`} className="relative group">
-                            <div className="relative">
-                                <img
-                                    src={`/images/vip/vip_level_${level.from}.png`}
-                                    alt={`VIP Level ${level.from}`}
-                                    className={`w-full h-28 rounded-t-2xl border-2 border-b-0 transition-all duration-300 object-cover ${isCurrentLevel ? 'border-[#a4f13a]' : 'border-white/10 hover:border-white/30'
-                                        }`}
-                                />
-                                {isCurrentLevel && (
-                                    <div className="absolute top-0 right-0 bg-[#a4f13a] text-black text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-lg z-40 border-b border-l border-white/20">
-                                        ACTIVE
-                                    </div>
-                                )}
-                                <div className="absolute bottom-3 right-3">
-                                    <div className="inline-flex bg-black/60 px-2.5 py-0.5 rounded text-[#a4f13a] text-[9px] font-bold tracking-wider uppercase backdrop-blur-sm">
-                                        {isCurrentLevel ? 'Unlocked Zone' : 'Locked Zone'}
-                                    </div>
-                                </div>
+                        <div
+                            onClick={() => navigate('/history')}
+                            className="glass-card p-2 cursor-pointer hover:bg-white/5 transition-colors border-white/5"
+                        >
+                            <div className="text-white/40 text-[7px] uppercase mb-0.5 flex items-center gap-1">
+                                <History size={8} />
+                                History
                             </div>
-
-                            <div className={`bg-dark-200 border-2 border-t-0 rounded-b-2xl p-4 pt-4 relative z-0 ${isCurrentLevel ? 'border-[#a4f13a] shadow-[0_10px_20px_rgba(164,241,58,0.1)]' : 'border-white/10'
-                                }`}>
-                                <div className="flex items-center gap-2 mb-4">
-                                    <span className="text-white font-bold text-xs">VIP Level {level.to}</span>
-                                    {!isCurrentLevel && <Shield size={12} className="text-white/20" />}
-                                </div>
-
-                                {isCurrentLevel && (
-                                    <div className="mb-4">
-                                        <div className="flex justify-between text-[10px] font-bold text-white/60 mb-1">
-                                            <span>PROGRESS</span>
-                                            <span>{Math.round(progress)}%</span>
-                                        </div>
-                                        <div className="w-full bg-black/40 rounded-full h-2">
-                                            <div
-                                                className="h-2 rounded-full bg-gradient-to-r from-[#a4f13a] to-cyan-400 shadow-[0_0_10px_rgba(164,241,58,0.5)]"
-                                                style={{ width: `${progress}%` }}
-                                            ></div>
-                                        </div>
-                                    </div>
-                                )}
-
-                                <div className="grid grid-cols-2 gap-2 mb-3">
-                                    <div className="bg-black/20 rounded lg p-2 border border-white/5 flex flex-col items-center justify-center min-h-[140px]">
-                                        <div className="flex items-center gap-1.5 text-white/40 text-[9px] font-bold uppercase mb-2 self-start">
-                                            <Users size={10} /> Team Structure
-                                        </div>
-                                        <TeamStructureTree l1={level.tree.l1} l2={level.tree.l2} />
-                                        <div className="mt-2 text-[10px] text-white/60 font-medium">
-                                            Total: <span className={isCurrentLevel ? "text-[#a4f13a]" : "text-white"}>{currentTeam}</span> / {level.members}
-                                        </div>
-                                        <div className="mt-2 pt-2 border-t border-white/5 space-y-0.5 w-full">
-                                            <div className="text-[10px] text-white/40 font-medium flex justify-between">
-                                                <span>1st:</span>
-                                                <span className="text-cyan-400">{level.teamIncome.first}</span>
-                                            </div>
-                                            <div className="text-[10px] text-white/40 font-medium flex justify-between">
-                                                <span>2nd:</span>
-                                                <span className="text-cyan-400">{level.teamIncome.second}</span>
-                                            </div>
-                                            <div className="text-[10px] text-white/40 font-medium flex justify-between">
-                                                <span>3rd:</span>
-                                                <span className="text-cyan-400">{level.teamIncome.third}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex flex-col gap-2">
-                                        <div className="bg-black/20 rounded lg p-2 border border-white/5 flex flex-col items-center justify-center flex-1">
-                                            <div className="flex items-center gap-1.5 text-white/40 text-[9px] font-bold uppercase mb-1">
-                                                <DollarSign size={10} /> Investment
-                                            </div>
-                                            <div className="text-cyan-400 font-bold text-sm">
-                                                ${level.minInvestment} - ${level.maxInvestment}
-                                            </div>
-                                        </div>
-                                        <div className="bg-black/20 rounded lg p-2 border border-white/5 flex flex-col justify-center flex-1">
-                                            <div className="flex items-center gap-1.5 text-white/40 text-[9px] font-bold uppercase mb-1.5 justify-center">
-                                                <DollarSign size={10} /> Daily Income
-                                            </div>
-                                            <div className="space-y-0.5">
-                                                <div className="text-[8px] text-white/40 font-medium flex justify-between">
-                                                    <span>7d:</span>
-                                                    <span className="text-[#a4f13a]">{level.incomeRates.d7}</span>
-                                                </div>
-                                                <div className="text-[8px] text-white/40 font-medium flex justify-between">
-                                                    <span>30d:</span>
-                                                    <span className="text-[#a4f13a]">{level.incomeRates.d30}</span>
-                                                </div>
-                                                <div className="text-[8px] text-white/40 font-medium flex justify-between">
-                                                    <span>60d:</span>
-                                                    <span className="text-[#a4f13a]">{level.incomeRates.d60}</span>
-                                                </div>
-                                                <div className="text-[8px] text-white/40 font-medium flex justify-between">
-                                                    <span>90d:</span>
-                                                    <span className="text-[#a4f13a]">{level.incomeRates.d90}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <button
-                                    onClick={() => isCurrentLevel && navigate('/lend', { state: { viewLevel: level.from } })}
-                                    disabled={!isCurrentLevel}
-                                    className={`w-full py-3 rounded-lg font-black text-xs tracking-wider uppercase shadow-lg transition-all ${isCurrentLevel
-                                        ? 'bg-gradient-to-r from-[#a4f13a] to-[#82c91e] text-black hover:shadow-[#a4f13a]/20 active:scale-[0.98]'
-                                        : 'bg-white/5 text-white/20 cursor-not-allowed border border-white/5'
-                                        }`}
-                                >
-                                    {isCurrentLevel ? 'Details & Upgrade' : 'Locked'}
-                                </button>
-                            </div>
+                            <div className="text-white font-bold text-[10px]">View Detail</div>
                         </div>
-                    );
-                })}
-            </div>
-        </div>
-
-
-
-        {/* App Download */}
-        {isInstallable && (
-            <div className="glass-card overflow-hidden mb-3">
-                <button
-                    onClick={handleDownload}
-                    className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-primary/10 transition-colors"
-                >
-                    <div className="flex items-center gap-2">
-                        <Download size={16} className="text-primary" />
-                        <span className="text-white text-sm font-medium">App Download</span>
+                        <div
+                            onClick={() => navigate('/lend-funding')}
+                            className="glass-card p-2 cursor-pointer hover:bg-white/5 transition-colors border-white/5"
+                        >
+                            <div className="text-white/40 text-[7px] uppercase mb-0.5 flex items-center gap-1">
+                                <Briefcase size={8} />
+                                Profits
+                            </div>
+                            <div className="text-white font-bold text-[10px]">Record</div>
+                        </div>
                     </div>
-                    <ChevronRight size={14} className="text-white/40" />
-                </button>
-            </div>
-        )}
-
-        {/* Logout */}
-        <div className="glass-card overflow-hidden">
-            <button
-                onClick={handleLogout}
-                className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-red-500/10 transition-colors"
-            >
-                <div className="flex items-center gap-2">
-                    <LogOut size={16} className="text-red-400" />
-                    <span className="text-red-400 text-sm font-medium">Logout</span>
                 </div>
-                <ChevronRight size={14} className="text-red-400/40" />
-            </button>
+            </div>
+
+            {/* Main Content Area */}
+            <div className="max-w-md mx-auto px-4 -mt-3 space-y-3">
+                {/* VIP Levels Section */}
+                <div>
+                    <h2 className="text-white font-bold text-sm mb-3 flex items-center gap-2">
+                        <Star size={14} className="text-primary" />
+                        VIP Level Requirements
+                    </h2>
+
+                    <div className="space-y-4">
+                        {levelRequirements.map((level) => {
+                            const isCurrentLevel = currentLevel === level.from;
+                            const progress = isCurrentLevel ? Math.min((currentTeam / level.members) * 100, 100) : 0;
+
+                            return (
+                                <div key={`${level.from}-${level.to}`} className="relative group">
+                                    {/* Level Banner */}
+                                    <div className="relative">
+                                        <img
+                                            src={`/images/vip/vip_level_${level.from}.png`}
+                                            alt={`VIP Level ${level.from}`}
+                                            className={`w-full h-28 rounded-t-2xl border-2 border-b-0 transition-all duration-300 object-cover ${isCurrentLevel ? 'border-[#a4f13a]' : 'border-white/10 hover:border-white/30'
+                                                }`}
+                                        />
+                                        {isCurrentLevel && (
+                                            <div className="absolute top-0 right-0 bg-[#a4f13a] text-black text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-lg z-40 border-b border-l border-white/20">
+                                                ACTIVE
+                                            </div>
+                                        )}
+                                        <div className="absolute bottom-3 right-3">
+                                            <div className="inline-flex bg-black/60 px-2.5 py-0.5 rounded text-[#a4f13a] text-[9px] font-bold tracking-wider uppercase backdrop-blur-sm">
+                                                {isCurrentLevel ? 'Unlocked Zone' : 'Locked Zone'}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Level Stats Panel */}
+                                    <div className={`bg-dark-200 border-2 border-t-0 rounded-b-2xl p-4 pt-4 relative z-0 ${isCurrentLevel ? 'border-[#a4f13a] shadow-[0_10px_20px_rgba(164,241,58,0.1)]' : 'border-white/10'
+                                        }`}>
+                                        <div className="flex items-center gap-2 mb-4">
+                                            <span className="text-white font-bold text-xs">VIP Level {level.to}</span>
+                                            {!isCurrentLevel && <Shield size={12} className="text-white/20" />}
+                                        </div>
+
+                                        {isCurrentLevel && (
+                                            <div className="mb-4">
+                                                <div className="flex justify-between text-[10px] font-bold text-white/60 mb-1">
+                                                    <span>PROGRESS</span>
+                                                    <span>{Math.round(progress)}%</span>
+                                                </div>
+                                                <div className="w-full bg-black/40 rounded-full h-2">
+                                                    <div
+                                                        className="h-2 rounded-full bg-gradient-to-r from-[#a4f13a] to-cyan-400 shadow-[0_0_10_rgba(164,241,58,0.5)]"
+                                                        style={{ width: `${progress}%` }}
+                                                    ></div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        <div className="grid grid-cols-2 gap-2 mb-3">
+                                            <div className="bg-black/20 rounded-lg p-2 border border-white/5 flex flex-col items-center justify-center min-h-[140px]">
+                                                <div className="flex items-center gap-1.5 text-white/40 text-[9px] font-bold uppercase mb-2 self-start">
+                                                    <Users size={10} /> Team Structure
+                                                </div>
+                                                <TeamStructureTree l1={level.tree.l1} l2={level.tree.l2} />
+                                                <div className="mt-2 text-[10px] text-white/60 font-medium">
+                                                    Total: <span className={isCurrentLevel ? "text-[#a4f13a]" : "text-white"}>{currentTeam}</span> / {level.members}
+                                                </div>
+                                                <div className="mt-2 pt-2 border-t border-white/5 space-y-0.5 w-full">
+                                                    <div className="text-[10px] text-white/40 font-medium flex justify-between">
+                                                        <span>1st:</span>
+                                                        <span className="text-cyan-400">{level.teamIncome.first}</span>
+                                                    </div>
+                                                    <div className="text-[10px] text-white/40 font-medium flex justify-between">
+                                                        <span>2nd:</span>
+                                                        <span className="text-cyan-400">{level.teamIncome.second}</span>
+                                                    </div>
+                                                    <div className="text-[10px] text-white/40 font-medium flex justify-between">
+                                                        <span>3rd:</span>
+                                                        <span className="text-cyan-400">{level.teamIncome.third}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex flex-col gap-2">
+                                                <div className="bg-black/20 rounded-lg p-2 border border-white/5 flex flex-col items-center justify-center flex-1">
+                                                    <div className="flex items-center gap-1.5 text-white/40 text-[9px] font-bold uppercase mb-1">
+                                                        <DollarSign size={10} /> Investment
+                                                    </div>
+                                                    <div className="text-cyan-400 font-bold text-sm">
+                                                        ${level.minInvestment} - ${level.maxInvestment}
+                                                    </div>
+                                                </div>
+                                                <div className="bg-black/20 rounded-lg p-2 border border-white/5 flex flex-col justify-center flex-1">
+                                                    <div className="flex items-center gap-1.5 text-white/40 text-[9px] font-bold uppercase mb-1.5 justify-center">
+                                                        <DollarSign size={10} /> Daily Income
+                                                    </div>
+                                                    <div className="space-y-0.5">
+                                                        <div className="text-[8px] text-white/40 font-medium flex justify-between">
+                                                            <span>7d:</span>
+                                                            <span className="text-[#a4f13a]">{level.incomeRates.d7}</span>
+                                                        </div>
+                                                        <div className="text-[8px] text-white/40 font-medium flex justify-between">
+                                                            <span>30d:</span>
+                                                            <span className="text-[#a4f13a]">{level.incomeRates.d30}</span>
+                                                        </div>
+                                                        <div className="text-[8px] text-white/40 font-medium flex justify-between">
+                                                            <span>60d:</span>
+                                                            <span className="text-[#a4f13a]">{level.incomeRates.d60}</span>
+                                                        </div>
+                                                        <div className="text-[8px] text-white/40 font-medium flex justify-between">
+                                                            <span>90d:</span>
+                                                            <span className="text-[#a4f13a]">{level.incomeRates.d90}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button
+                                            onClick={() => isCurrentLevel && navigate('/lend', { state: { viewLevel: level.from } })}
+                                            disabled={!isCurrentLevel}
+                                            className={`w-full py-3 rounded-lg font-black text-xs tracking-wider uppercase shadow-lg transition-all ${isCurrentLevel
+                                                ? 'bg-gradient-to-r from-[#a4f13a] to-[#82c91e] text-black hover:shadow-[#a4f13a]/20 active:scale-[0.98]'
+                                                : 'bg-white/5 text-white/20 cursor-not-allowed border border-white/5'
+                                                }`}
+                                        >
+                                            {isCurrentLevel ? 'Details & Upgrade' : 'Locked'}
+                                        </button>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* Utility Options */}
+                <div className="space-y-3 pb-4">
+                    {isInstallable && (
+                        <div className="glass-card overflow-hidden">
+                            <button
+                                onClick={handleDownload}
+                                className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-primary/10 transition-colors"
+                            >
+                                <div className="flex items-center gap-2">
+                                    <Download size={16} className="text-primary" />
+                                    <span className="text-white text-sm font-medium">App Download</span>
+                                </div>
+                                <ChevronRight size={14} className="text-white/40" />
+                            </button>
+                        </div>
+                    )}
+
+                    <div className="glass-card overflow-hidden">
+                        <button
+                            onClick={handleLogout}
+                            className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-red-500/10 transition-colors"
+                        >
+                            <div className="flex items-center gap-2">
+                                <LogOut size={16} className="text-red-400" />
+                                <span className="text-red-400 text-sm font-medium">Logout</span>
+                            </div>
+                            <ChevronRight size={14} className="text-red-400/40" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Bottom Navigation */}
+            <BottomNav />
         </div>
-
-    </div>
-
-    {/* Bottom Navigation */ }
-    <BottomNav />
-        </div >
     );
 };
 
