@@ -381,17 +381,20 @@ router.post('/redeem', authMiddleware, async (req, res) => {
 router.get('/daily-stats', authMiddleware, async (req, res) => {
     try {
         const userId = req.userId;
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
         const now = new Date();
         const sevenDaysAgo = new Date(now);
         sevenDaysAgo.setDate(now.getDate() - 6);
         sevenDaysAgo.setHours(0, 0, 0, 0);
 
-        // Aggregate income from notifications
+        // Aggregate income from notifications (Only commissions and bonuses)
         const stats = await Notification.aggregate([
             {
                 $match: {
                     userId: new mongoose.Types.ObjectId(userId),
-                    type: { $in: ['investment', 'commission', 'bonus'] },
+                    type: { $in: ['commission', 'bonus'] },
                     createdAt: { $gte: sevenDaysAgo }
                 }
             },
@@ -404,28 +407,44 @@ router.get('/daily-stats', authMiddleware, async (req, res) => {
                     },
                     total: { $sum: '$amount' }
                 }
-            },
-            { $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 } }
+            }
         ]);
 
-        // Create an array for the last 7 days, filling gaps with 0
+        // Create an array for the last 7 days
         const result = [];
         const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
         for (let i = 0; i < 7; i++) {
             const date = new Date(sevenDaysAgo);
             date.setDate(sevenDaysAgo.getDate() + i);
+            const startOfDay = new Date(date);
+            startOfDay.setHours(0, 0, 0, 0);
+            const endOfDay = new Date(date);
+            endOfDay.setHours(23, 59, 59, 999);
 
+            // 1. Get Commission/Bonus from stats
             const dayStat = stats.find(s =>
                 s._id.year === date.getFullYear() &&
                 s._id.month === (date.getMonth() + 1) &&
                 s._id.day === date.getDate()
             );
+            let dailyTotal = dayStat ? dayStat.total : 0;
+
+            // 2. Add Investment daily earnings for THIS SPECIFIC day
+            user.investments.forEach(inv => {
+                const invStart = new Date(inv.startDate);
+                const invEnd = new Date(inv.endDate);
+
+                // If the investment was active on this day
+                if (invStart <= endOfDay && invEnd >= startOfDay) {
+                    dailyTotal += inv.package.dailyEarning;
+                }
+            });
 
             result.push({
                 date: date.toISOString().split('T')[0],
                 day: days[date.getDay()],
-                amount: dayStat ? dayStat.total : 0
+                amount: Number(dailyTotal.toFixed(2))
             });
         }
 
