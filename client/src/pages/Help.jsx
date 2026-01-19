@@ -111,14 +111,19 @@ const Help = () => {
         <div className="min-h-screen bg-dark-300 pb-24">
             {/* Header */}
             <div className="sticky top-0 z-50 bg-dark-200/80 backdrop-blur-md border-b border-white/5 py-2.5 px-4 shadow-lg">
-                <div className="max-w-md mx-auto flex items-center gap-3">
-                    <button
-                        onClick={() => navigate(-1)}
-                        className="p-2 -ml-2 text-white/60 hover:text-white transition-colors"
-                    >
-                        <ArrowLeft size={20} />
-                    </button>
-                    <h1 className="text-lg font-bold text-white">Customer Support</h1>
+                <div className="max-w-md mx-auto flex items-center justify-between relative h-8">
+                    <div className="relative z-10 w-10">
+                        <button
+                            onClick={() => navigate(-1)}
+                            className="p-2 -ml-2 text-white/60 hover:text-white transition-colors"
+                        >
+                            <ArrowLeft size={20} />
+                        </button>
+                    </div>
+                    <div className="absolute left-1/2 -translate-x-1/2">
+                        <h1 className="text-base font-bold text-white">Support</h1>
+                    </div>
+                    <div className="w-10"></div>
                 </div>
             </div>
 

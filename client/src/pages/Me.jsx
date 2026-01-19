@@ -51,12 +51,10 @@ const Me = () => {
                 }
             });
 
-            // Update user in context
             if (updateUserInfo) {
                 updateUserInfo({ profileImage: res.data.user.profileImage });
             }
             toast.success('Profile updated successfully!');
-            // Refresh page to show new image (or just let context update if it does)
             setTimeout(() => window.location.reload(), 1500);
         } catch (error) {
             console.error('Upload error:', error);
@@ -96,12 +94,9 @@ const Me = () => {
         return badges[level] || badges[0];
     };
 
-    const vipBadge = getVIPBadge(user?.vipLevel || 0);
     const currentLevel = user?.vipLevel || 0;
     const currentTeam = user?.stats?.teamMembers || 0;
 
-    // All level requirements (showing full range from min to max across all packages)
-    // All level requirements with specific tree structure counts
     const levelRequirements = [
         { from: 0, to: 1, members: 12, minInvestment: 50, maxInvestment: 2000, tree: { l1: 2, l2: 4 }, incomeRates: { d7: '0.90%', d30: '1.20%', d60: '1.50%', d90: '1.80%' }, teamIncome: { first: '9%', second: '6%', third: '3%' } },
         { from: 1, to: 2, members: 24, minInvestment: 300, maxInvestment: 3000, tree: { l1: 4, l2: 8 }, incomeRates: { d7: '1.10%', d30: '1.80%', d60: '1.70%', d90: '2.00%' }, teamIncome: { first: '10%', second: '7%', third: '4%' } },
@@ -113,35 +108,26 @@ const Me = () => {
 
     const TeamStructureTree = ({ l1, l2 }) => (
         <div className="flex flex-col items-center justify-center py-2 relative w-full px-2">
-            {/* Level 0 - Root */}
             <div className="z-10 mb-4">
                 <div className="w-8 h-8 rounded-full border-2 border-white/20 bg-indigo-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
                     1
                 </div>
             </div>
-
-            {/* Connecting Lines L0 -> L1 */}
             <div className="absolute top-[28px] h-8 border-t-2 border-l-2 border-r-2 border-white/10 rounded-t-xl" style={{ width: '60%' }}></div>
-
-            {/* Level 1 Nodes */}
             <div className="flex justify-between w-full mb-4 relative z-10 px-2">
                 <div className="flex flex-col items-center">
                     <div className="w-8 h-8 rounded-full border-2 border-white/20 bg-purple-500 flex items-center justify-center text-white font-bold text-sm shadow-md mb-1">
                         {l1}
                     </div>
-                    {/* Line L1 -> L2 Left */}
                     <div className="h-4 w-[2px] bg-white/10"></div>
                 </div>
                 <div className="flex flex-col items-center">
                     <div className="w-8 h-8 rounded-full border-2 border-white/20 bg-pink-500 flex items-center justify-center text-white font-bold text-sm shadow-md mb-1">
                         {l1}
                     </div>
-                    {/* Line L1 -> L2 Right */}
                     <div className="h-4 w-[2px] bg-white/10"></div>
                 </div>
             </div>
-
-            {/* Level 2 Nodes */}
             <div className="flex justify-between w-full relative z-10 px-2">
                 <div className="w-8 h-8 rounded-full border-2 border-white/20 bg-rose-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
                     {l2}
@@ -159,13 +145,13 @@ const Me = () => {
             <div className="bg-gradient-to-br from-primary/20 via-dark-200 to-dark-200 pt-3 pb-4">
                 <div className="max-w-md mx-auto px-4">
                     {/* Profile Info */}
-                    <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center gap-3">
+                    <div className="flex items-center justify-between mb-3 relative">
+                        <div className="flex items-center gap-3 relative z-10 w-24">
                             <div
                                 onClick={() => fileInputRef.current?.click()}
                                 className="relative group cursor-pointer"
                             >
-                                <div className="w-14 h-14 rounded-full border-2 border-white/20 overflow-hidden bg-gradient-to-br from-primary to-cyan-400 flex items-center justify-center shadow-lg transition-transform group-active:scale-95">
+                                <div className="w-12 h-12 rounded-full border-2 border-white/20 overflow-hidden bg-gradient-to-br from-primary to-cyan-400 flex items-center justify-center shadow-lg transition-transform group-active:scale-95">
                                     {user?.profileImage ? (
                                         <img
                                             src={user.profileImage}
@@ -173,19 +159,19 @@ const Me = () => {
                                             className="w-full h-full object-cover"
                                             onError={(e) => {
                                                 e.target.src = '';
-                                                e.target.parentElement.innerHTML = '<User class="text-white" size={28} />';
+                                                e.target.parentElement.innerHTML = '<User class="text-white" size={24} />';
                                             }}
                                         />
                                     ) : (
-                                        <User className="text-white" size={28} />
+                                        <User className="text-white" size={24} />
                                     )}
                                 </div>
-                                <div className="absolute -bottom-1 -right-1 bg-primary p-1.5 rounded-full border-2 border-dark-200 shadow-md">
-                                    <Camera size={10} className="text-black" />
+                                <div className="absolute -bottom-1 -right-1 bg-primary p-1 rounded-full border-2 border-dark-200 shadow-md">
+                                    <Camera size={8} className="text-black" />
                                 </div>
                                 {uploading && (
                                     <div className="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center">
-                                        <div className="w-5 h-5 border-2 border-primary border-t-transparent animate-spin rounded-full"></div>
+                                        <div className="w-4 h-4 border-2 border-primary border-t-transparent animate-spin rounded-full"></div>
                                     </div>
                                 )}
                                 <input
@@ -196,27 +182,25 @@ const Me = () => {
                                     onChange={handleImageUpload}
                                 />
                             </div>
-                            <div>
-                                <h1 className="text-white font-black text-lg tracking-tight">Dove</h1>
-                                <div className="flex flex-col mt-0.5">
-                                    <span className="text-white/60 text-[11px] font-bold uppercase tracking-wider">
-                                        ID: {user?.memberId || 'N/A'}
-                                    </span>
-                                    <span className="text-white/40 text-[10px] font-medium leading-tight">
-                                        User : {user?.fullName || user?.phone || 'User'}
-                                    </span>
-                                </div>
-                            </div>
                         </div>
-                        <div className="flex items-center gap-1">
+
+                        {/* Centered Heading */}
+                        <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center">
+                            <h1 className="text-white font-black text-lg tracking-tight">Dove</h1>
+                            <span className="text-white/40 text-[9px] font-medium leading-none mt-1">
+                                {user?.fullName || user?.phone || 'User'}
+                            </span>
+                        </div>
+
+                        <div className="flex items-center gap-1 relative z-10 w-24 justify-end">
                             <button onClick={() => navigate('/notifications')} className="p-2 text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full">
-                                <Bell size={20} />
+                                <Bell size={18} />
                             </button>
                             <button onClick={() => navigate('/help')} className="p-2 text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full">
-                                <HelpCircle size={20} />
+                                <HelpCircle size={18} />
                             </button>
                             <button onClick={() => navigate('/change-pin')} className="p-2 text-white/60 hover:text-white transition-colors hover:bg-white/5 rounded-full">
-                                <Shield size={20} />
+                                <Shield size={18} />
                             </button>
                         </div>
                     </div>
@@ -239,13 +223,13 @@ const Me = () => {
                         </div>
                         <div
                             onClick={() => navigate('/lend-funding')}
-                            className="glass-card p-2 cursor-pointer hover:bg-white/5 transition-colors border-primary/20"
+                            className="glass-card p-2 cursor-pointer hover:bg-white/5 transition-colors border-white/5"
                         >
-                            <div className="text-primary/60 text-[7px] uppercase mb-0.5 flex items-center gap-1">
+                            <div className="text-white/40 text-[7px] uppercase mb-0.5 flex items-center gap-1">
                                 <Briefcase size={8} />
-                                Funding
+                                Profits
                             </div>
-                            <div className="text-primary font-bold text-[9px] whitespace-nowrap">Details</div>
+                            <div className="text-white font-bold text-[10px]">Record</div>
                         </div>
                     </div>
                 </div>
@@ -253,7 +237,6 @@ const Me = () => {
 
             {/* Main Content */}
             <div className="max-w-md mx-auto px-4 -mt-3 space-y-3">
-
                 {/* All Level Requirements */}
                 <div>
                     <h2 className="text-white font-bold text-sm mb-3 flex items-center gap-2">
@@ -264,16 +247,10 @@ const Me = () => {
                     <div className="space-y-4">
                         {levelRequirements.map((level) => {
                             const isCurrentLevel = currentLevel === level.from;
-                            const isCompleted = currentLevel > level.from;
-                            // Progress calculation for the card
                             const progress = isCurrentLevel ? Math.min((currentTeam / level.members) * 100, 100) : 0;
-
-                            // Generate unique cat/robot avatar based on level
-                            const avatarUrl = `https://robohash.org/vip-level-${level.from}?set=set4&bgset=bg2&size=200x200`;
 
                             return (
                                 <div key={`${level.from}-${level.to}`} className="relative group">
-                                    {/* Main VIP Image Banner */}
                                     <div className="relative">
                                         <img
                                             src={`/images/vip/vip_level_${level.from}.png`}
@@ -281,15 +258,11 @@ const Me = () => {
                                             className={`w-full h-28 rounded-t-2xl border-2 border-b-0 transition-all duration-300 object-cover ${isCurrentLevel ? 'border-[#a4f13a]' : 'border-white/10 hover:border-white/30'
                                                 }`}
                                         />
-
-                                        {/* Top-Right Badge */}
                                         {isCurrentLevel && (
                                             <div className="absolute top-0 right-0 bg-[#a4f13a] text-black text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-lg z-40 border-b border-l border-white/20">
                                                 ACTIVE
                                             </div>
                                         )}
-
-                                        {/* Status Badge Overlay */}
                                         <div className="absolute bottom-3 right-3">
                                             <div className="inline-flex bg-black/60 px-2.5 py-0.5 rounded text-[#a4f13a] text-[9px] font-bold tracking-wider uppercase backdrop-blur-sm">
                                                 {isCurrentLevel ? 'Unlocked Zone' : 'Locked Zone'}
@@ -297,7 +270,6 @@ const Me = () => {
                                         </div>
                                     </div>
 
-                                    {/* Stats & Actions Panel (Below the banner - Same Width) */}
                                     <div className={`bg-dark-200 border-2 border-t-0 rounded-b-2xl p-4 pt-4 relative z-0 ${isCurrentLevel ? 'border-[#a4f13a] shadow-[0_10px_20px_rgba(164,241,58,0.1)]' : 'border-white/10'
                                         }`}>
                                         <div className="flex items-center gap-2 mb-4">
@@ -305,7 +277,6 @@ const Me = () => {
                                             {!isCurrentLevel && <Shield size={12} className="text-white/20" />}
                                         </div>
 
-                                        {/* Progress Bar (if active) */}
                                         {isCurrentLevel && (
                                             <div className="mb-4">
                                                 <div className="flex justify-between text-[10px] font-bold text-white/60 mb-1">
@@ -321,9 +292,7 @@ const Me = () => {
                                             </div>
                                         )}
 
-                                        {/* Requirements Grid */}
                                         <div className="grid grid-cols-2 gap-2 mb-3">
-                                            {/* Team Structure Tree Visualization */}
                                             <div className="bg-black/20 rounded lg p-2 border border-white/5 flex flex-col items-center justify-center min-h-[140px]">
                                                 <div className="flex items-center gap-1.5 text-white/40 text-[9px] font-bold uppercase mb-2 self-start">
                                                     <Users size={10} /> Team Structure
@@ -332,8 +301,7 @@ const Me = () => {
                                                 <div className="mt-2 text-[10px] text-white/60 font-medium">
                                                     Total: <span className={isCurrentLevel ? "text-[#a4f13a]" : "text-white"}>{currentTeam}</span> / {level.members}
                                                 </div>
-                                                {/* Team Income Percentages */}
-                                                <div className="mt-2 pt-2 border-t border-white/5 space-y-0.5">
+                                                <div className="mt-2 pt-2 border-t border-white/5 space-y-0.5 w-full">
                                                     <div className="text-[10px] text-white/40 font-medium flex justify-between">
                                                         <span>1st:</span>
                                                         <span className="text-cyan-400">{level.teamIncome.first}</span>
@@ -349,7 +317,6 @@ const Me = () => {
                                                 </div>
                                             </div>
 
-                                            {/* Investment and Daily Income Column */}
                                             <div className="flex flex-col gap-2">
                                                 <div className="bg-black/20 rounded lg p-2 border border-white/5 flex flex-col items-center justify-center flex-1">
                                                     <div className="flex items-center gap-1.5 text-white/40 text-[9px] font-bold uppercase mb-1">
@@ -385,7 +352,6 @@ const Me = () => {
                                             </div>
                                         </div>
 
-                                        {/* Action Button */}
                                         <button
                                             onClick={() => isCurrentLevel && navigate('/lend', { state: { viewLevel: level.from } })}
                                             disabled={!isCurrentLevel}

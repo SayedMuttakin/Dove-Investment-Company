@@ -64,14 +64,14 @@ const Withdraw = () => {
         <div className="min-h-screen bg-dark-300 pb-20">
             {/* Header - Matching Home.jsx */}
             <div className="bg-dark-200 border-b border-white/10">
-                <div className="max-w-md mx-auto px-4 py-2.5 flex items-center justify-between">
-                    <button onClick={() => navigate(-1)} className="text-white/60 hover:text-white">
+                <div className="max-w-md mx-auto px-4 py-2.5 flex items-center justify-between relative">
+                    <button onClick={() => navigate(-1)} className="text-white/60 hover:text-white relative z-10">
                         <ArrowLeft size={22} />
                     </button>
-                    <div className="flex-1 text-center">
+                    <div className="absolute left-1/2 -translate-x-1/2">
                         <h1 className="text-white font-bold text-lg">Withdraw</h1>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 relative z-10">
                         <button className="relative p-2 text-white/60 hover:text-white transition-colors">
                             <Bell size={20} />
                         </button>

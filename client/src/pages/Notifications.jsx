@@ -91,30 +91,34 @@ const Notifications = () => {
         <div className="min-h-screen bg-dark-300 pb-20">
             {/* Header */}
             <div className="sticky top-0 z-50 bg-dark-200/80 backdrop-blur-md border-b border-white/5 py-2.5 px-4 shadow-lg">
-                <div className="max-w-md mx-auto flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                <div className="max-w-md mx-auto flex items-center justify-between relative h-10">
+                    <div className="flex items-center gap-3 relative z-10 w-24">
                         <button
                             onClick={() => navigate(-1)}
                             className="p-2 -ml-2 text-white/60 hover:text-white transition-colors"
                         >
                             <ArrowLeft size={20} />
                         </button>
-                        <div>
-                            <h1 className="text-lg font-bold text-white leading-none">Notifications</h1>
-                            {unreadCount > 0 && (
-                                <span className="text-[10px] text-primary font-medium">{unreadCount} unread messages</span>
-                            )}
-                        </div>
                     </div>
-                    {notifications.length > 0 && (
-                        <button
-                            onClick={markAllAsRead}
-                            className="flex items-center gap-1.5 text-xs text-primary hover:text-primary-light transition-colors font-medium px-2 py-1 rounded-lg bg-primary/10"
-                        >
-                            <CheckCheck size={14} />
-                            Mark all as read
-                        </button>
-                    )}
+
+                    <div className="absolute left-1/2 -translate-x-1/2 text-center">
+                        <h1 className="text-sm font-bold text-white leading-none">Notifications</h1>
+                        {unreadCount > 0 && (
+                            <span className="text-[9px] text-primary font-medium block mt-1">{unreadCount} unread</span>
+                        )}
+                    </div>
+
+                    <div className="relative z-10 w-24 flex justify-end">
+                        {notifications.length > 0 && (
+                            <button
+                                onClick={markAllAsRead}
+                                className="flex items-center gap-1.5 text-[10px] text-primary hover:text-primary-light transition-colors font-medium px-2 py-1 rounded-lg bg-primary/10"
+                            >
+                                <CheckCheck size={12} />
+                                Read All
+                            </button>
+                        )}
+                    </div>
                 </div>
             </div>
 

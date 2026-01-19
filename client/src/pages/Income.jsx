@@ -113,14 +113,17 @@ const Income = () => {
         <div className="min-h-screen bg-dark-300 pb-24 font-sans text-gray-100">
             {/* Top Header */}
             <div className="bg-dark-200 border-b border-white/10">
-                <div className="max-w-md mx-auto px-4 py-2.5 flex items-center justify-between">
-                    {/* Page Name - Center */}
-                    <div className="flex-1 text-center">
+                <div className="max-w-md mx-auto px-4 py-2.5 flex items-center justify-between relative">
+                    {/* Placeholder for left to balance flex if needed, but absolute is better */}
+                    <div className="w-10"></div>
+
+                    {/* Page Name - Perfect Center */}
+                    <div className="absolute left-1/2 -translate-x-1/2">
                         <h1 className="text-white font-bold text-lg">Income</h1>
                     </div>
 
                     {/* Icons - Right Side */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 relative z-10">
                         <button
                             onClick={() => navigate('/notifications')}
                             className="relative p-2 text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full"

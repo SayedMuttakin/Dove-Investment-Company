@@ -53,16 +53,19 @@ const History = () => {
         <div className="min-h-screen bg-dark-300 pb-24">
             {/* Header */}
             <div className="bg-dark-200 border-b border-white/5 shadow-lg">
-                <div className="max-w-md mx-auto px-4 h-13 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                <div className="max-w-md mx-auto px-4 h-13 flex items-center justify-between relative">
+                    <div className="flex items-center gap-3 relative z-10 w-10">
                         <button
                             onClick={() => navigate(-1)}
                             className="p-1.5 hover:bg-white/5 rounded-lg transition-colors text-white/60 hover:text-white"
                         >
                             <ArrowLeft size={20} />
                         </button>
+                    </div>
+                    <div className="absolute left-1/2 -translate-x-1/2">
                         <h1 className="text-lg font-bold text-white tracking-tight">Financial History</h1>
                     </div>
+                    <div className="w-10"></div>
                 </div>
             </div>
 
