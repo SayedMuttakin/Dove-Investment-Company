@@ -208,18 +208,21 @@ const WalletPage = () => {
                                 </div>
                             </div>
 
-                            <div className="flex justify-between text-sm">
-                                <div>
-                                    <span className="text-gray-400 text-xs block">Available</span>
-                                    <span className="font-medium text-white">{loading ? '...' : assetsData.availableIncome.toFixed(2)}</span>
+                            <div className="flex items-start justify-between gap-2 text-sm">
+                                <div className="flex-1 min-w-0">
+                                    <span className="text-gray-400 text-[10px] uppercase tracking-wider block mb-0.5">Available</span>
+                                    <span className="font-bold text-white text-sm">{loading ? '...' : assetsData.availableIncome.toFixed(2)}</span>
                                 </div>
-                                <div className="text-center">
-                                    <span className="text-gray-400 text-xs block">Investment</span>
-                                    <span className="font-medium text-white">{loading ? '...' : assetsData.lendingInvestments.toFixed(0)}</span>
+                                <div className="flex-1 min-w-0 px-2 border-l border-white/5">
+                                    <span className="text-gray-400 text-[10px] uppercase tracking-wider block mb-0.5 whitespace-nowrap">Investment</span>
+                                    <span className="font-bold text-white text-sm">{loading ? '...' : assetsData.lendingInvestments.toFixed(0)}</span>
                                 </div>
-                                <div className="text-right">
-                                    <span className="text-gray-400 text-xs text-transparent select-none">.</span>
-                                    <span className="font-bold block text-white">{loading ? '...' : `${assetsData.totalAssets.toFixed(2)} ≈ ${assetsData.totalAssets.toFixed(2)} USDT`}</span>
+                                <div className="text-right flex-1">
+                                    <span className="text-gray-400 text-[10px] text-transparent select-none block mb-0.5">.</span>
+                                    <div className="flex flex-col items-end">
+                                        <span className="font-black text-white text-sm leading-none">{loading ? '...' : `${assetsData.totalAssets.toFixed(2)}`}</span>
+                                        <span className="text-[10px] text-gray-400 mt-1 uppercase font-medium tracking-tighter">≈ {assetsData.totalAssets.toFixed(2)} USDT</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
