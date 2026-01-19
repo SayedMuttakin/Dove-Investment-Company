@@ -96,10 +96,6 @@ const History = () => {
                             <span className="text-white/60 text-sm font-medium">Lending Income</span>
                             <span className="text-white font-black text-sm">{data?.interestIncome?.toFixed(1) || '0.0'}</span>
                         </div>
-                        <div className="flex justify-between items-center p-4 hover:bg-white/5 transition-colors">
-                            <span className="text-white/60 text-sm font-medium">Fund income</span>
-                            <span className="text-white font-black text-sm">{data?.totalEarned?.toFixed(1) || '0.0'}</span>
-                        </div>
                         <div className="flex justify-between items-center p-4 hover:bg-white/5 transition-colors bg-white/[0.02]">
                             <span className="text-white/60 text-sm font-medium">Team Benefits</span>
                             <span className="text-white font-black text-sm">{data?.teamIncome?.toFixed(2) || '0.00'}</span>
@@ -110,7 +106,7 @@ const History = () => {
                         </div>
                         <div className="flex justify-between items-center p-5 bg-gradient-to-r from-primary/10 to-transparent border-t border-primary/20">
                             <span className="text-primary font-black text-sm uppercase tracking-widest">Total Income</span>
-                            <span className="text-primary font-black text-lg">{(data?.interestIncome + data?.teamIncome + data?.bonusIncome + data?.totalEarned)?.toFixed(2)}</span>
+                            <span className="text-primary font-black text-lg">{(data?.interestIncome + data?.teamIncome + data?.bonusIncome)?.toFixed(2)}</span>
                         </div>
                     </div>
                 </div>
