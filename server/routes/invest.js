@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import Package from '../models/Package.js';
 import User from '../models/User.js';
 import { authMiddleware } from '../middleware/auth.js';
-import { distributeCommissions } from '../utils/teamCommissions.js';
 import { createNotification } from '../utils/notifications.js';
 import Notification from '../models/Notification.js';
 
@@ -126,15 +125,6 @@ router.post('/create', authMiddleware, async (req, res) => {
             amount,
             relatedId: user.investments[user.investments.length - 1]._id
         });
-
-        // Distribute team commissions to upline users
-        try {
-            await distributeCommissions(user, amount);
-            console.log(`✅ Commissions distributed for investment of $${amount}`);
-        } catch (commissionError) {
-            console.error('Commission distribution error:', commissionError);
-            // Don't fail the investment if commission fails
-        }
 
         res.status(201).json({
             message: 'Investment created successfully',
