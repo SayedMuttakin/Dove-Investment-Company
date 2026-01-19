@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import QRCode from 'qrcode';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import BottomNav from '../components/BottomNav';
 
 const Deposit = () => {
     const navigate = useNavigate();
