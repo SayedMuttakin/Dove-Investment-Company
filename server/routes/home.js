@@ -4,6 +4,7 @@ import User from '../models/User.js';
 import Package from '../models/Package.js';
 import SystemSettings from '../models/SystemSettings.js';
 import Notification from '../models/Notification.js';
+import Deposit from '../models/Deposit.js';
 
 const router = express.Router();
 
@@ -56,6 +57,40 @@ router.get('/stats', authMiddleware, async (req, res) => {
 
     } catch (error) {
         console.error('Platform stats error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Get about page statistics
+router.get('/about-stats', async (req, res) => {
+    try {
+        // 1. Total Users (Base 1,000 + actual count)
+        const actualUserCount = await User.countDocuments({ role: 'user' });
+        const displayUsers = 1000 + actualUserCount;
+
+        // 2. Capital Pool (Base 2623.13 + actual approved deposits)
+        // Note: Deposits are in USD now ($10 minimum)
+        const deposits = await Deposit.find({ status: 'approved' });
+        const totalDeposited = deposits.reduce((sum, d) => sum + d.amount, 0);
+
+        // Convert totalDeposited to "million" context if needed, 
+        // but user says "add to the current amount".
+        // Current amount is 2623.13 million. 
+        // If we just add raw dollars, it won't make sense unless we scale it.
+        // However, the user said "akhn je amount ace setai thakbe sudhu next joto deposite hbe ekhane ei amount tar sathe add hote thakbe".
+        // This suggests a simple sum, but since it's "million capital pool", 
+        // maybe we should add (totalDeposited / 1,000,000) to 2623.13.
+        // OR the user might just want the raw number to increase.
+        // Let's assume the base is 2623.13 and we add real-time growth.
+
+        const displayCapitalPool = (2623.13 + (totalDeposited / 1000000)).toFixed(2);
+
+        res.json({
+            users: displayUsers.toLocaleString(),
+            capitalPool: displayCapitalPool
+        });
+    } catch (error) {
+        console.error('About stats error:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });

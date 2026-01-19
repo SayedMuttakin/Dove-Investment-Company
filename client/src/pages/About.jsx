@@ -1,9 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { ArrowLeft, Users, Globe, DollarSign } from 'lucide-react';
 
 const About = () => {
     const navigate = useNavigate();
+    const [stats, setStats] = useState({
+        users: '1,000',
+        capitalPool: '2623.13'
+    });
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const response = await axios.get('/api/home/about-stats');
+                setStats(response.data);
+            } catch (error) {
+                console.error('Error fetching about stats:', error);
+            }
+        };
+        fetchStats();
+    }, []);
 
     return (
         <div className="min-h-screen bg-primary">
@@ -37,7 +54,7 @@ const About = () => {
                                 <Users size={28} />
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-black font-black text-2xl tracking-tight leading-none">1,041,193</span>
+                                <span className="text-black font-black text-2xl tracking-tight leading-none">{stats.users}</span>
                                 <span className="text-black/40 text-[10px] font-bold uppercase tracking-widest mt-1">Users</span>
                             </div>
                         </div>
@@ -59,7 +76,7 @@ const About = () => {
                                 <DollarSign size={28} />
                             </div>
                             <div className="flex flex-col">
-                                <span className="text-black font-black text-2xl tracking-tight leading-none">$2623.13</span>
+                                <span className="text-black font-black text-2xl tracking-tight leading-none">${stats.capitalPool}</span>
                                 <span className="text-black/40 text-[10px] font-bold uppercase tracking-widest mt-1">million capital pool</span>
                             </div>
                         </div>
@@ -80,7 +97,7 @@ const About = () => {
                 {/* Bottom Credit */}
                 <div className="px-8 text-center pb-8 opacity-20 mt-auto">
                     <p className="text-black text-[9px] font-bold uppercase tracking-[0.3em]">
-                        Dove Investment Company © 2024
+                        Dove Investment Company © 2025
                     </p>
                 </div>
             </div>
