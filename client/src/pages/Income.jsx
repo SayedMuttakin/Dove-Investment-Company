@@ -22,7 +22,15 @@ const Income = () => {
     const [loading, setLoading] = useState(false);
     const [collecting, setCollecting] = useState(false);
     const [teamBenefits, setTeamBenefits] = useState({ count: 0, totalAmount: 0 });
-    const [chartData, setChartData] = useState([0, 0, 0, 0, 0, 0, 0]);
+    const [chartData, setChartData] = useState([
+        { day: 'Sun', amount: 0 },
+        { day: 'Mon', amount: 0 },
+        { day: 'Tue', amount: 0 },
+        { day: 'Wed', amount: 0 },
+        { day: 'Thu', amount: 0 },
+        { day: 'Fri', amount: 0 },
+        { day: 'Sat', amount: 0 }
+    ]);
 
     // Fetch income data
     const fetchIncome = async () => {
@@ -73,15 +81,16 @@ const Income = () => {
     };
 
     // Use real data from backend for the chart
-    const maxVal = Math.max(...chartData, 10); // Minimum scale of 10 USDT
+    const chartValues = chartData.map(d => d.amount || 0);
+    const maxVal = Math.max(...chartValues, 10); // Minimum scale of 10 USDT
 
     // Generate SVG path for the area chart
     const generateChartPath = () => {
         const width = 100;
         const height = 60;
-        const points = chartData.map((val, index) => {
+        const points = chartData.map((d, index) => {
             const x = (index / (chartData.length - 1)) * width;
-            const y = height - (val / maxVal) * height; // Invert Y because SVG coords top-down
+            const y = height - ((d.amount || 0) / maxVal) * height; // Invert Y because SVG coords top-down
             return `${x},${y}`;
         });
 
@@ -92,9 +101,9 @@ const Income = () => {
     const generateLinePath = () => {
         const width = 100;
         const height = 60;
-        const points = chartData.map((val, index) => {
+        const points = chartData.map((d, index) => {
             const x = (index / (chartData.length - 1)) * width;
-            const y = height - (val / maxVal) * height;
+            const y = height - ((d.amount || 0) / maxVal) * height;
             return `${x},${y}`;
         });
         return `M${points.join(' L')}`;
@@ -309,6 +318,15 @@ const Income = () => {
                                     vectorEffect="non-scaling-stroke"
                                 />
                             </svg>
+
+                            {/* X-axis labels (Days) */}
+                            <div className="absolute -bottom-6 left-0 right-0 flex justify-between px-0">
+                                {chartData.map((d, i) => (
+                                    <span key={i} className="text-[10px] text-gray-500 font-medium w-8 text-center">
+                                        {d.day}
+                                    </span>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>

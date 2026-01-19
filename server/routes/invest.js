@@ -410,6 +410,8 @@ router.get('/daily-stats', authMiddleware, async (req, res) => {
 
         // Create an array for the last 7 days, filling gaps with 0
         const result = [];
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
         for (let i = 0; i < 7; i++) {
             const date = new Date(sevenDaysAgo);
             date.setDate(sevenDaysAgo.getDate() + i);
@@ -420,7 +422,11 @@ router.get('/daily-stats', authMiddleware, async (req, res) => {
                 s._id.day === date.getDate()
             );
 
-            result.push(dayStat ? dayStat.total : 0);
+            result.push({
+                date: date.toISOString().split('T')[0],
+                day: days[date.getDay()],
+                amount: dayStat ? dayStat.total : 0
+            });
         }
 
         res.json(result);
