@@ -45,8 +45,8 @@ router.post('/request', authMiddleware, async (req, res) => {
         }
 
         // Validate amount
-        if (!amount || amount <= 0) {
-            return res.status(400).json({ message: 'Invalid withdrawal amount' });
+        if (!amount || amount < 10) {
+            return res.status(400).json({ message: 'Minimum withdrawal amount is $10' });
         }
 
         // Check if user has sufficient balance
@@ -217,7 +217,7 @@ router.post('/admin/:id/approve', authMiddleware, adminMiddleware, async (req, r
                 userBalanceBefore: user.balance + withdrawal.amount,
                 userBalanceAfter: user.balance
             },
-            description: `Approved withdrawal of ৳${withdrawal.amount} for user ${user.phone}`
+            description: `Approved withdrawal of $${withdrawal.amount} for user ${user.phone}`
         });
         await log.save();
 
@@ -282,7 +282,7 @@ router.post('/admin/:id/reject', authMiddleware, adminMiddleware, async (req, re
                 amount: withdrawal.amount,
                 rejectionReason: withdrawal.rejectionReason
             },
-            description: `Rejected withdrawal of ৳${withdrawal.amount} for user ${user?.phone || 'Unknown'}: ${rejectionReason}`
+            description: `Rejected withdrawal of $${withdrawal.amount} for user ${user?.phone || 'Unknown'}: ${rejectionReason}`
         });
         await log.save();
 

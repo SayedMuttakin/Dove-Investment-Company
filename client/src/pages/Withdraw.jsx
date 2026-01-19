@@ -89,7 +89,7 @@ const Withdraw = () => {
                     <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
                     <div className="relative z-10 flex flex-col items-center">
                         <span className="text-white/60 text-sm font-medium mb-1">Available Balance</span>
-                        <h2 className="text-4xl font-bold text-white tracking-tight">৳{user?.balance?.toFixed(2) || '0.00'}</h2>
+                        <h2 className="text-4xl font-bold text-white tracking-tight">${user?.balance?.toFixed(2) || '0.00'}</h2>
                     </div>
                 </div>
 
@@ -100,11 +100,11 @@ const Withdraw = () => {
                     <div className="space-y-2">
                         <label className="text-white/80 text-sm font-semibold ml-1">Withdrawal Amount</label>
                         <div className="relative group">
-                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-primary font-bold text-lg">৳</span>
+                            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-primary font-bold text-lg">$</span>
                             <input
                                 type="number"
                                 required
-                                min="100"
+                                min="10"
                                 placeholder="0.00"
                                 className="w-full bg-dark-200 border border-white/10 rounded-2xl py-4 pl-10 pr-4 text-white text-xl font-bold focus:outline-none focus:border-primary focus:bg-dark-100 transition-all"
                                 value={amount}
@@ -112,7 +112,7 @@ const Withdraw = () => {
                             />
                         </div>
                         <div className="flex justify-between px-1">
-                            <p className="text-white/40 text-xs text-secondary">Minimum withdrawal: ৳100</p>
+                            <p className="text-white/40 text-xs text-secondary">Minimum withdrawal: $10</p>
                             <button
                                 type="button"
                                 onClick={() => setAmount(user?.balance?.toFixed(0))}
