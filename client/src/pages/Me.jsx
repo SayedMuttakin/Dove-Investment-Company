@@ -17,7 +17,8 @@ import {
     HelpCircle,
     Bell,
     Briefcase,
-    History
+    History,
+    UserPlus
 } from 'lucide-react';
 import axios from 'axios';
 import { usePWA } from '../hooks/usePWA';
@@ -191,6 +192,17 @@ const Me = () => {
                                     User ID: {user?.memberId || 'N/A'}
                                 </span>
                             </div>
+
+                            {/* Invite Friends Button */}
+                            <button
+                                onClick={copyInvitationCode}
+                                className="flex flex-col items-center gap-1 ml-auto group"
+                            >
+                                <div className="w-10 h-10 rounded-full bg-[#a4f13a]/10 border border-[#a4f13a]/20 flex items-center justify-center text-[#a4f13a] transition-all group-active:scale-90 group-hover:bg-[#a4f13a]/20 shadow-lg shadow-[#a4f13a]/5">
+                                    <UserPlus size={20} />
+                                </div>
+                                <span className="text-[#a4f13a] text-[8px] font-black uppercase tracking-tighter">Invite Friends</span>
+                            </button>
                         </div>
 
                         <div className="flex items-center gap-1 relative z-10 justify-end">
@@ -370,31 +382,7 @@ const Me = () => {
                     </div>
                 </div>
 
-                {/* Referral Card */}
-                <div className="glass-card p-3">
-                    <h2 className="text-white font-bold text-xs mb-2 flex items-center gap-2">
-                        <Gift size={12} className="text-primary" />
-                        Invitation Code
-                    </h2>
-                    <div className="glass-card p-4">
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-white/60 text-sm">Referral Link</span>
-                            <button
-                                onClick={copyInvitationCode}
-                                className="flex items-center gap-1 text-primary hover:text-primary-light transition-colors"
-                            >
-                                <Copy size={16} />
-                                <span className="text-xs">Copy Link</span>
-                            </button>
-                        </div>
-                        <div className="bg-dark-300 rounded-lg p-3 border border-white/10">
-                            <p className="text-white font-mono text-xs break-all">
-                                {`${window.location.origin}/register?ref=${user?.invitationCode || ''}`}
-                            </p>
-                        </div>
-                        <p className="text-white/40 text-xs mt-2">Share this link to invite friends and earn rewards!</p>
-                    </div>
-                </div>
+
 
                 {/* App Download */}
                 {isInstallable && (
