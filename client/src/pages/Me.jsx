@@ -146,7 +146,7 @@ const Me = () => {
                 <div className="max-w-md mx-auto px-4">
                     {/* Profile Info */}
                     <div className="flex items-center justify-between mb-3 relative">
-                        <div className="flex items-center gap-3 relative z-10 w-24">
+                        <div className="flex items-center gap-3 relative z-10">
                             <div
                                 onClick={() => fileInputRef.current?.click()}
                                 className="relative group cursor-pointer"
@@ -182,17 +182,18 @@ const Me = () => {
                                     onChange={handleImageUpload}
                                 />
                             </div>
+                            <div className="flex flex-col">
+                                <h1 className="text-white font-black text-lg tracking-tight leading-none">Dove</h1>
+                                <span className="text-white/60 text-[10px] font-bold mt-1">
+                                    User: {user?.fullName || user?.phone || 'User'}
+                                </span>
+                                <span className="text-white/40 text-[9px] font-medium leading-none mt-0.5">
+                                    User ID: {user?.memberId || 'N/A'}
+                                </span>
+                            </div>
                         </div>
 
-                        {/* Centered Heading */}
-                        <div className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center">
-                            <h1 className="text-white font-black text-lg tracking-tight">Dove</h1>
-                            <span className="text-white/40 text-[9px] font-medium leading-none mt-1">
-                                {user?.fullName || user?.phone || 'User'}
-                            </span>
-                        </div>
-
-                        <div className="flex items-center gap-1 relative z-10 w-24 justify-end">
+                        <div className="flex items-center gap-1 relative z-10 justify-end">
                             <button onClick={() => navigate('/notifications')} className="p-2 text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full">
                                 <Bell size={18} />
                             </button>
