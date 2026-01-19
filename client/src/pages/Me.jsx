@@ -288,7 +288,7 @@ const Me = () => {
                                     <div className={`bg-dark-200 border-2 border-t-0 rounded-b-2xl p-4 pt-4 relative z-0 ${isCurrentLevel ? 'border-[#a4f13a] shadow-[0_10px_20px_rgba(164,241,58,0.1)]' : 'border-white/10'
                                         }`}>
                                         <div className="flex items-center gap-2 mb-4">
-                                            <span className="text-white font-bold text-xs">VIP Level {level.to}</span>
+                                            <span className="text-white font-bold text-xs">VIP Level {level.from}</span>
                                             {!isCurrentLevel && <Shield size={12} className="text-white/20" />}
                                         </div>
 
