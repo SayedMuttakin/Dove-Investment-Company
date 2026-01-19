@@ -79,17 +79,13 @@ router.get('/stats', authMiddleware, adminMiddleware, async (req, res) => {
             { $group: { _id: null, total: { $sum: "$balance" } } }
         ]);
 
-        // Get system balance (Deposits - Withdrawals) roughly
-        const revenue = (totalDeposits[0]?.total || 0) - (totalWithdrawals[0]?.total || 0);
-
         res.json({
             totalUsers,
             totalDepositsAmount: totalDeposits[0]?.total || 0,
             totalWithdrawalsAmount: totalWithdrawals[0]?.total || 0,
             pendingDepositsCount: pendingDeposits,
             pendingWithdrawalsCount: pendingWithdrawals,
-            totalUserBalance: userBalances[0]?.total || 0,
-            netRevenue: revenue
+            totalUserBalance: userBalances[0]?.total || 0
         });
     } catch (error) {
         console.error('Admin stats error:', error);

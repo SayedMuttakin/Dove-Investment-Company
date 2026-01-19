@@ -37,13 +37,6 @@ const AdminDashboard = () => {
             bg: 'bg-blue-500/10'
         },
         {
-            title: 'Net Revenue',
-            value: `৳${stats?.netRevenue?.toLocaleString() || '0'}`,
-            icon: Activity,
-            color: 'from-purple-500 to-pink-400',
-            bg: 'bg-purple-500/10'
-        },
-        {
             title: 'Pending Deposits',
             value: stats?.pendingDepositsCount || 0,
             icon: Wallet,
@@ -51,7 +44,7 @@ const AdminDashboard = () => {
             bg: 'bg-amber-500/10'
         },
         {
-            title: 'Pending Weithdrawals',
+            title: 'Pending Withdrawals',
             value: stats?.pendingWithdrawalsCount || 0,
             icon: Download,
             color: 'from-red-500 to-rose-400',
