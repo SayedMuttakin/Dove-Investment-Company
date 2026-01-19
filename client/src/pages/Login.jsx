@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
-import { Eye, EyeOff, ArrowLeft, RefreshCw, Globe, Download, Bird } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft, RefreshCw, Globe, Download } from 'lucide-react';
 import AuthLayout from '../components/AuthLayout';
 import CountrySelector from '../components/CountrySelector';
 import { usePWA } from '../hooks/usePWA';
@@ -73,8 +73,12 @@ const Login = () => {
 
                 <div className="flex items-center justify-center gap-3 mb-3">
                     {/* Logo */}
-                    <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-glow-lg transition-transform hover:scale-110">
-                        <Bird size={40} className="text-white" />
+                    <div className="w-20 h-20 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-glow-lg transition-transform hover:scale-110 overflow-hidden">
+                        <img
+                            src="/pwa-icon-192.png"
+                            alt="Dove Logo"
+                            className="w-full h-full object-cover p-1"
+                        />
                     </div>
                 </div>
 
