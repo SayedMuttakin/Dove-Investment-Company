@@ -198,7 +198,10 @@ const Home = () => {
                                 {companyInfo?.description || 'Your trusted partner in financial growth. We provide secure and profitable investment solutions with transparency and excellence.'}
                             </p>
                         </div>
-                        <button className="w-full bg-gradient-primary text-white font-semibold py-3 px-6 rounded-xl hover:shadow-glow-lg transition-all">
+                        <button
+                            onClick={() => navigate('/about')}
+                            className="w-full bg-gradient-primary text-white font-semibold py-3 px-6 rounded-xl hover:shadow-glow-lg transition-all"
+                        >
                             Learn More About Us
                         </button>
                     </div>
