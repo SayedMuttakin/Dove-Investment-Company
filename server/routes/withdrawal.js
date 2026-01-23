@@ -49,10 +49,15 @@ router.post('/request', authMiddleware, async (req, res) => {
             return res.status(400).json({ message: 'Minimum withdrawal amount is $10' });
         }
 
-        // Check if user has sufficient balance
-        if (user.balance < amount) {
+        // Calculate 5% fee and total deduction
+        const fee = amount * 0.05;
+        const totalAmount = amount + fee;
+
+        // Check if user has sufficient balance for total deduction
+        if (user.balance < totalAmount) {
             return res.status(400).json({
-                message: 'Insufficient balance',
+                message: 'Insufficient balance (including 5% processing fee)',
+                requiredBalance: totalAmount,
                 currentBalance: user.balance
             });
         }
@@ -66,6 +71,8 @@ router.post('/request', authMiddleware, async (req, res) => {
         const withdrawal = new Withdrawal({
             userId,
             amount,
+            fee,
+            totalAmount,
             bankDetails,
             paymentMethod: paymentMethod || 'bank',
             status: 'pending'
@@ -77,7 +84,7 @@ router.post('/request', authMiddleware, async (req, res) => {
         await createNotification({
             userId,
             title: 'Withdrawal Requested',
-            message: `Your withdrawal request for $${amount} has been submitted.`,
+            message: `Your withdrawal request for $${amount} (plus $${fee} fee, total $${totalAmount}) has been submitted.`,
             type: 'withdrawal',
             amount,
             relatedId: withdrawal._id
@@ -171,17 +178,19 @@ router.post('/admin/:id/approve', authMiddleware, adminMiddleware, async (req, r
             return res.status(404).json({ message: 'User not found' });
         }
 
+        // Deduct from user balance
+        const deductionAmount = withdrawal.totalAmount || withdrawal.amount;
+
         // Check if user still has sufficient balance
-        if (user.balance < withdrawal.amount) {
+        if (user.balance < deductionAmount) {
             return res.status(400).json({
                 message: 'User has insufficient balance',
                 userBalance: user.balance,
-                withdrawalAmount: withdrawal.amount
+                requiredAmount: deductionAmount
             });
         }
 
-        // Deduct from user balance
-        user.balance -= withdrawal.amount;
+        user.balance -= deductionAmount;
         await user.save();
 
         // Update withdrawal

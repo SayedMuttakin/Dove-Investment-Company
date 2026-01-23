@@ -176,6 +176,21 @@ const Withdraw = () => {
                         </div>
                     </div>
 
+                    {/* Fee and Total Deduction Details */}
+                    {amount && Number(amount) >= 10 && (
+                        <div className="glass-card p-4 space-y-2 border border-primary/10 bg-primary/5">
+                            <div className="flex justify-between items-center text-sm">
+                                <span className="text-white/60">Processing Fee (5%)</span>
+                                <span className="text-red-400 font-semibold">${(Number(amount) * 0.05).toFixed(2)}</span>
+                            </div>
+                            <div className="h-px bg-white/10 my-1"></div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-white font-bold">Total Deduction</span>
+                                <span className="text-primary font-bold text-lg">${(Number(amount) * 1.05).toFixed(2)}</span>
+                            </div>
+                        </div>
+                    )}
+
                     <button
                         type="submit"
                         disabled={loading}
@@ -189,7 +204,7 @@ const Withdraw = () => {
                     </button>
 
                     <p className="text-center text-white/30 text-[11px] px-6 leading-relaxed">
-                        Processing time: 1-24 hours depending on network traffic and bank hours. Fees may apply based on your selected method.
+                        Processing time: 72-96 hours depending on network traffic and bank hours. 5% processing fee applies.
                     </p>
                 </form>
             </div>

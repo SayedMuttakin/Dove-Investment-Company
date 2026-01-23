@@ -11,6 +11,14 @@ const withdrawalSchema = new mongoose.Schema({
         required: true,
         min: 0
     },
+    fee: {
+        type: Number,
+        default: 0
+    },
+    totalAmount: {
+        type: Number,
+        default: 0
+    },
     bankDetails: {
         accountName: {
             type: String,
