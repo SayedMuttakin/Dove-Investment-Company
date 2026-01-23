@@ -206,6 +206,20 @@ const Home = () => {
                         </button>
                     </div>
                 </div>
+
+                {/* Certificate Section */}
+                <div className="px-4">
+                    <div className="glass-card p-6 text-center">
+                        <h2 className="text-white text-xl font-bold mb-4">Our Certificate</h2>
+                        <div className="bg-white/5 rounded-xl p-4 backdrop-blur-sm">
+                            <img
+                                src="/images/certificate.png"
+                                alt="Company Certificate"
+                                className="w-full h-auto rounded-lg shadow-lg hover:shadow-glow-lg transition-all"
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {/* Bottom Navigation */}
