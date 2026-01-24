@@ -63,9 +63,26 @@ app.get('/api/health', (req, res) => {
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URI)
-    .then(() => {
+    .then(async () => {
         console.log('✅ Connected to MongoDB');
         console.log('📊 Database:', mongoose.connection.name);
+
+        // Auto-fix sparse indexes for live server deployment
+        try {
+            const collection = mongoose.connection.collection('users');
+            // Drop existing indexes to ensure sparse flag is applied
+            await collection.dropIndex('phone_1').catch(() => { });
+            await collection.dropIndex('email_1').catch(() => { });
+            await collection.dropIndex('memberId_1').catch(() => { });
+
+            // Create them with sparse: true
+            await collection.createIndex({ phone: 1 }, { unique: true, sparse: true });
+            await collection.createIndex({ email: 1 }, { unique: true, sparse: true });
+            await collection.createIndex({ memberId: 1 }, { unique: true, sparse: true });
+            console.log('🚀 Database Indexes Synchronized (Sparse Mode Active)');
+        } catch (err) {
+            console.log('ℹ️ Index Sync Note:', err.message);
+        }
     })
     .catch((error) => {
         console.error('❌ MongoDB connection error:', error);
