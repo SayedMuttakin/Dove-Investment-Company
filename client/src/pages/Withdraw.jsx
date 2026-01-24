@@ -64,7 +64,7 @@ const Withdraw = () => {
         <div className="min-h-screen bg-dark-300 pb-20">
             {/* Header - Matching Home.jsx */}
             <div className="bg-dark-200 border-b border-white/10">
-                <div className="max-w-md mx-auto px-4 py-2.5 flex items-center justify-between relative">
+                <div className="max-w-md mx-auto px-4 py-1.5 flex items-center justify-between relative">
                     <button onClick={() => navigate(-1)} className="text-white/60 hover:text-white relative z-10">
                         <ArrowLeft size={22} />
                     </button>

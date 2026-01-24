@@ -46,7 +46,7 @@ const LendFunding = () => {
         <div className="min-h-screen bg-dark-300 pb-6">
             {/* Header */}
             <div className="bg-dark-200 border-b border-white/10 sticky top-0 z-10 shadow-lg">
-                <div className="max-w-md mx-auto px-4 py-4 relative flex items-center justify-center">
+                <div className="max-w-md mx-auto px-4 py-2 relative flex items-center justify-center">
                     <button
                         onClick={() => navigate(-1)}
                         className="absolute left-4 p-2 text-white/60 hover:text-white hover:bg-white/5 rounded-full transition-colors"

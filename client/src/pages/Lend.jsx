@@ -129,7 +129,7 @@ const Lend = () => {
         <div className="min-h-screen bg-dark-300 pb-20">
             {/* Header - Matching Home.jsx but simplified */}
             <div className="bg-dark-200 border-b border-white/10 sticky top-0 z-20">
-                <div className="max-w-md mx-auto px-4 py-2.5 flex items-center justify-between relative">
+                <div className="max-w-md mx-auto px-4 py-1.5 flex items-center justify-between relative">
                     <div className="w-10"></div>
                     <div className="absolute left-1/2 -translate-x-1/2">
                         <h1 className="text-white font-bold text-lg">Lend</h1>

@@ -88,7 +88,7 @@ const WalletPage = () => {
 
             {/* Header */}
             <div className="bg-dark-200 border-b border-white/10">
-                <div className="max-w-md mx-auto px-4 py-2.5 flex items-center justify-between relative">
+                <div className="max-w-md mx-auto px-4 py-1.5 flex items-center justify-between relative">
                     <div className="w-10"></div>
                     {/* Page Name - Center */}
                     <div className="absolute left-1/2 -translate-x-1/2">

@@ -65,7 +65,7 @@ const History = () => {
         <div className="min-h-screen bg-dark-300 pb-24">
             {/* Header */}
             <div className="bg-dark-200 border-b border-white/5 shadow-lg">
-                <div className="max-w-md mx-auto px-4 h-13 flex items-center justify-between relative">
+                <div className="max-w-md mx-auto px-4 h-10 flex items-center justify-between relative">
                     <div className="flex items-center gap-3 relative z-10 w-10">
                         <button
                             onClick={() => navigate(-1)}
