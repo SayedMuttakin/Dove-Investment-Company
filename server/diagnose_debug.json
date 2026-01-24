@@ -1,0 +1,89 @@
+{
+  "connected": true,
+  "indexes": {
+    "_id_": [
+      [
+        "_id",
+        1
+      ]
+    ],
+    "invitationCode_1": [
+      [
+        "invitationCode",
+        1
+      ]
+    ],
+    "phone_1": [
+      [
+        "phone",
+        1
+      ]
+    ],
+    "email_1": [
+      [
+        "email",
+        1
+      ]
+    ],
+    "memberId_1": [
+      [
+        "memberId",
+        1
+      ]
+    ]
+  },
+  "userCount": 10,
+  "users": [
+    {
+      "id": "6940014047baa704b4459807",
+      "phone": "+10123456355",
+      "name": null
+    },
+    {
+      "id": "694003ea47baa704b445980f",
+      "phone": "+10123456789",
+      "name": null
+    },
+    {
+      "id": "6942fcfdca51df4d0b0b0947",
+      "phone": "+112345678900",
+      "name": null
+    },
+    {
+      "id": "694306b7ca51df4d0b0b0959",
+      "phone": "+88001883229529",
+      "name": null
+    },
+    {
+      "id": "6945a4f0f1467c43e79306ea",
+      "phone": "+11234567890",
+      "name": null
+    },
+    {
+      "id": "6953cc8abfc80241fd5bfc82",
+      "phone": "admin",
+      "name": null
+    },
+    {
+      "id": "69566ee4d672ac60a5c7d2cd",
+      "phone": "+8801615770659",
+      "name": null
+    },
+    {
+      "id": "69567454f33425f13f3439e2",
+      "phone": "+1123456789",
+      "name": null
+    },
+    {
+      "id": "695ccdf31e77a8dfeb579802",
+      "phone": "+1111111111",
+      "name": "Sayed"
+    },
+    {
+      "id": "69752377753dc19ef3e2a150",
+      "email": "test1_1769284471648@example.com",
+      "name": "Test User"
+    }
+  ],
+  "collisions": []
+}

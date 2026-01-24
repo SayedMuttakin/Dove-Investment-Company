@@ -1,0 +1,60 @@
+{
+  "totalUsers": 11,
+  "ids": [
+    {
+      "id": "69752377753dc19ef3e2a150",
+      "memberId": 1769284471648,
+      "identifier": "test1_1769284471648@example.com"
+    },
+    {
+      "id": "697525836dc8f5f0571ece39",
+      "memberId": 1010,
+      "identifier": "test_manual_1769284995133@test.com"
+    },
+    {
+      "id": "695ccdf31e77a8dfeb579802",
+      "memberId": 9,
+      "identifier": "+1111111111"
+    },
+    {
+      "id": "69567454f33425f13f3439e2",
+      "memberId": 8,
+      "identifier": "+1123456789"
+    },
+    {
+      "id": "69566ee4d672ac60a5c7d2cd",
+      "memberId": 7,
+      "identifier": "+8801615770659"
+    },
+    {
+      "id": "6953cc8abfc80241fd5bfc82",
+      "memberId": 6,
+      "identifier": "admin"
+    },
+    {
+      "id": "6945a4f0f1467c43e79306ea",
+      "memberId": 5,
+      "identifier": "+11234567890"
+    },
+    {
+      "id": "694306b7ca51df4d0b0b0959",
+      "memberId": 4,
+      "identifier": "+88001883229529"
+    },
+    {
+      "id": "6942fcfdca51df4d0b0b0947",
+      "memberId": 3,
+      "identifier": "+112345678900"
+    },
+    {
+      "id": "694003ea47baa704b445980f",
+      "memberId": 2,
+      "identifier": "+10123456789"
+    },
+    {
+      "id": "6940014047baa704b4459807",
+      "memberId": 1,
+      "identifier": "+10123456355"
+    }
+  ]
+}

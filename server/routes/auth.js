@@ -79,7 +79,12 @@ router.post('/register', async (req, res) => {
         });
     } catch (error) {
         console.error('Registration error:', error);
-        res.status(500).json({ message: 'Server error during registration' });
+        res.status(500).json({
+            message: 'Server error during registration',
+            error: error.message,
+            details: error.name === 'ValidationError' ? error.errors : null,
+            backend_version: 'V2.1-EMAIL-FIX'
+        });
     }
 });
 

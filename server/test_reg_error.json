@@ -1,0 +1,49 @@
+{
+  "detailedIndexes": [
+    {
+      "v": 2,
+      "key": {
+        "_id": 1
+      },
+      "name": "_id_"
+    },
+    {
+      "v": 2,
+      "key": {
+        "invitationCode": 1
+      },
+      "name": "invitationCode_1",
+      "background": true,
+      "unique": true
+    },
+    {
+      "v": 2,
+      "key": {
+        "phone": 1
+      },
+      "name": "phone_1",
+      "unique": true,
+      "sparse": true
+    },
+    {
+      "v": 2,
+      "key": {
+        "email": 1
+      },
+      "name": "email_1",
+      "unique": true,
+      "sparse": true
+    },
+    {
+      "v": 2,
+      "key": {
+        "memberId": 1
+      },
+      "name": "memberId_1",
+      "unique": true,
+      "sparse": true
+    }
+  ],
+  "success": true,
+  "userId": "697525836dc8f5f0571ece39"
+}
