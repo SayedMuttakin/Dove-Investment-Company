@@ -3,12 +3,25 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import { authMiddleware } from '../middleware/auth.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const logFile = path.join(__dirname, '../reg_debug.log');
+
+const log = (msg) => {
+    const time = new Date().toISOString();
+    fs.appendFileSync(logFile, `${time} - ${msg}\n`);
+};
 
 const router = express.Router();
 
 // Register
 router.post('/register', async (req, res) => {
     try {
+        log(`Registration attempt: ${JSON.stringify(req.body)}`);
         const { phone, password, invitationCode, fullName } = req.body;
         const isEmail = phone.includes('@');
 
@@ -78,12 +91,15 @@ router.post('/register', async (req, res) => {
             }
         });
     } catch (error) {
+        const errInfo = `FAILED: ${error.message}\nStack: ${error.stack}`;
+        log(errInfo);
         console.error('Registration error:', error);
         res.status(500).json({
             message: 'Server error during registration',
             error: error.message,
+            stack: error.stack,
             details: error.name === 'ValidationError' ? error.errors : null,
-            backend_version: 'V2.1-EMAIL-FIX'
+            backend_version: 'V2.2-DEBUG-LOG'
         });
     }
 });
