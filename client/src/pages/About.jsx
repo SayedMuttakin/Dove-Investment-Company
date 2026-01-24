@@ -92,6 +92,20 @@ const About = () => {
                             />
                         </div>
                     </div>
+
+                    {/* Certificate Section */}
+                    <div className="px-4 mt-8">
+                        <div className="text-center">
+                            <h2 className="text-black text-2xl font-black mb-4 uppercase tracking-tight">Our Certificate</h2>
+                            <div className="bg-black/5 rounded-2xl p-4 backdrop-blur-sm border border-black/5">
+                                <img
+                                    src="/images/certificate.png"
+                                    alt="Company Certificate"
+                                    className="w-full h-auto rounded-xl shadow-xl transition-all"
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Bottom Credit */}
