@@ -12,8 +12,12 @@ const __dirname = path.dirname(__filename);
 const logFile = path.join(__dirname, '../reg_debug.log');
 
 const log = (msg) => {
-    const time = new Date().toISOString();
-    fs.appendFileSync(logFile, `${time} - ${msg}\n`);
+    try {
+        const time = new Date().toISOString();
+        fs.appendFileSync(logFile, `${time} - ${msg}\n`);
+    } catch (e) {
+        console.error('Logger failed:', e.message);
+    }
 };
 
 const router = express.Router();
@@ -22,13 +26,21 @@ const router = express.Router();
 router.post('/register', async (req, res) => {
     try {
         log(`Registration attempt: ${JSON.stringify(req.body)}`);
-        const { phone, password, invitationCode, fullName } = req.body;
+        const { password, invitationCode, fullName } = req.body;
+        const phone = req.body.phone ? String(req.body.phone).trim() : '';
 
         if (!phone) {
+            log('Error: Phone/Email missing');
             return res.status(400).json({ message: 'Email or Phone Number is required' });
         }
 
+        if (!password) {
+            log('Error: Password missing');
+            return res.status(400).json({ message: 'Password is required' });
+        }
+
         const isEmail = phone.includes('@');
+        log(`isEmail: ${isEmail}, Identifier: ${phone}`);
 
         // Check if user already exists
         const query = isEmail ? { email: phone.toLowerCase() } : { phone };
@@ -105,7 +117,7 @@ router.post('/register', async (req, res) => {
             error: error.message,
             stack: error.stack,
             details: error.name === 'ValidationError' ? error.errors : null,
-            backend_version: 'V2.2-DEBUG-LOG'
+            backend_version: 'V2.4-STABILITY-FIX'
         });
     }
 });
