@@ -23,6 +23,11 @@ router.post('/register', async (req, res) => {
     try {
         log(`Registration attempt: ${JSON.stringify(req.body)}`);
         const { phone, password, invitationCode, fullName } = req.body;
+
+        if (!phone) {
+            return res.status(400).json({ message: 'Email or Phone Number is required' });
+        }
+
         const isEmail = phone.includes('@');
 
         // Check if user already exists
@@ -48,8 +53,9 @@ router.post('/register', async (req, res) => {
         // Generate unique invitation code for new user
         const newInvitationCode = await User.generateInvitationCode();
 
-        // Get total users to assign next memberId
-        const userCount = await User.countDocuments();
+        // Get max memberId to avoid collisions
+        const lastUser = await User.findOne({}, 'memberId').sort({ memberId: -1 });
+        const nextMemberId = (lastUser?.memberId || 0) + 1;
 
         // Create user
         const userData = {
@@ -57,7 +63,7 @@ router.post('/register', async (req, res) => {
             password: hashedPassword,
             invitationCode: newInvitationCode,
             referredBy,
-            memberId: userCount + 1
+            memberId: nextMemberId
         };
 
         if (isEmail) {
