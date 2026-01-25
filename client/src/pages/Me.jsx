@@ -386,20 +386,18 @@ const Me = () => {
 
                 {/* Utility Options */}
                 <div className="space-y-3 pb-4">
-                    {isInstallable && (
-                        <div className="glass-card overflow-hidden">
-                            <button
-                                onClick={handleDownload}
-                                className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-primary/10 transition-colors"
-                            >
-                                <div className="flex items-center gap-2">
-                                    <Download size={16} className="text-primary" />
-                                    <span className="text-white text-sm font-medium">App Download</span>
-                                </div>
-                                <ChevronRight size={14} className="text-white/40" />
-                            </button>
-                        </div>
-                    )}
+                    <div className="glass-card overflow-hidden">
+                        <button
+                            onClick={handleDownload}
+                            className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-primary/10 transition-colors"
+                        >
+                            <div className="flex items-center gap-2">
+                                <Download size={16} className="text-primary" />
+                                <span className="text-white text-sm font-medium">App Download</span>
+                            </div>
+                            <ChevronRight size={14} className="text-white/40" />
+                        </button>
+                    </div>
 
                     <div className="glass-card overflow-hidden">
                         <button
