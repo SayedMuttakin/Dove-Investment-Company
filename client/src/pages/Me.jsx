@@ -68,6 +68,9 @@ const Me = () => {
         const installed = await installApp();
         if (installed) {
             console.log('App installed successfully');
+        } else {
+            // If the prompt isn't valid (e.g. iOS or already installed or event missed)
+            toast.info('To install: Tap browser menu (⋮ or Share) > Add to Home Screen/Install App');
         }
     };
 
