@@ -147,6 +147,14 @@ router.get('/income', authMiddleware, async (req, res) => {
         }
 
         const now = new Date();
+
+        // Get today's 10 AM Bangladesh time (UTC+6)
+        const today10AM = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Dhaka' }));
+        today10AM.setHours(10, 0, 0, 0);
+
+        // Convert back to UTC for comparison
+        const todayClaimTime = new Date(today10AM.toLocaleString('en-US', { timeZone: 'UTC' }));
+
         let totalClaimable = 0;
         let claimableCount = 0;
         const activeIncome = [];
@@ -155,22 +163,36 @@ router.get('/income', authMiddleware, async (req, res) => {
         user.investments.forEach(inv => {
             if (inv.status === 'active') {
                 const lastClaim = inv.lastEarningDate || inv.startDate;
-                const hoursSince = (now - new Date(lastClaim)) / (1000 * 60 * 60);
+                const lastClaimDate = new Date(lastClaim);
 
-                // Allow claim if 24 hours passed
-                if (hoursSince >= 24) {
-                    const days = Math.floor(hoursSince / 24);
-                    const amount = days * inv.package.dailyEarning;
+                // Calculate how many 10 AM periods have passed
+                let claimableDays = 0;
+                let checkDate = new Date(lastClaimDate);
+                checkDate.setHours(0, 0, 0, 0);
 
-                    if (amount > 0) {
-                        totalClaimable += amount;
-                        claimableCount++;
-                        activeIncome.push({
-                            package: inv.package.name,
-                            amount: amount,
-                            days: days
-                        });
+                while (checkDate < now) {
+                    checkDate.setDate(checkDate.getDate() + 1);
+                    const thisDayClaimTime = new Date(checkDate);
+                    thisDayClaimTime.setHours(10, 0, 0, 0);
+
+                    // Convert to Bangladesh time for comparison
+                    const bdTimeClaim = new Date(thisDayClaimTime.toLocaleString('en-US', { timeZone: 'Asia/Dhaka' }));
+
+                    if (now >= thisDayClaimTime && lastClaimDate < thisDayClaimTime) {
+                        claimableDays++;
                     }
+                }
+
+                const amount = claimableDays * inv.package.dailyEarning;
+
+                if (amount > 0) {
+                    totalClaimable += amount;
+                    claimableCount++;
+                    activeIncome.push({
+                        package: inv.package.name,
+                        amount: amount,
+                        days: claimableDays
+                    });
                 }
             }
         });
@@ -208,21 +230,34 @@ router.post('/collect', authMiddleware, async (req, res) => {
         user.investments.forEach(inv => {
             if (inv.status === 'active') {
                 const lastClaim = inv.lastEarningDate || inv.startDate;
-                const timeDiff = now - new Date(lastClaim);
-                const hoursSince = timeDiff / (1000 * 60 * 60);
+                const lastClaimDate = new Date(lastClaim);
 
-                // Income Collection Logic
-                if (hoursSince >= 24) {
-                    const days = Math.floor(hoursSince / 24);
-                    const amount = days * inv.package.dailyEarning;
+                // Calculate how many 10 AM periods have passed (same logic as GET /income)
+                let claimableDays = 0;
+                let checkDate = new Date(lastClaimDate);
+                checkDate.setHours(0, 0, 0, 0);
+                let lastValidClaimTime = null;
 
-                    if (amount > 0) {
-                        collectedTotal += amount;
-                        inv.totalEarned += amount;
+                while (checkDate < now) {
+                    checkDate.setDate(checkDate.getDate() + 1);
+                    const thisDayClaimTime = new Date(checkDate);
+                    thisDayClaimTime.setHours(10, 0, 0, 0);
 
-                        const lastDate = new Date(lastClaim);
-                        lastDate.setDate(lastDate.getDate() + days); // Move forward by claimable days
-                        inv.lastEarningDate = lastDate;
+                    if (now >= thisDayClaimTime && lastClaimDate < thisDayClaimTime) {
+                        claimableDays++;
+                        lastValidClaimTime = new Date(thisDayClaimTime);
+                    }
+                }
+
+                const amount = claimableDays * inv.package.dailyEarning;
+
+                if (amount > 0) {
+                    collectedTotal += amount;
+                    inv.totalEarned += amount;
+
+                    // Set last claim to the most recent 10 AM that passed
+                    if (lastValidClaimTime) {
+                        inv.lastEarningDate = lastValidClaimTime;
                     }
                 }
 
