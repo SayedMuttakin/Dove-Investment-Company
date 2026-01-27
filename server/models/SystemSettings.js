@@ -38,7 +38,7 @@ const systemSettingsSchema = new mongoose.Schema({
     },
     minDepositAmount: {
         type: Number,
-        default: 100
+        default: 50
     },
 
     // Wallet Addresses
