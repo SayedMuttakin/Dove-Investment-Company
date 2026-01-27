@@ -17,8 +17,8 @@ const BottomNav = () => {
     const isActive = (path) => location.pathname === path;
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-dark-200 border-t border-white/10 safe-area-pb">
-            <div className="flex items-center justify-around px-4 py-0.5 max-w-md mx-auto">
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-dark-200 border-t border-white/10 safe-area-pb shadow-[0_-4px_10px_rgba(0,0,0,0.3)]">
+            <div className="flex items-center justify-around px-4 py-2.5 max-w-md mx-auto">
                 {navItems.map((item, index) => {
                     const Icon = item.icon;
                     const active = isActive(item.path);
@@ -27,7 +27,7 @@ const BottomNav = () => {
                         <button
                             key={index}
                             onClick={() => navigate(item.path)}
-                            className="flex flex-col items-center gap-0 transition-all"
+                            className="flex flex-col items-center gap-1 transition-all"
                         >
                             <div className={`p-1 rounded-xl transition-all ${active ? 'bg-primary/20' : ''
                                 }`}>
