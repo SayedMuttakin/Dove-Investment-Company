@@ -65,8 +65,8 @@ const AdminUsers = () => {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={18} />
                     <input
                         type="text"
-                        placeholder="Search phone or code..."
-                        className="bg-dark-200 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-white focus:outline-none focus:border-blue-500 w-64"
+                        placeholder="Search name, phone, email or code..."
+                        className="bg-dark-200 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-white focus:outline-none focus:border-blue-500 w-80"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -78,7 +78,7 @@ const AdminUsers = () => {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="border-b border-white/10 bg-white/5">
-                                <th className="p-4 text-xs font-bold text-white/60 uppercase">Phone</th>
+                                <th className="p-4 text-xs font-bold text-white/60 uppercase">User</th>
                                 <th className="p-4 text-xs font-bold text-white/60 uppercase">Invite Code</th>
                                 <th className="p-4 text-xs font-bold text-white/60 uppercase">Balance</th>
                                 <th className="p-4 text-xs font-bold text-white/60 uppercase">VIP</th>
@@ -98,7 +98,10 @@ const AdminUsers = () => {
                             ) : (
                                 users.map((user) => (
                                     <tr key={user._id} className="hover:bg-white/5 transition-colors">
-                                        <td className="p-4 text-white font-medium text-sm">{user.phone}</td>
+                                        <td className="p-4">
+                                            <div className="text-white font-medium text-sm">{user.fullName || 'No Name'}</div>
+                                            <div className="text-white/60 text-xs">{user.phone || user.email}</div>
+                                        </td>
                                         <td className="p-4 text-white/60 text-xs font-mono">{user.invitationCode}</td>
                                         <td className="p-4 text-green-400 font-bold text-sm">৳{user.balance.toFixed(2)}</td>
                                         <td className="p-4 text-yellow-400 text-sm font-bold">Lvl {user.vipLevel}</td>
@@ -126,7 +129,7 @@ const AdminUsers = () => {
                 <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
                     <div className="bg-dark-200 rounded-xl p-6 w-full max-w-sm border border-white/10">
                         <h3 className="text-xl font-bold text-white mb-4">Edit User</h3>
-                        <p className="text-white/60 text-sm mb-4">Editing info for {editingUser?.phone}</p>
+                        <p className="text-white/60 text-sm mb-4">Editing info for {editingUser?.fullName || editingUser?.phone || editingUser?.email}</p>
 
                         <form onSubmit={handleUpdate} className="space-y-4">
                             <div>

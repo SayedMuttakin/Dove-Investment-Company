@@ -105,6 +105,8 @@ router.get('/users', authMiddleware, adminMiddleware, async (req, res) => {
         if (search) {
             query.$or = [
                 { phone: { $regex: search, $options: 'i' } },
+                { email: { $regex: search, $options: 'i' } },
+                { fullName: { $regex: search, $options: 'i' } },
                 { invitationCode: { $regex: search, $options: 'i' } }
             ];
         }
