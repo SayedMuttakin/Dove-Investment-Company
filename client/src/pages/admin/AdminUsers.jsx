@@ -103,7 +103,7 @@ const AdminUsers = () => {
                                             <div className="text-white/60 text-xs">{user.phone || user.email}</div>
                                         </td>
                                         <td className="p-4 text-white/60 text-xs font-mono">{user.invitationCode}</td>
-                                        <td className="p-4 text-green-400 font-bold text-sm">৳{user.balance.toFixed(2)}</td>
+                                        <td className="p-4 text-green-400 font-bold text-sm">${user.balance.toFixed(2)}</td>
                                         <td className="p-4 text-yellow-400 text-sm font-bold">Lvl {user.vipLevel}</td>
                                         <td className="p-4 text-white/60 text-xs">
                                             {new Date(user.createdAt).toLocaleDateString()}
@@ -133,7 +133,7 @@ const AdminUsers = () => {
 
                         <form onSubmit={handleUpdate} className="space-y-4">
                             <div>
-                                <label className="text-white/60 text-sm mb-1 block">Balance (৳)</label>
+                                <label className="text-white/60 text-sm mb-1 block">Balance ($)</label>
                                 <input
                                     type="number"
                                     required

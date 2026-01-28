@@ -28,7 +28,7 @@ const AdminWithdrawals = () => {
     };
 
     const handleApprove = async (id, amount) => {
-        if (!window.confirm(`Approve withdrawal of ৳${amount}?`)) return;
+        if (!window.confirm(`Approve withdrawal of $${amount}?`)) return;
 
         setProcessingId(id);
         try {
@@ -113,7 +113,7 @@ const AdminWithdrawals = () => {
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-2 mb-1">
-                                    <span className="text-xl font-bold text-white">৳{item.amount}</span>
+                                    <span className="text-xl font-bold text-white">${item.amount}</span>
                                     <span className="text-sm text-white/60">• {item.paymentMethod}</span>
                                 </div>
                                 <div className="text-sm text-white/80">

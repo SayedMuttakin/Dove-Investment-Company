@@ -62,7 +62,7 @@ const AdminReports = () => {
                         <DollarSign className="text-green-400" />
                         <h3 className="text-white/60">Net Revenue</h3>
                     </div>
-                    <p className="text-3xl font-bold text-white">৳{stats.netRevenue?.toLocaleString()}</p>
+                    <p className="text-3xl font-bold text-white">${stats.netRevenue?.toLocaleString()}</p>
                     <p className="text-green-400 text-sm flex items-center gap-1 mt-2">
                         <span>+12.5%</span>
                         <span className="text-white/40">from last week</span>
@@ -86,7 +86,7 @@ const AdminReports = () => {
                         <TrendingUp className="text-purple-400" />
                         <h3 className="text-white/60">Total User Balance</h3>
                     </div>
-                    <p className="text-3xl font-bold text-white">৳{stats.totalUserBalance?.toLocaleString()}</p>
+                    <p className="text-3xl font-bold text-white">${stats.totalUserBalance?.toLocaleString()}</p>
                 </div>
             </div>
 

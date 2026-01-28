@@ -202,11 +202,11 @@ const AdminPackages = () => {
                                             </div>
                                             <div className="flex justify-between text-sm">
                                                 <span className="text-white/40 font-medium">Min Investment</span>
-                                                <span className="text-white font-bold">৳{pkg.minAmount}</span>
+                                                <span className="text-white font-bold">${pkg.minAmount}</span>
                                             </div>
                                             <div className="flex justify-between text-sm">
                                                 <span className="text-white/40 font-medium">Max Investment</span>
-                                                <span className="text-white font-bold">৳{pkg.maxAmount}</span>
+                                                <span className="text-white font-bold">${pkg.maxAmount}</span>
                                             </div>
                                             <div className="flex justify-between text-sm pt-2 border-t border-white/5">
                                                 <span className="text-white/40 font-medium">VIP Required</span>
