@@ -110,7 +110,7 @@ const AdminDeposits = () => {
                                         <td className="p-4 text-white font-bold text-sm">${deposit.amount}</td>
                                         <td className="p-4 text-white/70 text-xs">{deposit.network}</td>
                                         <td className="p-4">
-                                            <div className="text-white/60 text-xs font-mono max-w-[100px] truncate" title={deposit.transactionHash}>
+                                            <div className="text-white/60 text-xs font-mono break-all min-w-[200px]" title={deposit.transactionHash}>
                                                 {deposit.transactionHash}
                                             </div>
                                         </td>
