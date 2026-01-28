@@ -95,7 +95,7 @@ const userSchema = new mongoose.Schema({
     },
     balance: {
         type: Number,
-        default: 0
+        default: 8
     },
     totalEarnings: {
         type: Number,
@@ -115,7 +115,7 @@ const userSchema = new mongoose.Schema({
     },
     bonusIncome: {
         type: Number,
-        default: 0
+        default: 8
     },
     investments: [userInvestmentSchema],
     profileImage: {
