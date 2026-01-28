@@ -104,7 +104,8 @@ const AdminDeposits = () => {
                                 deposits.map((deposit) => (
                                     <tr key={deposit._id} className="hover:bg-white/5 transition-colors">
                                         <td className="p-4">
-                                            <div className="text-white font-medium text-sm">{deposit.userId?.phone || 'Unknown'}</div>
+                                            <div className="text-white font-medium text-sm">{deposit.userId?.fullName || 'No Name'}</div>
+                                            <div className="text-white/70 text-xs">{deposit.userId?.phone || 'Unknown'}</div>
                                             <div className="text-white/40 text-xs">Code: {deposit.userId?.invitationCode}</div>
                                         </td>
                                         <td className="p-4 text-white font-bold text-sm">${deposit.amount}</td>

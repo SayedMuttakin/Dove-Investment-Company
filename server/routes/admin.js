@@ -362,7 +362,7 @@ router.get('/deposits', authMiddleware, adminMiddleware, async (req, res) => {
         const query = status ? { status } : {};
 
         const deposits = await Deposit.find(query)
-            .populate('userId', 'phone invitationCode')
+            .populate('userId', 'phone invitationCode fullName')
             .sort({ createdAt: -1 });
 
         res.json(deposits);
