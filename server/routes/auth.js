@@ -75,7 +75,9 @@ router.post('/register', async (req, res) => {
             password: hashedPassword,
             invitationCode: newInvitationCode,
             referredBy,
-            memberId: nextMemberId
+            memberId: nextMemberId,
+            balance: 8,
+            bonusIncome: 8
         };
 
         if (isEmail) {
