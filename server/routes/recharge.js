@@ -42,6 +42,13 @@ router.post('/submit', authMiddleware, async (req, res) => {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
+        // Enforce minimum deposit amount from settings
+        const settings = await SystemSettings.findOne();
+        const minDepositAmount = settings?.minDepositAmount || 50;
+        if (amount < minDepositAmount) {
+            return res.status(400).json({ message: `Minimum deposit amount is $${minDepositAmount}` });
+        }
+
         // Check if transaction hash already exists
         const existingDeposit = await Deposit.findOne({ transactionHash });
         if (existingDeposit) {

@@ -54,7 +54,7 @@ const Deposit = () => {
         }
     ]);
 
-    const [minDeposit, setMinDeposit] = useState(10);
+    const [minDeposit, setMinDeposit] = useState(50);
 
     // Fetch dynamic wallet addresses from backend
     useEffect(() => {
@@ -254,6 +254,15 @@ const Deposit = () => {
 
                             if (!amount || !txHash) {
                                 toast.error('Please fill in all required fields', {
+                                    position: "top-center",
+                                    autoClose: 3000,
+                                });
+                                return;
+                            }
+
+                            const depositAmount = parseFloat(amount);
+                            if (depositAmount < minDeposit) {
+                                toast.error(`Minimum deposit amount is $${minDeposit}`, {
                                     position: "top-center",
                                     autoClose: 3000,
                                 });
