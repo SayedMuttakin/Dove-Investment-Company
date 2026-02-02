@@ -4,12 +4,14 @@ import axios from 'axios';
 import { ArrowLeft, Wallet, AlertCircle, Bell, HelpCircle, CheckCircle2, Lock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import SuccessModal from '../components/SuccessModal';
 
 const Withdraw = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
     const [amount, setAmount] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('trc20');
+    const [showSuccess, setShowSuccess] = useState(false);
 
     // Crypto Details
     const [details, setDetails] = useState({
@@ -51,8 +53,7 @@ const Withdraw = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
-            toast.success('Withdrawal request submitted successfully!');
-            setTimeout(() => navigate('/me'), 2000);
+            setShowSuccess(true);
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to submit request');
         } finally {
@@ -208,6 +209,16 @@ const Withdraw = () => {
                     </p>
                 </form>
             </div>
+
+            <SuccessModal
+                isOpen={showSuccess}
+                onClose={() => {
+                    setShowSuccess(false);
+                    navigate('/me');
+                }}
+                title="Withdrawal Requested!"
+                message={`Your withdrawal request for $${amount} has been submitted successfully.`}
+            />
         </div>
     );
 };

@@ -14,12 +14,18 @@ import {
     CheckCheck
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import SuccessModal from '../components/SuccessModal';
 
 const Notifications = () => {
     const navigate = useNavigate();
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [modalConfig, setModalConfig] = useState({
+        isOpen: false,
+        title: '',
+        message: ''
+    });
 
     const fetchNotifications = async () => {
         try {
@@ -150,7 +156,18 @@ const Notifications = () => {
                         {notifications.map((notif) => (
                             <div
                                 key={notif._id}
-                                onClick={() => notif.status === 'unread' && markAsRead(notif._id)}
+                                onClick={() => {
+                                    if (notif.status === 'unread') markAsRead(notif._id);
+
+                                    // Show success modal for approved withdrawal or deposit
+                                    if (notif.title.toLowerCase().includes('approved') || notif.message.toLowerCase().includes('approved')) {
+                                        setModalConfig({
+                                            isOpen: true,
+                                            title: notif.title,
+                                            message: notif.message
+                                        });
+                                    }
+                                }}
                                 className={`glass-card p-4 transition-all active:scale-[0.98] cursor-pointer group hover:bg-white/[0.03] ${notif.status === 'unread' ? 'border-primary/30 ring-1 ring-primary/20' : 'opacity-80'
                                     }`}
                             >
@@ -192,6 +209,13 @@ const Notifications = () => {
                     </div>
                 )}
             </div>
+
+            <SuccessModal
+                isOpen={modalConfig.isOpen}
+                onClose={() => setModalConfig({ ...modalConfig, isOpen: false })}
+                title={modalConfig.title}
+                message={modalConfig.message}
+            />
         </div>
     );
 };

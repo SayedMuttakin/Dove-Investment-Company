@@ -6,6 +6,7 @@ import QRCode from 'qrcode';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import BottomNav from '../components/BottomNav';
+import SuccessModal from '../components/SuccessModal';
 
 const Deposit = () => {
     const navigate = useNavigate();
@@ -14,6 +15,7 @@ const Deposit = () => {
     const [selectedNetwork, setSelectedNetwork] = useState('TRC20');
     const [qrCodeUrl, setQrCodeUrl] = useState('');
     const [copied, setCopied] = useState(false);
+    const [showSuccess, setShowSuccess] = useState(false);
 
     // Network options with deposit addresses
     // These will come from backend/admin panel in production
@@ -292,17 +294,9 @@ const Deposit = () => {
                                 });
 
                                 if (response.status === 201) {
-                                    toast.success('✅ Deposit submitted successfully! Waiting for admin approval...', {
-                                        position: "top-center",
-                                        autoClose: 4000,
-                                        hideProgressBar: false,
-                                        closeOnClick: true,
-                                        pauseOnHover: true,
-                                        draggable: true,
-                                    });
+                                    setShowSuccess(true);
                                     amountInput.value = '';
                                     txInput.value = '';
-                                    setTimeout(() => navigate('/home'), 2000);
                                 }
                             } catch (error) {
                                 console.error('Deposit error:', error);
@@ -344,6 +338,16 @@ const Deposit = () => {
                     </div>
                 </div>
             </div>
+
+            <SuccessModal
+                isOpen={showSuccess}
+                onClose={() => {
+                    setShowSuccess(false);
+                    navigate('/home');
+                }}
+                title="Deposit Submitted!"
+                message="Your deposit request has been submitted successfully. Waiting for admin approval."
+            />
 
             <BottomNav />
         </div>
