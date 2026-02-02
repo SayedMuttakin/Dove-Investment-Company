@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import BottomNav from '../components/BottomNav';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import SuccessModal from '../components/SuccessModal';
 
 const PackageTimer = ({ endDate }) => {
     const [timeLeft, setTimeLeft] = useState('');
@@ -45,6 +46,7 @@ const Lend = () => {
     const [success, setSuccess] = useState('');
     const [showInvestModal, setShowInvestModal] = useState(null);
     const [investAmount, setInvestAmount] = useState('');
+    const [showSuccess, setShowSuccess] = useState(false);
 
     // Determine which level to show: active state or current user level
     const targetLevel = location.state?.viewLevel !== undefined ? location.state.viewLevel : (user?.vipLevel || 0);
@@ -99,14 +101,9 @@ const Lend = () => {
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            setSuccess('Investment successful! You can check it in your assets.');
+            setShowSuccess(true);
             setShowInvestModal(null);
             setInvestAmount('');
-
-            // Wait a bit then refresh or update user state
-            setTimeout(() => {
-                window.location.reload();
-            }, 1500);
 
         } catch (err) {
             setError(err.response?.data?.message || 'Investment failed');
@@ -412,6 +409,17 @@ const Lend = () => {
 
             {/* Bottom Navigation */}
             <BottomNav />
+
+            {/* Success Modal */}
+            <SuccessModal
+                isOpen={showSuccess}
+                onClose={() => {
+                    setShowSuccess(false);
+                    window.location.reload();
+                }}
+                title="Investment Successful!"
+                message="Your investment plan has been activated successfully. You can track your earnings in the Assets section."
+            />
         </div>
     );
 };
