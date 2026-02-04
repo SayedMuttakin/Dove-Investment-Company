@@ -159,8 +159,14 @@ const Notifications = () => {
                                 onClick={() => {
                                     if (notif.status === 'unread') markAsRead(notif._id);
 
-                                    // Show success modal for approved withdrawal or deposit
-                                    if (notif.title.toLowerCase().includes('approved') || notif.message.toLowerCase().includes('approved')) {
+                                    // Navigate to withdrawal success page for approved withdrawals
+                                    if (notif.type === 'withdrawal' && notif.title.toLowerCase().includes('approved')) {
+                                        if (notif.relatedId) {
+                                            navigate(`/withdrawal-success/${notif.relatedId}`);
+                                        }
+                                    }
+                                    // Show success modal for other approved notifications
+                                    else if (notif.title.toLowerCase().includes('approved') || notif.message.toLowerCase().includes('approved')) {
                                         setModalConfig({
                                             isOpen: true,
                                             title: notif.title,

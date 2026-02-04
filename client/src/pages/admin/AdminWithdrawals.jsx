@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Download, CheckCircle, XCircle, Clock, Search } from 'lucide-react';
+import { Download, CheckCircle, XCircle, Clock, Search, Hash, X } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 const AdminWithdrawals = () => {
@@ -8,6 +8,12 @@ const AdminWithdrawals = () => {
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('pending');
     const [processingId, setProcessingId] = useState(null);
+    const [approveModal, setApproveModal] = useState({
+        isOpen: false,
+        withdrawalId: null,
+        amount: 0,
+        transactionHash: ''
+    });
 
     useEffect(() => {
         fetchWithdrawals();
@@ -27,22 +33,43 @@ const AdminWithdrawals = () => {
         }
     };
 
-    const handleApprove = async (id, amount) => {
-        if (!window.confirm(`Approve withdrawal of $${amount}?`)) return;
+    const openApproveModal = (id, amount) => {
+        setApproveModal({
+            isOpen: true,
+            withdrawalId: id,
+            amount,
+            transactionHash: ''
+        });
+    };
 
-        setProcessingId(id);
+    const closeApproveModal = () => {
+        setApproveModal({
+            isOpen: false,
+            withdrawalId: null,
+            amount: 0,
+            transactionHash: ''
+        });
+    };
+
+    const handleApprove = async () => {
+        const { withdrawalId, transactionHash } = approveModal;
+
+        if (!transactionHash || transactionHash.trim().length === 0) {
+            toast.error('Please enter transaction hash');
+            return;
+        }
+
+        setProcessingId(withdrawalId);
         try {
             const token = localStorage.getItem('token');
-            // Assuming transaction ID is auto-generated or manually entered (simplified here)
-            const transactionId = `TXN${Date.now()}`;
-
-            await axios.post(`/api/withdrawal/admin/${id}/approve`,
-                { transactionId },
+            await axios.post(`/api/withdrawal/admin/${withdrawalId}/approve`,
+                { transactionId: transactionHash.trim() },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
             fetchWithdrawals();
             toast.success('Withdrawal approved successfully');
+            closeApproveModal();
         } catch (error) {
             console.error('Error approving withdrawal:', error);
             toast.error(error.response?.data?.message || 'Failed to approve');
@@ -127,7 +154,7 @@ const AdminWithdrawals = () => {
                             {item.status === 'pending' && (
                                 <div className="flex gap-2 w-full md:w-auto">
                                     <button
-                                        onClick={() => handleApprove(item._id, item.amount)}
+                                        onClick={() => openApproveModal(item._id, item.amount)}
                                         disabled={processingId === item._id}
                                         className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
                                     >
@@ -148,6 +175,62 @@ const AdminWithdrawals = () => {
                     ))
                 )}
             </div>
+
+            {/* Transaction Hash Modal */}
+            {approveModal.isOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="glass-card w-full max-w-md p-6 relative">
+                        <button
+                            onClick={closeApproveModal}
+                            className="absolute top-4 right-4 p-1 text-white/40 hover:text-white transition-colors"
+                        >
+                            <X size={20} />
+                        </button>
+
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                            <Hash className="text-green-500" />
+                            Enter Transaction Hash
+                        </h3>
+
+                        <div className="mb-6">
+                            <p className="text-white/60 text-sm mb-4">
+                                Approving withdrawal of <span className="text-white font-bold">${approveModal.amount}</span>
+                            </p>
+
+                            <label className="block text-sm text-white/80 mb-2">
+                                Transaction Hash / ID *
+                            </label>
+                            <input
+                                type="text"
+                                value={approveModal.transactionHash}
+                                onChange={(e) => setApproveModal({ ...approveModal, transactionHash: e.target.value })}
+                                placeholder="e.g., 0xabc123... or TXN123456"
+                                className="w-full px-4 py-3 bg-dark-300 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-primary"
+                                autoFocus
+                            />
+                            <p className="text-xs text-white/40 mt-2">
+                                Enter the blockchain transaction hash or payment reference ID
+                            </p>
+                        </div>
+
+                        <div className="flex gap-3">
+                            <button
+                                onClick={closeApproveModal}
+                                className="flex-1 px-4 py-3 bg-dark-300 hover:bg-dark-200 text-white rounded-lg transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleApprove}
+                                disabled={processingId === approveModal.withdrawalId}
+                                className="flex-1 px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors disabled:opacity-50 font-bold"
+                            >
+                                {processingId === approveModal.withdrawalId ? 'Processing...' : 'Approve'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

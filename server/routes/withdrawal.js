@@ -163,6 +163,11 @@ router.post('/admin/:id/approve', authMiddleware, adminMiddleware, async (req, r
         const withdrawalId = req.params.id;
         const adminId = req.userId;
 
+        // Validate transaction ID is provided
+        if (!transactionId || transactionId.trim().length === 0) {
+            return res.status(400).json({ message: 'Transaction ID is required' });
+        }
+
         const withdrawal = await Withdrawal.findById(withdrawalId);
         if (!withdrawal) {
             return res.status(404).json({ message: 'Withdrawal not found' });
@@ -195,17 +200,22 @@ router.post('/admin/:id/approve', authMiddleware, adminMiddleware, async (req, r
 
         // Update withdrawal
         withdrawal.status = 'approved';
-        withdrawal.transactionId = transactionId || `TXN${Date.now()}`;
+        withdrawal.transactionId = transactionId.trim();
         withdrawal.processedBy = adminId;
         withdrawal.processedAt = new Date();
         withdrawal.adminNote = adminNote;
         await withdrawal.save();
 
-        // Notification: Withdrawal Approved
+        // Calculate amounts for notification
+        const netAmount = withdrawal.amount;
+        const feeAmount = withdrawal.fee || 0;
+        const feePercentage = withdrawal.amount > 0 ? ((feeAmount / withdrawal.amount) * 100).toFixed(0) : 5;
+
+        // Notification: Withdrawal Approved with detailed transaction info
         await createNotification({
             userId: user._id,
-            title: 'Withdrawal Approved',
-            message: `Your withdrawal of $${withdrawal.amount} has been approved and processed.`,
+            title: 'Withdrawal Approved ✓',
+            message: `Your withdrawal has been processed successfully! Transaction ID: ${withdrawal.transactionId}. Amount: $${netAmount}, Fee: $${feeAmount} (${feePercentage}%). Click to view details.`,
             type: 'withdrawal',
             amount: withdrawal.amount,
             relatedId: withdrawal._id
