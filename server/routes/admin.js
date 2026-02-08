@@ -139,6 +139,22 @@ router.patch('/user/:id', authMiddleware, adminMiddleware, async (req, res) => {
         const changes = {};
 
         if (balance !== undefined && balance !== user.balance) {
+            // Check if balance is being increased to track it as a bonus
+            if (balance > user.balance) {
+                const bonusAmount = balance - user.balance;
+                user.bonusIncome += bonusAmount;
+
+                // Create notification for bonus
+                await createNotification({
+                    userId: user._id,
+                    title: 'Bonus Received!',
+                    message: `You have received a bonus of $${bonusAmount.toFixed(2)} from Admin.`,
+                    type: 'bonus',
+                    amount: bonusAmount
+                });
+                console.log(`[Admin] Bonus of $${bonusAmount} tracked for user ${user._id}`);
+            }
+
             changes.oldBalance = user.balance;
             changes.newBalance = balance;
             user.balance = balance;
