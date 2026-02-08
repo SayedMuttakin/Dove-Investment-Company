@@ -26,6 +26,7 @@ import Help from './pages/Help';
 import History from './pages/History';
 import About from './pages/About';
 import WithdrawalSuccess from './pages/WithdrawalSuccess';
+import BonusSuccess from './pages/BonusSuccess';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -94,6 +95,7 @@ function App() {
                 <Route path="/mine" element={<ProtectedRoute><Mine /></ProtectedRoute>} />
                 <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
                 <Route path="/withdrawal-success/:id" element={<ProtectedRoute><WithdrawalSuccess /></ProtectedRoute>} />
+                <Route path="/bonus-success/:id" element={<ProtectedRoute><BonusSuccess /></ProtectedRoute>} />
                 <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
                 <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>} />
                 <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />

@@ -165,6 +165,10 @@ const Notifications = () => {
                                             navigate(`/withdrawal-success/${notif.relatedId}`);
                                         }
                                     }
+                                    // Navigate to bonus success page for admin bonuses
+                                    else if (notif.type === 'bonus') {
+                                        navigate(`/bonus-success/${notif._id}`);
+                                    }
                                     // Show success modal for other approved notifications
                                     else if (notif.title.toLowerCase().includes('approved') || notif.message.toLowerCase().includes('approved')) {
                                         setModalConfig({

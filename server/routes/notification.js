@@ -25,6 +25,23 @@ router.get('/', authMiddleware, async (req, res) => {
     }
 });
 
+// Get single notification
+router.get('/:id', authMiddleware, async (req, res) => {
+    try {
+        const notification = await Notification.findOne({
+            _id: req.params.id,
+            userId: req.userId
+        });
+        if (!notification) {
+            return res.status(404).json({ message: 'Notification not found' });
+        }
+        res.json(notification);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+
 // Mark all as read
 router.put('/read-all', authMiddleware, async (req, res) => {
     try {
