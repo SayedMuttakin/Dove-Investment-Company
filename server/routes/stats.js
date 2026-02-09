@@ -71,4 +71,65 @@ router.get('/user-history', authMiddleware, async (req, res) => {
     }
 });
 
+router.get('/team-list', authMiddleware, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Helper function to check if user has made an approved deposit
+        const checkDeposit = async (userId) => {
+            const deposit = await Deposit.findOne({ userId, status: 'approved' });
+            return !!deposit;
+        };
+
+        // Gen 1
+        const gen1Users = await User.find({ referredBy: user.invitationCode }, 'phone fullName invitationCode isTeamMember createdAt');
+        const gen1 = await Promise.all(gen1Users.map(async (u) => ({
+            _id: u._id,
+            phone: u.phone,
+            fullName: u.fullName,
+            invitationCode: u.invitationCode,
+            isTeamMember: u.isTeamMember,
+            createdAt: u.createdAt,
+            hasDeposited: await checkDeposit(u._id)
+        })));
+
+        const gen1Codes = gen1Users.map(u => u.invitationCode);
+
+        // Gen 2
+        const gen2Users = await User.find({ referredBy: { $in: gen1Codes } }, 'phone fullName invitationCode isTeamMember createdAt');
+        const gen2 = await Promise.all(gen2Users.map(async (u) => ({
+            _id: u._id,
+            phone: u.phone,
+            fullName: u.fullName,
+            invitationCode: u.invitationCode,
+            isTeamMember: u.isTeamMember,
+            createdAt: u.createdAt,
+            hasDeposited: await checkDeposit(u._id)
+        })));
+
+        const gen2Codes = gen2Users.map(u => u.invitationCode);
+
+        // Gen 3
+        const gen3Users = await User.find({ referredBy: { $in: gen2Codes } }, 'phone fullName invitationCode isTeamMember createdAt');
+        const gen3 = await Promise.all(gen3Users.map(async (u) => ({
+            _id: u._id,
+            phone: u.phone,
+            fullName: u.fullName,
+            invitationCode: u.invitationCode,
+            isTeamMember: u.isTeamMember,
+            createdAt: u.createdAt,
+            hasDeposited: await checkDeposit(u._id)
+        })));
+
+        res.json({ gen1, gen2, gen3 });
+
+    } catch (error) {
+        console.error('Team list error:', error);
+        res.status(500).json({ message: 'Server error fetching team list' });
+    }
+});
+
 export default router;

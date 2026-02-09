@@ -2,15 +2,104 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
-    ArrowLeft, TrendingUp, Gift, DollarSign, ArrowRight, Wallet, History as HistoryIcon
+    ArrowLeft, TrendingUp, Gift, DollarSign, ArrowRight, Wallet, History as HistoryIcon,
+    Users, X, CheckCircle2, AlertCircle
 } from 'lucide-react';
 import BottomNav from '../components/BottomNav';
 import { toast } from 'react-toastify';
+
+const TeamDetailsModal = ({ isOpen, onClose, teamData }) => {
+    const [activeTab, setActiveTab] = useState('gen1');
+
+    if (!isOpen) return null;
+
+    const tabs = [
+        { id: 'gen1', label: 'Gen 1', data: teamData?.gen1 || [] },
+        { id: 'gen2', label: 'Gen 2', data: teamData?.gen2 || [] },
+        { id: 'gen3', label: 'Gen 3', data: teamData?.gen3 || [] },
+    ];
+
+    return (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
+            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
+            <div className="relative w-full max-w-md bg-dark-200 border border-white/10 rounded-3xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300">
+                {/* Modal Header */}
+                <div className="p-6 border-b border-white/5 flex items-center justify-between">
+                    <div>
+                        <h3 className="text-xl font-black text-white tracking-tight">Team Details</h3>
+                        <p className="text-white/40 text-xs font-medium uppercase tracking-widest mt-1">Hierarchical Members</p>
+                    </div>
+                    <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-xl transition-colors text-white/40 hover:text-white">
+                        <X size={24} />
+                    </button>
+                </div>
+
+                {/* Tabs */}
+                <div className="flex p-2 bg-white/5 mx-6 mt-4 rounded-2xl">
+                    {tabs.map((tab) => (
+                        <button
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)}
+                            className={`flex-1 py-2.5 text-xs font-black uppercase tracking-wider rounded-xl transition-all ${activeTab === tab.id ? 'bg-primary text-black shadow-lg shadow-primary/20 scale-[1.02]' : 'text-white/40 hover:text-white'}`}
+                        >
+                            {tab.label} ({tab.data.length})
+                        </button>
+                    ))}
+                </div>
+
+                {/* Content */}
+                <div className="p-6 h-[400px] overflow-y-auto custom-scrollbar">
+                    <div className="space-y-3">
+                        {tabs.find(t => t.id === activeTab).data.length > 0 ? (
+                            tabs.find(t => t.id === activeTab).data.map((member, idx) => (
+                                <div key={idx} className="bg-white/[0.03] border border-white/5 p-4 rounded-2xl flex items-center justify-between group hover:bg-white/[0.05] transition-all">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+                                            {member.fullName?.charAt(0) || <Users size={18} />}
+                                        </div>
+                                        <div>
+                                            <h4 className="text-white font-bold text-sm">{member.fullName || 'Anonymous'}</h4>
+                                            <p className="text-white/30 text-[10px] uppercase font-bold tracking-tighter mt-0.5">+{member.phone}</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col items-end gap-1">
+                                        {member.hasDeposited ? (
+                                            <div className="flex items-center gap-1.5 px-2 py-1 bg-green-500/10 rounded-lg">
+                                                <CheckCircle2 size={12} className="text-green-400" />
+                                                <span className="text-[10px] font-black text-green-400 uppercase">Deposited</span>
+                                            </div>
+                                        ) : (
+                                            <div className="flex items-center gap-1.5 px-2 py-1 bg-red-500/10 rounded-lg">
+                                                <AlertCircle size={12} className="text-red-400" />
+                                                <span className="text-[10px] font-black text-red-400 uppercase">No Deposit</span>
+                                            </div>
+                                        )}
+                                        <p className="text-white/20 text-[8px] font-medium font-mono uppercase">
+                                            Joined {new Date(member.createdAt).toLocaleDateString()}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <div className="h-full flex flex-col items-center justify-center text-center py-10 opacity-30">
+                                <Users size={40} className="mb-4" />
+                                <p className="text-sm italic">No members found in this generation.</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
 
 const History = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState(null);
+    const [teamModalOpen, setTeamModalOpen] = useState(false);
+    const [teamListData, setTeamListData] = useState(null);
+    const [fetchingTeam, setFetchingTeam] = useState(false);
 
     useEffect(() => {
         fetchHistory();
@@ -28,6 +117,28 @@ const History = () => {
             toast.error('Failed to load history data');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchTeamList = async () => {
+        if (teamListData) {
+            setTeamModalOpen(true);
+            return;
+        }
+
+        setFetchingTeam(true);
+        try {
+            const token = localStorage.getItem('token');
+            const res = await axios.get('/api/stats/team-list', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setTeamListData(res.data);
+            setTeamModalOpen(true);
+        } catch (error) {
+            console.error('Fetch team list error:', error);
+            toast.error('Failed to load team details');
+        } finally {
+            setFetchingTeam(false);
         }
     };
 
@@ -95,10 +206,20 @@ const History = () => {
                         <span className="text-[#5b6e36] text-[10px] font-bold uppercase tracking-wider">Total Withdrawal</span>
                     </div>
                     <div className="w-[1px] h-10 bg-[#5b6e36]/10"></div>
-                    <div className="flex flex-col items-center flex-1">
-                        <span className="text-black font-black text-lg mb-1">{data?.team?.total || 0}</span>
-                        <span className="text-[#5b6e36] text-[10px] font-bold uppercase tracking-wider">Team Size</span>
-                    </div>
+                    <button
+                        onClick={fetchTeamList}
+                        disabled={fetchingTeam}
+                        className="flex flex-col items-center flex-1 hover:bg-black/5 rounded-xl py-1 transition-colors relative"
+                    >
+                        {fetchingTeam ? (
+                            <div className="w-5 h-5 border-2 border-black/20 border-t-black animate-spin rounded-full mb-1"></div>
+                        ) : (
+                            <span className="text-black font-black text-lg mb-1">{data?.team?.total || 0}</span>
+                        )}
+                        <span className="text-[#5b6e36] text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
+                            Team Size <Users size={10} />
+                        </span>
+                    </button>
                 </div>
 
                 {/* Detailed Income List */}
@@ -175,6 +296,12 @@ const History = () => {
                 </div>
 
             </div>
+
+            <TeamDetailsModal
+                isOpen={teamModalOpen}
+                onClose={() => setTeamModalOpen(false)}
+                teamData={teamListData}
+            />
 
             <BottomNav />
         </div>
