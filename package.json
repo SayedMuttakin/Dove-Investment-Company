@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "hostinger-api-mcp": "^0.1.25"
+  }
+}

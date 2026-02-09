@@ -80,19 +80,24 @@ router.post('/request', authMiddleware, async (req, res) => {
 
         await withdrawal.save();
 
+        // Deduct from user balance immediately
+        user.balance -= totalAmount;
+        await user.save();
+
         // Notification: Withdrawal Requested
         await createNotification({
             userId,
             title: 'Withdrawal Requested',
-            message: `Your withdrawal request for $${amount} (plus $${fee} fee, total $${totalAmount}) has been submitted.`,
+            message: `Your withdrawal request for $${amount} (plus $${fee} fee, total $${totalAmount}) has been submitted. $${totalAmount} has been deducted from your balance.`,
             type: 'withdrawal',
             amount,
             relatedId: withdrawal._id
         });
 
         res.status(201).json({
-            message: 'Withdrawal request submitted successfully',
-            withdrawal
+            message: 'Withdrawal request submitted successfully. Balance deducted.',
+            withdrawal,
+            newBalance: user.balance
         });
 
     } catch (error) {
@@ -177,26 +182,11 @@ router.post('/admin/:id/approve', authMiddleware, adminMiddleware, async (req, r
             return res.status(400).json({ message: 'Withdrawal already processed' });
         }
 
-        // Get user
+        // Get user for logging and info
         const user = await User.findById(withdrawal.userId);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-
-        // Deduct from user balance
-        const deductionAmount = withdrawal.totalAmount || withdrawal.amount;
-
-        // Check if user still has sufficient balance
-        if (user.balance < deductionAmount) {
-            return res.status(400).json({
-                message: 'User has insufficient balance',
-                userBalance: user.balance,
-                requiredAmount: deductionAmount
-            });
-        }
-
-        user.balance -= deductionAmount;
-        await user.save();
 
         // Update withdrawal
         withdrawal.status = 'approved';
@@ -233,8 +223,7 @@ router.post('/admin/:id/approve', authMiddleware, adminMiddleware, async (req, r
             changes: {
                 amount: withdrawal.amount,
                 transactionId: withdrawal.transactionId,
-                userBalanceBefore: user.balance + withdrawal.amount,
-                userBalanceAfter: user.balance
+                finalBalance: user.balance
             },
             description: `Approved withdrawal of $${withdrawal.amount} for user ${user.phone}`
         });
@@ -243,7 +232,7 @@ router.post('/admin/:id/approve', authMiddleware, adminMiddleware, async (req, r
         res.json({
             message: 'Withdrawal approved successfully',
             withdrawal,
-            userNewBalance: user.balance
+            userBalance: user.balance
         });
 
     } catch (error) {
@@ -269,6 +258,14 @@ router.post('/admin/:id/reject', authMiddleware, adminMiddleware, async (req, re
         }
 
         const user = await User.findById(withdrawal.userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Refund user balance
+        const refundAmount = withdrawal.totalAmount || (withdrawal.amount + (withdrawal.fee || 0));
+        user.balance += refundAmount;
+        await user.save();
 
         // Update withdrawal
         withdrawal.status = 'rejected';
@@ -278,11 +275,11 @@ router.post('/admin/:id/reject', authMiddleware, adminMiddleware, async (req, re
         withdrawal.adminNote = adminNote;
         await withdrawal.save();
 
-        // Notification: Withdrawal Rejected
+        // Notification: Withdrawal Rejected & Refunded
         await createNotification({
             userId: withdrawal.userId,
-            title: 'Withdrawal Rejected',
-            message: `Your withdrawal of $${withdrawal.amount} has been rejected. Reason: ${withdrawal.rejectionReason}`,
+            title: 'Withdrawal Rejected ✗',
+            message: `Your withdrawal of $${withdrawal.amount} has been rejected. $${refundAmount} has been refunded to your balance. Reason: ${withdrawal.rejectionReason}`,
             type: 'withdrawal',
             amount: withdrawal.amount,
             relatedId: withdrawal._id
@@ -299,15 +296,18 @@ router.post('/admin/:id/reject', authMiddleware, adminMiddleware, async (req, re
             },
             changes: {
                 amount: withdrawal.amount,
-                rejectionReason: withdrawal.rejectionReason
+                refunded: refundAmount,
+                rejectionReason: withdrawal.rejectionReason,
+                newBalance: user.balance
             },
-            description: `Rejected withdrawal of $${withdrawal.amount} for user ${user?.phone || 'Unknown'}: ${rejectionReason}`
+            description: `Rejected withdrawal & refunded $${refundAmount} to user ${user?.phone || 'Unknown'}: ${rejectionReason}`
         });
         await log.save();
 
         res.json({
-            message: 'Withdrawal rejected',
-            withdrawal
+            message: 'Withdrawal rejected and balance refunded',
+            withdrawal,
+            newBalance: user.balance
         });
 
     } catch (error) {
@@ -315,5 +315,6 @@ router.post('/admin/:id/reject', authMiddleware, adminMiddleware, async (req, re
         res.status(500).json({ message: 'Server error' });
     }
 });
+
 
 export default router;
