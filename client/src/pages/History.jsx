@@ -9,15 +9,9 @@ import BottomNav from '../components/BottomNav';
 import { toast } from 'react-toastify';
 
 const TeamDetailsModal = ({ isOpen, onClose, teamData }) => {
-    const [activeTab, setActiveTab] = useState('level1');
-
     if (!isOpen) return null;
 
-    const tabs = [
-        { id: 'level1', label: 'Level 1', data: teamData?.level1 || [] },
-        { id: 'level2', label: 'Level 2', data: teamData?.level2 || [] },
-        { id: 'level3', label: 'Level 3', data: teamData?.level3 || [] },
-    ];
+    const members = teamData?.level1 || [];
 
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
@@ -26,32 +20,19 @@ const TeamDetailsModal = ({ isOpen, onClose, teamData }) => {
                 {/* Modal Header */}
                 <div className="p-6 border-b border-white/5 flex items-center justify-between">
                     <div>
-                        <h3 className="text-xl font-black text-white tracking-tight">Team Details</h3>
-                        <p className="text-white/40 text-xs font-medium uppercase tracking-widest mt-1">Hierarchical Members</p>
+                        <h3 className="text-xl font-black text-white tracking-tight">Team Members</h3>
+                        <p className="text-white/40 text-xs font-medium uppercase tracking-widest mt-1">Direct Referrals ({members.length})</p>
                     </div>
                     <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-xl transition-colors text-white/40 hover:text-white">
                         <X size={24} />
                     </button>
                 </div>
 
-                {/* Tabs */}
-                <div className="flex p-2 bg-white/5 mx-6 mt-4 rounded-2xl">
-                    {tabs.map((tab) => (
-                        <button
-                            key={tab.id}
-                            onClick={() => setActiveTab(tab.id)}
-                            className={`flex-1 py-2.5 text-xs font-black uppercase tracking-wider rounded-xl transition-all ${activeTab === tab.id ? 'bg-primary text-black shadow-lg shadow-primary/20 scale-[1.02]' : 'text-white/40 hover:text-white'}`}
-                        >
-                            {tab.label} ({tab.data.length})
-                        </button>
-                    ))}
-                </div>
-
                 {/* Content */}
-                <div className="p-6 h-[400px] overflow-y-auto custom-scrollbar">
+                <div className="p-6 max-h-[500px] overflow-y-auto custom-scrollbar">
                     <div className="space-y-3">
-                        {tabs.find(t => t.id === activeTab).data.length > 0 ? (
-                            tabs.find(t => t.id === activeTab).data.map((member, idx) => (
+                        {members.length > 0 ? (
+                            members.map((member, idx) => (
                                 <div key={idx} className="bg-white/[0.03] border border-white/5 p-4 rounded-2xl flex items-center justify-between group hover:bg-white/[0.05] transition-all">
                                     <div className="flex items-center gap-4">
                                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
@@ -83,7 +64,7 @@ const TeamDetailsModal = ({ isOpen, onClose, teamData }) => {
                         ) : (
                             <div className="h-full flex flex-col items-center justify-center text-center py-10 opacity-30">
                                 <Users size={40} className="mb-4" />
-                                <p className="text-sm italic">No members found in this generation.</p>
+                                <p className="text-sm italic">No team members found yet.</p>
                             </div>
                         )}
                     </div>
