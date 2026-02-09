@@ -9,14 +9,14 @@ import BottomNav from '../components/BottomNav';
 import { toast } from 'react-toastify';
 
 const TeamDetailsModal = ({ isOpen, onClose, teamData }) => {
-    const [activeTab, setActiveTab] = useState('gen1');
+    const [activeTab, setActiveTab] = useState('level1');
 
     if (!isOpen) return null;
 
     const tabs = [
-        { id: 'gen1', label: 'Gen 1', data: teamData?.gen1 || [] },
-        { id: 'gen2', label: 'Gen 2', data: teamData?.gen2 || [] },
-        { id: 'gen3', label: 'Gen 3', data: teamData?.gen3 || [] },
+        { id: 'level1', label: 'Level 1', data: teamData?.level1 || [] },
+        { id: 'level2', label: 'Level 2', data: teamData?.level2 || [] },
+        { id: 'level3', label: 'Level 3', data: teamData?.level3 || [] },
     ];
 
     return (
