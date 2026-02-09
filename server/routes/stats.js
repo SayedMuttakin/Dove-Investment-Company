@@ -85,8 +85,8 @@ router.get('/team-list', authMiddleware, async (req, res) => {
         };
 
         // Gen 1
-        const level1Users = await User.find({ referredBy: user.invitationCode }, 'phone fullName invitationCode isTeamMember createdAt');
-        const level1 = await Promise.all(level1Users.map(async (u) => ({
+        const gen1Users = await User.find({ referredBy: user.invitationCode }, 'phone fullName invitationCode isTeamMember createdAt');
+        const gen1 = await Promise.all(gen1Users.map(async (u) => ({
             _id: u._id,
             phone: u.phone,
             fullName: u.fullName,
@@ -96,11 +96,11 @@ router.get('/team-list', authMiddleware, async (req, res) => {
             hasDeposited: await checkDeposit(u._id)
         })));
 
-        const level1Codes = level1Users.map(u => u.invitationCode);
+        const gen1Codes = gen1Users.map(u => u.invitationCode);
 
-        // Level 2
-        const level2Users = await User.find({ referredBy: { $in: level1Codes } }, 'phone fullName invitationCode isTeamMember createdAt');
-        const level2 = await Promise.all(level2Users.map(async (u) => ({
+        // Gen 2
+        const gen2Users = await User.find({ referredBy: { $in: gen1Codes } }, 'phone fullName invitationCode isTeamMember createdAt');
+        const gen2 = await Promise.all(gen2Users.map(async (u) => ({
             _id: u._id,
             phone: u.phone,
             fullName: u.fullName,
@@ -110,11 +110,11 @@ router.get('/team-list', authMiddleware, async (req, res) => {
             hasDeposited: await checkDeposit(u._id)
         })));
 
-        const level2Codes = level2Users.map(u => u.invitationCode);
+        const gen2Codes = gen2Users.map(u => u.invitationCode);
 
-        // Level 3
-        const level3Users = await User.find({ referredBy: { $in: level2Codes } }, 'phone fullName invitationCode isTeamMember createdAt');
-        const level3 = await Promise.all(level3Users.map(async (u) => ({
+        // Gen 3
+        const gen3Users = await User.find({ referredBy: { $in: gen2Codes } }, 'phone fullName invitationCode isTeamMember createdAt');
+        const gen3 = await Promise.all(gen3Users.map(async (u) => ({
             _id: u._id,
             phone: u.phone,
             fullName: u.fullName,
@@ -124,7 +124,7 @@ router.get('/team-list', authMiddleware, async (req, res) => {
             hasDeposited: await checkDeposit(u._id)
         })));
 
-        res.json({ level1, level2, level3 });
+        res.json({ gen1, gen2, gen3 });
 
     } catch (error) {
         console.error('Team list error:', error);
