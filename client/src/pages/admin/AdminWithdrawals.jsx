@@ -144,7 +144,7 @@ const AdminWithdrawals = () => {
                                     <span className="text-sm text-white/60">• {item.paymentMethod}</span>
                                 </div>
                                 <div className="text-sm text-white/80">
-                                    User: {item.userId?.phone} (Code: {item.userId?.invitationCode})
+                                    User: {item.userId?.fullName || item.userId?.phone} (Total Deposit: ${item.totalDeposits || 0})
                                 </div>
                                 <div className="mt-2 p-2 bg-dark-300 rounded text-xs font-mono text-white/70">
                                     {item.bankDetails.bankName} - {item.bankDetails.accountNumber} ({item.bankDetails.accountName})

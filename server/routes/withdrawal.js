@@ -3,6 +3,7 @@ import { authMiddleware } from '../middleware/auth.js';
 import { adminMiddleware } from '../middleware/admin.js';
 import Withdrawal from '../models/Withdrawal.js';
 import User from '../models/User.js';
+import Deposit from '../models/Deposit.js';
 import AdminLog from '../models/AdminLog.js';
 import { createNotification } from '../utils/notifications.js';
 
@@ -149,12 +150,33 @@ router.get('/admin/all', authMiddleware, adminMiddleware, async (req, res) => {
         const query = status ? { status } : {};
 
         const withdrawals = await Withdrawal.find(query)
-            .populate('userId', 'phone invitationCode balance')
+            .populate('userId', 'phone fullName invitationCode balance')
             .populate('processedBy', 'phone')
             .sort({ createdAt: -1 })
             .limit(parseInt(limit));
 
-        res.json(withdrawals);
+        // Get total deposits for each user
+        const userIds = [...new Set(withdrawals.map(w => w.userId?._id))].filter(id => id);
+
+        const deposits = await Deposit.aggregate([
+            { $match: { userId: { $in: userIds }, status: 'approved' } },
+            { $group: { _id: '$userId', total: { $sum: '$amount' } } }
+        ]);
+
+        const depositMap = deposits.reduce((acc, curr) => {
+            acc[curr._id.toString()] = curr.total;
+            return acc;
+        }, {});
+
+        const withdrawalsWithDeposits = withdrawals.map(w => {
+            const withdrawalObj = w.toObject();
+            if (withdrawalObj.userId) {
+                withdrawalObj.totalDeposits = depositMap[withdrawalObj.userId._id.toString()] || 0;
+            }
+            return withdrawalObj;
+        });
+
+        res.json(withdrawalsWithDeposits);
     } catch (error) {
         console.error('Admin withdrawals error:', error);
         res.status(500).json({ message: 'Server error' });
