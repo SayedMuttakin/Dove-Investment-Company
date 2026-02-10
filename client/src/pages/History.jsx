@@ -275,7 +275,7 @@ const History = () => {
                                             {getTransactionIcon(item.type)}
                                         </div>
                                         <div>
-                                            <h4 className="text-white font-bold text-sm tracking-tight">{item.title}</h4>
+                                            <h4 className="text-white font-bold text-xs tracking-tight">{item.message}</h4>
                                             <p className="text-white/30 text-[10px] mt-0.5">{new Date(item.createdAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</p>
                                         </div>
                                     </div>
