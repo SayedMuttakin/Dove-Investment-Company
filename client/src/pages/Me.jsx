@@ -272,7 +272,7 @@ const Me = () => {
                                         <img
                                             src={`/images/vip/vip_level_${level.from}.png`}
                                             alt={`VIP Level ${level.from}`}
-                                            className={`w-full h-28 rounded-t-2xl border-2 border-b-0 transition-all duration-300 object-cover ${isCurrentLevel ? 'border-[#a4f13a]' : 'border-white/10 hover:border-white/30'
+                                            className={`w-full h-28 rounded-t-2xl border-2 border-b-0 transition-all duration-300 object-cover ${isCurrentLevel ? 'border-[#a4f13a]' : (currentLevel >= level.from ? 'border-white/30' : 'border-white/10 hover:border-white/30')
                                                 }`}
                                         />
                                         {isCurrentLevel && (
@@ -281,8 +281,8 @@ const Me = () => {
                                             </div>
                                         )}
                                         <div className="absolute bottom-3 right-3">
-                                            <div className="inline-flex bg-black/60 px-2.5 py-0.5 rounded text-[#a4f13a] text-[9px] font-bold tracking-wider uppercase backdrop-blur-sm">
-                                                {isCurrentLevel ? 'Unlocked Zone' : 'Locked Zone'}
+                                            <div className={`inline-flex px-2.5 py-0.5 rounded text-[9px] font-bold tracking-wider uppercase backdrop-blur-sm ${currentLevel >= level.from ? 'bg-[#a4f13a]/20 text-[#a4f13a] border border-[#a4f13a]/30' : 'bg-black/60 text-white/40 border border-white/10'}`}>
+                                                {currentLevel >= level.from ? 'Unlocked Zone' : 'Locked Zone'}
                                             </div>
                                         </div>
                                     </div>
