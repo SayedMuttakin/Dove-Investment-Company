@@ -371,16 +371,14 @@ const Me = () => {
                                         </div>
 
                                         <button
-                                            onClick={() => isCurrentLevel && navigate('/lend', { state: { viewLevel: level.from } })}
-                                            disabled={!isCurrentLevel}
-                                            className={`w-full py-3 rounded-lg font-black text-xs tracking-wider uppercase shadow-lg transition-all ${isCurrentLevel
+                                            onClick={() => (isCurrentLevel || currentLevel > level.from) && navigate('/lend', { state: { viewLevel: level.from } })}
+                                            disabled={!(isCurrentLevel || currentLevel > level.from)}
+                                            className={`w-full py-3 rounded-lg font-black text-xs tracking-wider uppercase shadow-lg transition-all ${isCurrentLevel || currentLevel > level.from
                                                 ? 'bg-gradient-to-r from-[#a4f13a] to-[#82c91e] text-black hover:shadow-[#a4f13a]/20 active:scale-[0.98]'
-                                                : (currentLevel > level.from
-                                                    ? 'bg-[#a4f13a]/10 text-[#a4f13a] border border-[#a4f13a]/20 cursor-default'
-                                                    : 'bg-white/5 text-white/20 cursor-not-allowed border border-white/5')
+                                                : 'bg-white/5 text-white/20 cursor-not-allowed border border-white/5'
                                                 }`}
                                         >
-                                            {isCurrentLevel ? 'Details & Upgrade' : (currentLevel > level.from ? 'Unlocked' : 'Locked')}
+                                            {isCurrentLevel || currentLevel > level.from ? 'Details & Upgrade' : 'Locked'}
                                         </button>
                                     </div>
                                 </div>
