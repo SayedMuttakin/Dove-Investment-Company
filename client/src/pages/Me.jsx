@@ -375,10 +375,12 @@ const Me = () => {
                                             disabled={!isCurrentLevel}
                                             className={`w-full py-3 rounded-lg font-black text-xs tracking-wider uppercase shadow-lg transition-all ${isCurrentLevel
                                                 ? 'bg-gradient-to-r from-[#a4f13a] to-[#82c91e] text-black hover:shadow-[#a4f13a]/20 active:scale-[0.98]'
-                                                : 'bg-white/5 text-white/20 cursor-not-allowed border border-white/5'
+                                                : (currentLevel > level.from
+                                                    ? 'bg-[#a4f13a]/10 text-[#a4f13a] border border-[#a4f13a]/20 cursor-default'
+                                                    : 'bg-white/5 text-white/20 cursor-not-allowed border border-white/5')
                                                 }`}
                                         >
-                                            {isCurrentLevel ? 'Details & Upgrade' : 'Locked'}
+                                            {isCurrentLevel ? 'Details & Upgrade' : (currentLevel > level.from ? 'Unlocked' : 'Locked')}
                                         </button>
                                     </div>
                                 </div>
