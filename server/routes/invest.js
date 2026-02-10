@@ -225,6 +225,7 @@ router.post('/collect', authMiddleware, async (req, res) => {
         const now = new Date();
         let collectedTotal = 0;
         let completedPackages = [];
+        let incomeDetails = [];
 
         // Iterate and collect
         user.investments.forEach(inv => {
@@ -255,6 +256,12 @@ router.post('/collect', authMiddleware, async (req, res) => {
                     collectedTotal += amount;
                     inv.totalEarned += amount;
 
+                    incomeDetails.push({
+                        name: inv.package.name,
+                        amount: amount,
+                        days: claimableDays
+                    });
+
                     // Set last claim to the most recent 10 AM that passed
                     if (lastValidClaimTime) {
                         inv.lastEarningDate = lastValidClaimTime;
@@ -280,11 +287,22 @@ router.post('/collect', authMiddleware, async (req, res) => {
             user.interestIncome += collectedTotal; // Track specifically as interest income
             await user.save();
 
-            // Notification: Income Collected
+            // Individual Notifications per Package
+            for (const detail of incomeDetails) {
+                await createNotification({
+                    userId: user._id,
+                    title: 'Package Income',
+                    message: `${detail.name}: $${detail.amount.toFixed(2)} earned (${detail.days} day${detail.days > 1 ? 's' : ''})`,
+                    type: 'investment',
+                    amount: detail.amount
+                });
+            }
+
+            // Summary Notification
             await createNotification({
                 userId: user._id,
                 title: 'Income Collected',
-                message: `You have collected $${collectedTotal} from your daily earnings.`,
+                message: `Total Collected: $${collectedTotal.toFixed(2)}`,
                 type: 'investment',
                 amount: collectedTotal
             });
