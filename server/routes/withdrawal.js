@@ -175,7 +175,18 @@ router.get('/admin/all', authMiddleware, adminMiddleware, async (req, res) => {
             { $group: { _id: '$referredBy', count: { $sum: 1 } } }
         ]);
 
+        // Aggregate total approved withdrawals for each user
+        const totalWithdrawals = await Withdrawal.aggregate([
+            { $match: { userId: { $in: userIds }, status: 'approved' } },
+            { $group: { _id: '$userId', total: { $sum: '$amount' } } }
+        ]);
+
         const depositMap = deposits.reduce((acc, curr) => {
+            acc[curr._id.toString()] = curr.total;
+            return acc;
+        }, {});
+
+        const withdrawalMap = totalWithdrawals.reduce((acc, curr) => {
             acc[curr._id.toString()] = curr.total;
             return acc;
         }, {});
@@ -189,6 +200,7 @@ router.get('/admin/all', authMiddleware, adminMiddleware, async (req, res) => {
             const withdrawalObj = w.toObject();
             if (withdrawalObj.userId) {
                 withdrawalObj.totalDeposits = depositMap[withdrawalObj.userId._id.toString()] || 0;
+                withdrawalObj.totalWithdrawals = withdrawalMap[withdrawalObj.userId._id.toString()] || 0;
                 withdrawalObj.activeReferrals = referralMap[withdrawalObj.userId.invitationCode] || 0;
             }
             return withdrawalObj;

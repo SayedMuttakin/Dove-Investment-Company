@@ -145,8 +145,9 @@ const AdminWithdrawals = () => {
                                 </div>
                                 <div className="text-sm text-white/80 space-y-1">
                                     <div>User: <span className="text-primary font-bold">{item.userId?.fullName || item.userId?.phone}</span></div>
-                                    <div className="flex gap-4 text-xs">
+                                    <div className="flex gap-2 text-xs flex-wrap">
                                         <span className="bg-white/5 px-2 py-1 rounded">Total Deposit: ${item.totalDeposits || 0}</span>
+                                        <span className="bg-white/5 px-2 py-1 rounded text-yellow-400">Total Withdraw: ${item.totalWithdrawals || 0}</span>
                                         <span className="bg-primary/10 text-primary px-2 py-1 rounded">Active Members: {item.activeReferrals || 0}</span>
                                     </div>
                                 </div>
