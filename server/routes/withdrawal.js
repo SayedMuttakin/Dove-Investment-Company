@@ -157,10 +157,22 @@ router.get('/admin/all', authMiddleware, adminMiddleware, async (req, res) => {
 
         // Get total deposits for each user
         const userIds = [...new Set(withdrawals.map(w => w.userId?._id))].filter(id => id);
+        const invCodes = [...new Set(withdrawals.map(w => w.userId?.invitationCode))].filter(c => c);
 
         const deposits = await Deposit.aggregate([
             { $match: { userId: { $in: userIds }, status: 'approved' } },
             { $group: { _id: '$userId', total: { $sum: '$amount' } } }
+        ]);
+
+        // Aggregate active referrals (users who have invested)
+        const activeReferrals = await User.aggregate([
+            {
+                $match: {
+                    referredBy: { $in: invCodes },
+                    'investments.0': { $exists: true } // Has at least one investment
+                }
+            },
+            { $group: { _id: '$referredBy', count: { $sum: 1 } } }
         ]);
 
         const depositMap = deposits.reduce((acc, curr) => {
@@ -168,10 +180,16 @@ router.get('/admin/all', authMiddleware, adminMiddleware, async (req, res) => {
             return acc;
         }, {});
 
+        const referralMap = activeReferrals.reduce((acc, curr) => {
+            acc[curr._id] = curr.count;
+            return acc;
+        }, {});
+
         const withdrawalsWithDeposits = withdrawals.map(w => {
             const withdrawalObj = w.toObject();
             if (withdrawalObj.userId) {
                 withdrawalObj.totalDeposits = depositMap[withdrawalObj.userId._id.toString()] || 0;
+                withdrawalObj.activeReferrals = referralMap[withdrawalObj.userId.invitationCode] || 0;
             }
             return withdrawalObj;
         });
