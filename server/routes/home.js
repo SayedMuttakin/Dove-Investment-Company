@@ -111,7 +111,8 @@ router.get('/company-info', async (req, res) => {
             email: settings.companyEmail,
             phone: settings.companyPhone,
             address: settings.companyAddress,
-            appDownloadUrl: settings.appDownloadUrl
+            appDownloadUrl: settings.appDownloadUrl,
+            maintenanceMode: settings.maintenanceMode
         });
 
     } catch (error) {

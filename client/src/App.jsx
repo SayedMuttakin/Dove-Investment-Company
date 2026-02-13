@@ -29,6 +29,8 @@ import WithdrawalSuccess from './pages/WithdrawalSuccess';
 import BonusSuccess from './pages/BonusSuccess';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Maintenance from './pages/Maintenance';
+import axios from 'axios';
 
 // Restoring Placeholder components
 const Market = () => <div className="min-h-screen bg-dark-300 text-white flex items-center justify-center"><h1 className="text-2xl">Market Page - Coming Soon</h1></div>;
@@ -73,7 +75,42 @@ const AdminRoute = ({ children }) => {
     return children;
 };
 
+
+
+
 function App() {
+    const [maintenanceMode, setMaintenanceMode] = React.useState(false);
+    const [isChecking, setIsChecking] = React.useState(true);
+    const location = window.location;
+
+    React.useEffect(() => {
+        const checkMaintenance = async () => {
+            try {
+                const res = await axios.get('/api/home/company-info');
+                setMaintenanceMode(res.data.maintenanceMode);
+            } catch (error) {
+                console.error("Error checking maintenance mode", error);
+            } finally {
+                setIsChecking(false);
+            }
+        };
+        checkMaintenance();
+    }, []);
+
+    if (isChecking) {
+        return (
+            <div className="min-h-screen bg-dark-300 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            </div>
+        );
+    }
+
+    const isAdminRoute = location.pathname.startsWith('/admin');
+
+    if (maintenanceMode && !isAdminRoute) {
+        return <Maintenance />;
+    }
+
     return (
         <>
             <Routes>
@@ -115,9 +152,14 @@ function App() {
                     <Route path="support" element={<AdminSupport />} />
                 </Route>
 
+                {/* Maintenance Mode Handling */}
+                {maintenanceMode && !isAdminRoute && (
+                    <Route path="*" element={<Maintenance />} />
+                )}
+
                 {/* Default Route */}
-                <Route path="/" element={<Navigate to="/home" replace />} />
-                <Route path="*" element={<Navigate to="/home" replace />} />
+                <Route path="/" element={maintenanceMode && !isAdminRoute ? <Maintenance /> : <Navigate to="/home" replace />} />
+                <Route path="*" element={maintenanceMode && !isAdminRoute ? <Maintenance /> : <Navigate to="/home" replace />} />
             </Routes>
             <ToastContainer
                 position="bottom-right"
