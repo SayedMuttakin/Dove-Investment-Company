@@ -7,6 +7,7 @@ import {
     Copy,
     LogOut,
     Shield,
+    Settings,
     ChevronRight,
     Star,
     Users,
@@ -204,8 +205,8 @@ const Me = () => {
                             <button onClick={() => navigate('/help')} className="p-2 text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full">
                                 <HelpCircle size={18} />
                             </button>
-                            <button onClick={() => navigate('/change-pin')} className="p-2 text-white/60 hover:text-white transition-colors hover:bg-white/5 rounded-full">
-                                <Shield size={18} />
+                            <button onClick={() => navigate('/settings')} className="p-2 text-white/60 hover:text-white transition-colors hover:bg-white/5 rounded-full">
+                                <Settings size={18} />
                             </button>
 
                             {/* Invite Button at the end */}

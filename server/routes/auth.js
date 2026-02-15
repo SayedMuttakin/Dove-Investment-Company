@@ -238,6 +238,132 @@ router.post('/verify-pin', authMiddleware, async (req, res) => {
     }
 });
 
+// Update Profile (Name, Email/Phone)
+router.put('/profile', authMiddleware, async (req, res) => {
+    try {
+        const { fullName, phone, email } = req.body;
+        const user = await User.findById(req.userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        if (fullName) {
+            user.fullName = fullName;
+        }
+
+        // Handle Phone/Email update with uniqueness check
+        const newIdentifier = phone || email;
+        const isEmail = newIdentifier && newIdentifier.includes('@');
+
+        if (newIdentifier) {
+            const existingUser = await User.findOne(isEmail ? { email: newIdentifier } : { phone: newIdentifier });
+            // Only throw error if the found user is NOT the current user
+            if (existingUser && existingUser._id.toString() !== user._id.toString()) {
+                return res.status(400).json({ message: `${isEmail ? 'Email' : 'Phone'} already in use` });
+            }
+
+            if (isEmail) {
+                user.email = newIdentifier.toLowerCase();
+                // If switching from phone to email, clear phone? Or keep both? 
+                // The schema seems to rely on one primary identifier usually, but let's just set the one provided.
+            } else {
+                user.phone = newIdentifier;
+            }
+        }
+
+        await user.save();
+
+        res.json({
+            success: true,
+            message: 'Profile updated successfully',
+            user: {
+                id: user._id,
+                phone: user.phone || user.email,
+                fullName: user.fullName,
+                memberId: user.memberId,
+                invitationCode: user.invitationCode,
+                balance: user.balance,
+                totalEarnings: user.totalEarnings,
+                investments: user.investments,
+                profileImage: user.profileImage,
+                role: user.role
+            }
+        });
+    } catch (error) {
+        console.error('Update profile error:', error);
+        res.status(500).json({ message: 'Server error updating profile' });
+    }
+});
+
+// Change Password
+router.put('/password', authMiddleware, async (req, res) => {
+    try {
+        const { oldPassword, newPassword } = req.body;
+        if (!newPassword || newPassword.length < 6) {
+            return res.status(400).json({ message: 'New password must be at least 6 characters' });
+        }
+
+        const user = await User.findById(req.userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Verify old password
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Incorrect old password' });
+        }
+
+        // Hash new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        await user.save();
+
+        res.json({ success: true, message: 'Password updated successfully' });
+    } catch (error) {
+        console.error('Change password error:', error);
+        res.status(500).json({ message: 'Server error updating password' });
+    }
+});
+
+// Change/Set Transaction PIN (Secure)
+router.put('/pin', authMiddleware, async (req, res) => {
+    try {
+        const { oldPin, newPin } = req.body;
+
+        if (!newPin || newPin.length !== 6) {
+            return res.status(400).json({ message: 'New PIN must be 6 digits' });
+        }
+
+        const user = await User.findById(req.userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // If user already has a PIN, verify the old one
+        if (user.transactionPin) {
+            if (!oldPin) {
+                return res.status(400).json({ message: 'Current PIN is required to set a new one' });
+            }
+            const isMatch = await bcrypt.compare(oldPin, user.transactionPin);
+            if (!isMatch) {
+                return res.status(400).json({ message: 'Incorrect current PIN' });
+            }
+        }
+
+        // Hash new PIN
+        const hashedPin = await bcrypt.hash(newPin, 10);
+        user.transactionPin = hashedPin;
+        await user.save();
+
+        res.json({ success: true, message: 'Transaction PIN updated successfully' });
+    } catch (error) {
+        console.error('Change PIN error:', error);
+        res.status(500).json({ message: 'Server error updating PIN' });
+    }
+});
+
 // Get current user
 // Get current user with stats and auto-upgrade logic
 router.get('/me', authMiddleware, async (req, res) => {

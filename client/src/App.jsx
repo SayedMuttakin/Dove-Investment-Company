@@ -27,6 +27,9 @@ import History from './pages/History';
 import About from './pages/About';
 import WithdrawalSuccess from './pages/WithdrawalSuccess';
 import BonusSuccess from './pages/BonusSuccess';
+import Settings from './pages/Settings';
+import ProfileSettings from './pages/ProfileSettings';
+import SecuritySettings from './pages/SecuritySettings';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Maintenance from './pages/Maintenance';
@@ -136,6 +139,9 @@ function App() {
                 <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
                 <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>} />
                 <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
+                <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+                <Route path="/settings/profile" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />
+                <Route path="/settings/security" element={<ProtectedRoute><SecuritySettings /></ProtectedRoute>} />
 
                 {/* Admin Login */}
                 <Route path="/admin/login" element={<AdminLogin />} />
