@@ -46,7 +46,7 @@ const ProfileSettings = () => {
     };
 
     return (
-        <div className="min-h-screen bg-dark-300">
+        <div className="min-h-screen bg-dark-300 max-w-md mx-auto relative shadow-2xl overflow-hidden">
             {/* Header */}
             <div className="bg-dark-200 p-4 flex items-center gap-3 sticky top-0 z-20 border-b border-white/5">
                 <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-white/60 hover:text-white">

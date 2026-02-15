@@ -299,7 +299,7 @@ router.put('/profile', authMiddleware, async (req, res) => {
 // Change Password
 router.put('/password', authMiddleware, async (req, res) => {
     try {
-        const { oldPassword, newPassword } = req.body;
+        const { newPassword } = req.body;
         if (!newPassword || newPassword.length < 6) {
             return res.status(400).json({ message: 'New password must be at least 6 characters' });
         }
@@ -307,12 +307,6 @@ router.put('/password', authMiddleware, async (req, res) => {
         const user = await User.findById(req.userId);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
-        }
-
-        // Verify old password
-        const isMatch = await bcrypt.compare(oldPassword, user.password);
-        if (!isMatch) {
-            return res.status(400).json({ message: 'Incorrect old password' });
         }
 
         // Hash new password
@@ -330,7 +324,7 @@ router.put('/password', authMiddleware, async (req, res) => {
 // Change/Set Transaction PIN (Secure)
 router.put('/pin', authMiddleware, async (req, res) => {
     try {
-        const { oldPin, newPin } = req.body;
+        const { newPin } = req.body;
 
         if (!newPin || newPin.length !== 6) {
             return res.status(400).json({ message: 'New PIN must be 6 digits' });
@@ -339,17 +333,6 @@ router.put('/pin', authMiddleware, async (req, res) => {
         const user = await User.findById(req.userId);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
-        }
-
-        // If user already has a PIN, verify the old one
-        if (user.transactionPin) {
-            if (!oldPin) {
-                return res.status(400).json({ message: 'Current PIN is required to set a new one' });
-            }
-            const isMatch = await bcrypt.compare(oldPin, user.transactionPin);
-            if (!isMatch) {
-                return res.status(400).json({ message: 'Incorrect current PIN' });
-            }
         }
 
         // Hash new PIN

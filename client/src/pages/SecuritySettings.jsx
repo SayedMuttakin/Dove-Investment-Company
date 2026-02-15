@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Lock, Shield, Save, Loader2, KeyRound } from 'lucide-react';
+import { ArrowLeft, Lock, Shield, Loader2 } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
@@ -9,19 +9,26 @@ const SecuritySettings = () => {
     const [loadingPwd, setLoadingPwd] = useState(false);
     const [loadingPin, setLoadingPin] = useState(false);
 
-    const [pwdData, setPwdData] = useState({ oldPassword: '', newPassword: '' });
-    const [pinData, setPinData] = useState({ oldPin: '', newPin: '' });
+    const [pwdData, setPwdData] = useState({ newPassword: '', confirmPassword: '' });
+    const [pinData, setPinData] = useState({ newPin: '', confirmPin: '' });
 
     const handlePwdChange = (e) => setPwdData({ ...pwdData, [e.target.name]: e.target.value });
     const handlePinChange = (e) => setPinData({ ...pinData, [e.target.name]: e.target.value });
 
     const submitPassword = async (e) => {
         e.preventDefault();
+        if (pwdData.newPassword !== pwdData.confirmPassword) {
+            return toast.error('Passwords do not match');
+        }
+        if (pwdData.newPassword.length < 6) {
+            return toast.error('Password must be at least 6 characters');
+        }
+
         setLoadingPwd(true);
         try {
-            await axios.put('/api/auth/password', pwdData);
+            await axios.put('/api/auth/password', { newPassword: pwdData.newPassword });
             toast.success('Password updated successfully');
-            setPwdData({ oldPassword: '', newPassword: '' });
+            setPwdData({ newPassword: '', confirmPassword: '' });
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to update password');
         } finally {
@@ -31,11 +38,18 @@ const SecuritySettings = () => {
 
     const submitPin = async (e) => {
         e.preventDefault();
+        if (pinData.newPin !== pinData.confirmPin) {
+            return toast.error('PINs do not match');
+        }
+        if (pinData.newPin.length !== 6) {
+            return toast.error('PIN must be 6 digits');
+        }
+
         setLoadingPin(true);
         try {
-            await axios.put('/api/auth/pin', pinData);
+            await axios.put('/api/auth/pin', { newPin: pinData.newPin });
             toast.success('Transaction PIN updated successfully');
-            setPinData({ oldPin: '', newPin: '' });
+            setPinData({ newPin: '', confirmPin: '' });
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to update PIN');
         } finally {
@@ -44,7 +58,7 @@ const SecuritySettings = () => {
     };
 
     return (
-        <div className="min-h-screen bg-dark-300 pb-10">
+        <div className="min-h-screen bg-dark-300 pb-10 max-w-md mx-auto relative shadow-2xl overflow-hidden">
             {/* Header */}
             <div className="bg-dark-200 p-4 flex items-center gap-3 sticky top-0 z-20 border-b border-white/5">
                 <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-white/60 hover:text-white">
@@ -53,7 +67,7 @@ const SecuritySettings = () => {
                 <h1 className="text-white font-bold text-lg">Security Settings</h1>
             </div>
 
-            <div className="p-4 space-y-6 max-w-md mx-auto">
+            <div className="p-4 space-y-6">
                 {/* Password Section */}
                 <div className="glass-card p-5">
                     <h2 className="text-white font-bold text-sm mb-4 flex items-center gap-2">
@@ -63,19 +77,19 @@ const SecuritySettings = () => {
                     <form onSubmit={submitPassword} className="space-y-3">
                         <input
                             type="password"
-                            name="oldPassword"
-                            value={pwdData.oldPassword}
+                            name="newPassword"
+                            value={pwdData.newPassword}
                             onChange={handlePwdChange}
-                            placeholder="Current Password"
+                            placeholder="New Password (min 6 chars)"
                             required
                             className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:border-primary/50 focus:outline-none placeholder:text-white/20"
                         />
                         <input
                             type="password"
-                            name="newPassword"
-                            value={pwdData.newPassword}
+                            name="confirmPassword"
+                            value={pwdData.confirmPassword}
                             onChange={handlePwdChange}
-                            placeholder="New Password (min 6 chars)"
+                            placeholder="Confirm New Password"
                             required
                             className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:border-primary/50 focus:outline-none placeholder:text-white/20"
                         />
@@ -98,21 +112,22 @@ const SecuritySettings = () => {
                     <form onSubmit={submitPin} className="space-y-3">
                         <input
                             type="text"
-                            name="oldPin"
-                            value={pinData.oldPin}
-                            onChange={handlePinChange}
-                            maxLength={6}
-                            placeholder="Current PIN (if set)"
-                            className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:border-primary/50 focus:outline-none placeholder:text-white/20"
-                        />
-                        <input
-                            type="text"
                             name="newPin"
                             value={pinData.newPin}
                             onChange={handlePinChange}
                             maxLength={6}
                             required
                             placeholder="New 6-Digit PIN"
+                            className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:border-primary/50 focus:outline-none placeholder:text-white/20"
+                        />
+                        <input
+                            type="text"
+                            name="confirmPin"
+                            value={pinData.confirmPin}
+                            onChange={handlePinChange}
+                            maxLength={6}
+                            required
+                            placeholder="Confirm New PIN"
                             className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:border-primary/50 focus:outline-none placeholder:text-white/20"
                         />
                         <button
