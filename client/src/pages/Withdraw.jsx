@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ArrowLeft, Wallet, AlertCircle, Bell, HelpCircle, CheckCircle2, Lock } from 'lucide-react';
