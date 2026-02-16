@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Download, CheckCircle, XCircle, Clock, Search, Hash, X } from 'lucide-react';
+import { Download, CheckCircle, XCircle, Clock, Search, Hash, X, AlertTriangle, ShieldAlert } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 const AdminWithdrawals = () => {
@@ -13,6 +13,17 @@ const AdminWithdrawals = () => {
         withdrawalId: null,
         amount: 0,
         transactionHash: ''
+    });
+
+    // New Reject Modal State
+    const [rejectModal, setRejectModal] = useState({
+        isOpen: false,
+        withdrawalId: null,
+        amount: 0,
+        userName: '',
+        reason: '',
+        blockMessage: '',
+        isBlocking: false
     });
 
     useEffect(() => {
@@ -51,6 +62,30 @@ const AdminWithdrawals = () => {
         });
     };
 
+    const openRejectModal = (withdrawal) => {
+        setRejectModal({
+            isOpen: true,
+            withdrawalId: withdrawal._id,
+            amount: withdrawal.amount,
+            userName: withdrawal.userId?.fullName || withdrawal.userId?.phone,
+            reason: '',
+            blockMessage: '',
+            isBlocking: false
+        });
+    };
+
+    const closeRejectModal = () => {
+        setRejectModal({
+            isOpen: false,
+            withdrawalId: null,
+            amount: 0,
+            userName: '',
+            reason: '',
+            blockMessage: '',
+            isBlocking: false
+        });
+    };
+
     const handleApprove = async () => {
         const { withdrawalId, transactionHash } = approveModal;
 
@@ -78,19 +113,28 @@ const AdminWithdrawals = () => {
         }
     };
 
-    const handleReject = async (id) => {
-        const reason = prompt('Enter rejection reason:');
-        if (reason === null) return; // Cancelled
+    const handleReject = async () => {
+        const { withdrawalId, reason, blockMessage, isBlocking } = rejectModal;
 
-        setProcessingId(id);
+        if (!reason || reason.trim().length === 0) {
+            toast.error('Please enter a rejection reason');
+            return;
+        }
+
+        setProcessingId(withdrawalId);
         try {
             const token = localStorage.getItem('token');
-            await axios.post(`/api/withdrawal/admin/${id}/reject`,
-                { rejectionReason: reason },
+            await axios.post(`/api/withdrawal/admin/${withdrawalId}/reject`,
+                {
+                    rejectionReason: reason,
+                    blockMessage: isBlocking ? blockMessage : null
+                },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
             fetchWithdrawals();
+            toast.success('Withdrawal rejected successfully');
+            closeRejectModal();
         } catch (error) {
             console.error('Error rejecting withdrawal:', error);
             toast.error('Failed to reject');
@@ -167,7 +211,7 @@ const AdminWithdrawals = () => {
                                         Approve
                                     </button>
                                     <button
-                                        onClick={() => handleReject(item._id)}
+                                        onClick={() => openRejectModal(item)}
                                         disabled={processingId === item._id}
                                         className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
                                     >
@@ -181,7 +225,7 @@ const AdminWithdrawals = () => {
                 )}
             </div>
 
-            {/* Transaction Hash Modal */}
+            {/* Transaction Hash Modal (Approve) */}
             {approveModal.isOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
                     <div className="glass-card w-full max-w-md p-6 relative">
@@ -231,6 +275,94 @@ const AdminWithdrawals = () => {
                                 className="flex-1 px-4 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors disabled:opacity-50 font-bold"
                             >
                                 {processingId === approveModal.withdrawalId ? 'Processing...' : 'Approve'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Rejection Modal (Reject & Block) */}
+            {rejectModal.isOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="glass-card w-full max-w-md p-6 relative bg-dark-200 border border-red-500/20">
+                        <button
+                            onClick={closeRejectModal}
+                            className="absolute top-4 right-4 p-1 text-white/40 hover:text-white transition-colors"
+                        >
+                            <X size={20} />
+                        </button>
+
+                        <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2 text-red-400">
+                            <AlertTriangle size={20} />
+                            Reject Withdrawal
+                        </h3>
+
+                        <div className="mb-6 space-y-4">
+                            <p className="text-white/60 text-sm">
+                                Rejecting withdrawal of <span className="text-white font-bold">${rejectModal.amount}</span> for <span className="text-primary">{rejectModal.userName}</span>
+                            </p>
+
+                            {/* Rejection Reason */}
+                            <div>
+                                <label className="block text-sm text-white/80 mb-2">
+                                    Rejection Reason *
+                                </label>
+                                <textarea
+                                    value={rejectModal.reason}
+                                    onChange={(e) => setRejectModal({ ...rejectModal, reason: e.target.value })}
+                                    placeholder="e.g., Incorrect wallet address"
+                                    className="w-full px-4 py-3 bg-dark-300 border border-white/10 rounded-lg text-white placeholder:text-white/30 focus:outline-none focus:border-red-500/50 resize-none h-24"
+                                    autoFocus
+                                />
+                            </div>
+
+                            {/* Block User Checkbox */}
+                            <div className="bg-red-500/5 border border-red-500/10 rounded-lg p-3">
+                                <label className="flex items-center gap-2 cursor-pointer select-none">
+                                    <input
+                                        type="checkbox"
+                                        checked={rejectModal.isBlocking}
+                                        onChange={(e) => setRejectModal({ ...rejectModal, isBlocking: e.target.checked })}
+                                        className="w-4 h-4 rounded text-red-500 focus:ring-red-500/20 bg-dark-300 border-white/10"
+                                    />
+                                    <span className="text-sm font-bold text-red-300 flex items-center gap-1">
+                                        <ShieldAlert size={14} />
+                                        Block Future Withdrawals
+                                    </span>
+                                </label>
+
+                                {rejectModal.isBlocking && (
+                                    <div className="mt-3 animate-fade-in">
+                                        <label className="block text-xs text-red-300/80 mb-1.5 uppercase font-bold tracking-wider">
+                                            Custom Block Message
+                                        </label>
+                                        <textarea
+                                            value={rejectModal.blockMessage}
+                                            onChange={(e) => setRejectModal({ ...rejectModal, blockMessage: e.target.value })}
+                                            placeholder="e.g., You need 5 active referrals to withdraw."
+                                            className="w-full px-3 py-2 bg-black/20 border border-red-500/20 rounded-lg text-white text-sm placeholder:text-red-500/20 focus:outline-none focus:border-red-500/50 resize-none h-20"
+                                        />
+                                        <p className="text-[10px] text-red-400/60 mt-1">
+                                            This message will be shown to the user every time they try to withdraw until you unblock them.
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3">
+                            <button
+                                onClick={closeRejectModal}
+                                className="flex-1 px-4 py-3 bg-dark-300 hover:bg-dark-200 text-white rounded-lg transition-colors"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleReject}
+                                disabled={processingId === rejectModal.withdrawalId}
+                                className="flex-1 px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:opacity-50 font-bold"
+                            >
+                                {processingId === rejectModal.withdrawalId ? 'Processing...' : 'Reject & Refund'}
                             </button>
                         </div>
                     </div>

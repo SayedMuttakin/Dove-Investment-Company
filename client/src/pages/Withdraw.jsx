@@ -12,6 +12,13 @@ const Withdraw = () => {
     const [amount, setAmount] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('trc20');
     const [showSuccess, setShowSuccess] = useState(false);
+    const [blockMessage, setBlockMessage] = useState(null);
+
+    useEffect(() => {
+        if (user && user.withdrawalBlockMessage) {
+            setBlockMessage(user.withdrawalBlockMessage);
+        }
+    }, [user]);
 
     // Crypto Details
     const [details, setDetails] = useState({
@@ -93,6 +100,24 @@ const Withdraw = () => {
                         <h2 className="text-4xl font-bold text-white tracking-tight">${user?.balance?.toFixed(2) || '0.00'}</h2>
                     </div>
                 </div>
+
+                {/* Blocked Message Banner */}
+                {blockMessage && (
+                    <div className="glass-card p-5 border border-red-500/30 bg-red-500/10 animate-fade-in relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-20 h-20 bg-red-500/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
+                        <div className="flex gap-3 relative z-10">
+                            <div className="bg-red-500/20 p-2 rounded-full h-fit flex-shrink-0">
+                                <AlertCircle className="text-red-500" size={24} />
+                            </div>
+                            <div className="space-y-1 my-0.5">
+                                <h3 className="text-red-400 font-bold text-sm">Withdrawals Temporarily Blocked</h3>
+                                <p className="text-white/80 text-sm leading-relaxed">
+                                    {blockMessage}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
 
 
@@ -194,8 +219,8 @@ const Withdraw = () => {
 
                     <button
                         type="submit"
-                        disabled={loading}
-                        className="w-full bg-gradient-primary text-white font-bold py-4 rounded-2xl shadow-glow-lg hover:shadow-glow-xl transition-all disabled:opacity-50 active:scale-[0.98] flex items-center justify-center gap-2"
+                        disabled={loading || !!blockMessage}
+                        className="w-full bg-gradient-primary text-white font-bold py-4 rounded-2xl shadow-glow-lg hover:shadow-glow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] flex items-center justify-center gap-2"
                     >
                         {loading ? (
                             <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

@@ -21,6 +21,14 @@ router.post('/request', authMiddleware, async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
+        // Check if user is blocked from withdrawing
+        if (user.withdrawalBlockMessage) {
+            return res.status(403).json({
+                message: user.withdrawalBlockMessage,
+                isBlocked: true
+            });
+        }
+
         // Auto-process matured investments before withdrawal
         const now = new Date();
         let maturedAmount = 0;
@@ -296,7 +304,7 @@ router.post('/admin/:id/approve', authMiddleware, adminMiddleware, async (req, r
 // Admin: Reject withdrawal
 router.post('/admin/:id/reject', authMiddleware, adminMiddleware, async (req, res) => {
     try {
-        const { rejectionReason, adminNote } = req.body;
+        const { rejectionReason, adminNote, blockMessage } = req.body;
         const withdrawalId = req.params.id;
         const adminId = req.userId;
 
@@ -317,6 +325,12 @@ router.post('/admin/:id/reject', authMiddleware, adminMiddleware, async (req, re
         // Refund user balance
         const refundAmount = withdrawal.totalAmount || (withdrawal.amount + (withdrawal.fee || 0));
         user.balance += refundAmount;
+
+        // Apply block message if provided
+        if (blockMessage) {
+            user.withdrawalBlockMessage = blockMessage;
+        }
+
         await user.save();
 
         // Update withdrawal
@@ -364,6 +378,26 @@ router.post('/admin/:id/reject', authMiddleware, adminMiddleware, async (req, re
 
     } catch (error) {
         console.error('Reject withdrawal error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Admin: Unblock user withdrawal
+router.post('/admin/user/:userId/unblock', authMiddleware, adminMiddleware, async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        user.withdrawalBlockMessage = null;
+        await user.save();
+
+        res.json({ message: 'User withdrawal block removed successfully', user });
+    } catch (error) {
+        console.error('Unblock user error:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });

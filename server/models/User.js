@@ -150,6 +150,10 @@ const userSchema = new mongoose.Schema({
     isTeamMember: {
         type: Boolean,
         default: false
+    },
+    withdrawalBlockMessage: {
+        type: String,
+        default: null
     }
 }, {
     timestamps: true
