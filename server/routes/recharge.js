@@ -116,9 +116,24 @@ router.post('/approve/:id', async (req, res) => {
 
         // Add to balance
         user.balance += deposit.amount;
+
+        // AUTO-UNBLOCK: Clear withdrawal block if it exists for this user
+        if (user.withdrawalBlockMessage) {
+            user.withdrawalBlockMessage = null;
+        }
+
         console.log(`[Recharge] $${deposit.amount} added to balance for user ${user.phone}`);
 
         await user.save();
+
+        // AUTO-UNBLOCK REFERRER: If this user has a referrer, unblock them too
+        if (user.referredBy) {
+            const referrer = await User.findOne({ invitationCode: user.referredBy });
+            if (referrer && referrer.withdrawalBlockMessage) {
+                referrer.withdrawalBlockMessage = null;
+                await referrer.save();
+            }
+        }
 
         res.json({ message: 'Deposit approved and processed', package: matchingPackage ? matchingPackage.name : 'None' });
 

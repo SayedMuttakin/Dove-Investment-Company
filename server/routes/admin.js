@@ -417,6 +417,13 @@ router.post('/deposit/:id/approve', authMiddleware, adminMiddleware, async (req,
         // Add to balance
         user.balance += deposit.amount;
         user.isTeamMember = true; // Mark as active team member on first deposit
+
+        // AUTO-UNBLOCK: Clear withdrawal block if it exists for this user
+        if (user.withdrawalBlockMessage) {
+            console.log(`[Admin] Auto-unblocking user ${user._id} due to new deposit`);
+            user.withdrawalBlockMessage = null;
+        }
+
         console.log(`[Admin] $${deposit.amount} added to balance and marked as team member for user ${user._id}`);
 
         await AdminLog.create({
@@ -427,6 +434,16 @@ router.post('/deposit/:id/approve', authMiddleware, adminMiddleware, async (req,
         });
 
         await user.save();
+
+        // AUTO-UNBLOCK REFERRER: If this user has a referrer, unblock them too
+        if (user.referredBy) {
+            const referrer = await User.findOne({ invitationCode: user.referredBy });
+            if (referrer && referrer.withdrawalBlockMessage) {
+                console.log(`[Admin] Auto-unblocking referrer ${referrer._id} due to referral (${user.phone}) deposit`);
+                referrer.withdrawalBlockMessage = null;
+                await referrer.save();
+            }
+        }
 
         // Distribute team commissions for the deposit
         try {
