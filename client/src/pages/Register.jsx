@@ -11,9 +11,8 @@ const Register = () => {
     const navigate = useNavigate();
     const { register } = useAuth();
     const [formData, setFormData] = useState({
-        countryCode: '+1',
         fullName: '',
-        phone: '',
+        email: '',
         captcha: '',
         invitationCode: '',
         password: '',
@@ -93,13 +92,9 @@ const Register = () => {
         setLoading(true);
 
         try {
-            let fullPhone = formData.phone;
-            if (!formData.phone.includes('@')) {
-                fullPhone = formData.countryCode + formData.phone;
-            }
             await register({
                 fullName: formData.fullName,
-                phone: fullPhone,
+                phone: formData.email,
                 password: formData.password,
                 invitationCode: formData.invitationCode
             });
@@ -172,27 +167,18 @@ const Register = () => {
                         />
                     </div>
 
-                    {/* Email or Phone Number */}
+                    {/* Gmail Address */}
                     <div>
-                        <label className="block text-white/80 text-sm mb-2">Email or Phone Number</label>
-                        <div className="flex gap-2">
-                            {!formData.phone.includes('@') && (
-                                <CountrySelector
-                                    value={formData.countryCode}
-                                    onChange={handleChange}
-                                    name="countryCode"
-                                />
-                            )}
-                            <input
-                                type="text"
-                                name="phone"
-                                value={formData.phone}
-                                onChange={handleChange}
-                                placeholder="Email or phone number"
-                                className="input-glass flex-1"
-                                required
-                            />
-                        </div>
+                        <label className="block text-white/80 text-sm mb-2">Gmail Address</label>
+                        <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            placeholder="your-email@gmail.com"
+                            className="input-glass w-full"
+                            required
+                        />
                     </div>
 
                     {/* Captcha */}

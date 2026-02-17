@@ -39,14 +39,20 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ message: 'Password is required' });
         }
 
+        // NEW USERS MUST REGISTER WITH EMAIL ONLY
         const isEmail = phone.includes('@');
         log(`isEmail: ${isEmail}, Identifier: ${phone}`);
 
+        if (!isEmail) {
+            log('Error: Registration requires email address');
+            return res.status(400).json({ message: 'New registrations must use a Gmail address. Please provide an email instead of a phone number.' });
+        }
+
         // Check if user already exists
-        const query = isEmail ? { email: phone.toLowerCase() } : { phone };
+        const query = { email: phone.toLowerCase() };
         const existingUser = await User.findOne(query);
         if (existingUser) {
-            return res.status(400).json({ message: isEmail ? 'Email already registered' : 'Phone number already registered' });
+            return res.status(400).json({ message: 'Email already registered' });
         }
 
         // Verify invitation code if provided (optional)
@@ -69,9 +75,10 @@ router.post('/register', async (req, res) => {
         const lastUser = await User.findOne({}, 'memberId').sort({ memberId: -1 });
         const nextMemberId = (lastUser?.memberId || 0) + 1;
 
-        // Create user
+        // Create user (email-only for new registrations)
         const userData = {
             fullName,
+            email: phone.toLowerCase(),
             password: hashedPassword,
             invitationCode: newInvitationCode,
             referredBy,
@@ -79,12 +86,6 @@ router.post('/register', async (req, res) => {
             balance: 8,
             bonusIncome: 8
         };
-
-        if (isEmail) {
-            userData.email = phone.toLowerCase();
-        } else {
-            userData.phone = phone;
-        }
 
         const user = new User(userData);
 
