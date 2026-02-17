@@ -128,6 +128,11 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { phone, password } = req.body;
+
+        if (!phone) {
+            return res.status(400).json({ message: 'Phone or Email is required' });
+        }
+
         const isEmail = phone.includes('@');
         console.log(`[Auth] Login attempt for ${isEmail ? 'email' : 'phone'}: ${phone}`);
 

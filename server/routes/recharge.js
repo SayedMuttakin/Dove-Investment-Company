@@ -5,7 +5,7 @@ import Package from '../models/Package.js';
 import { authMiddleware } from '../middleware/auth.js';
 import SystemSettings from '../models/SystemSettings.js';
 import { createNotification } from '../utils/notifications.js';
-import { sendDepositApprovedEmail } from '../services/emailService.js';
+import { sendDepositApprovedEmail, sendDepositReceivedEmail } from '../services/emailService.js';
 
 const router = express.Router();
 
@@ -77,6 +77,15 @@ router.post('/submit', authMiddleware, async (req, res) => {
             amount,
             relatedId: deposit._id
         });
+
+        // Send email notification
+        const user = await User.findById(req.userId);
+        if (user && user.email) {
+            console.log(`[Recharge] Sending submission email to: ${user.email}`);
+            await sendDepositReceivedEmail(user, deposit);
+        } else {
+            console.log(`[Recharge] No email found for user: ${req.userId}`);
+        }
 
         res.status(201).json({ message: 'Deposit submitted successfully', deposit });
 

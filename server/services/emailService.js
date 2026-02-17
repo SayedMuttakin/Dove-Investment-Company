@@ -293,6 +293,50 @@ const getEmailTemplate = (type, data) => {
                     </div>
                 </div>
             </body>
+        `,
+        depositReceived: `
+            ${baseStyle}
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1 class="logo">🚀 NovaEarn</h1>
+                        <p class="tagline">Your Trusted Investment Platform</p>
+                    </div>
+                    <div class="content">
+                        <h2 class="title">📩 Deposit Received</h2>
+                        <p class="message">Hello <strong>${data.userName}</strong>,</p>
+                        <p class="message">
+                            We have received your deposit request. Our team is currently verifying the transaction.
+                        </p>
+                        
+                        <div class="amount-highlight">$${data.amount}</div>
+                        
+                        <div class="info-card">
+                            <div class="info-row">
+                                <span class="info-label">Amount</span>
+                                <span class="info-value">$${data.amount}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Network</span>
+                                <span class="info-value">${data.network}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Status</span>
+                                <span class="status-badge status-pending">Pending Review</span>
+                            </div>
+                        </div>
+                        
+                        <p class="message">
+                            Verification usually takes 30-60 minutes. You will receive another email once your balance is updated.
+                        </p>
+                    </div>
+                    <div class="footer">
+                        <p class="footer-text"><strong>NovaEarn Investment Platform</strong></p>
+                        <p class="footer-text">doveinvestment.cloud</p>
+                        <p class="footer-text">Need help? <a href="https://doveinvestment.cloud" class="support-link">Contact Support</a></p>
+                    </div>
+                </div>
+            </body>
         `
     };
 
@@ -381,9 +425,23 @@ export const sendDepositApprovedEmail = async (user, deposit) => {
     });
 };
 
+export const sendDepositReceivedEmail = async (user, deposit) => {
+    return sendEmail({
+        to: user.email,
+        subject: '📩 Deposit Received - NovaEarn',
+        type: 'depositReceived',
+        data: {
+            userName: user.fullName || user.phone,
+            amount: deposit.amount.toFixed(2),
+            network: deposit.network
+        }
+    });
+};
+
 export default {
     sendEmail,
     sendWithdrawalRequestEmail,
     sendWithdrawalApprovedEmail,
-    sendDepositApprovedEmail
+    sendDepositApprovedEmail,
+    sendDepositReceivedEmail
 };
