@@ -8,6 +8,26 @@ const AdminWithdrawals = () => {
     const [loading, setLoading] = useState(true);
     const [filter, setFilter] = useState('pending');
     const [processingId, setProcessingId] = useState(null);
+    const [now, setNow] = useState(new Date());
+
+    useEffect(() => {
+        const timer = setInterval(() => setNow(new Date()), 1000);
+        return () => clearInterval(timer);
+    }, []);
+
+    const formatDuration = (start, end) => {
+        const diff = Math.floor((new Date(end || now) - new Date(start)) / 1000);
+        if (diff < 0) return '0s';
+
+        const h = Math.floor(diff / 3600);
+        const m = Math.floor((diff % 3600) / 60);
+        const s = diff % 60;
+
+        if (h > 0) return `${h}h ${m}m ${s}s`;
+        if (m > 0) return `${m}m ${s}s`;
+        return `${s}s`;
+    };
+
     const [approveModal, setApproveModal] = useState({
         isOpen: false,
         withdrawalId: null,
@@ -175,13 +195,26 @@ const AdminWithdrawals = () => {
                         <div key={item._id} className="glass-card p-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                             <div className="flex-1">
                                 <div className="flex items-center gap-3 mb-2 flex-wrap">
-                                    <span className="text-sm text-white/60">{new Date(item.createdAt).toLocaleDateString()}</span>
-                                    <span className={`px-2 py-0.5 rounded text-xs font-medium uppercase ${item.status === 'approved' ? 'bg-green-500/20 text-green-400' :
+                                    <div className="flex items-center gap-1.5 text-white/40 text-xs">
+                                        <Clock size={12} />
+                                        <span>{new Date(item.createdAt).toLocaleString()}</span>
+                                    </div>
+                                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${item.status === 'approved' ? 'bg-green-500/20 text-green-400' :
                                         item.status === 'rejected' ? 'bg-red-500/20 text-red-400' :
-                                            'bg-yellow-500/20 text-yellow-400'
+                                            'bg-yellow-500/10 text-yellow-400 animate-pulse'
                                         }`}>
-                                        {item.status}
+                                        {item.status === 'pending' ? (
+                                            <span className="flex items-center gap-1">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-ping"></span>
+                                                Pending: {formatDuration(item.createdAt)}
+                                            </span>
+                                        ) : item.status}
                                     </span>
+                                    {item.status !== 'pending' && (
+                                        <span className="text-[10px] text-white/40 bg-white/5 px-2 py-0.5 rounded">
+                                            Processed in: {formatDuration(item.createdAt, item.processedAt)}
+                                        </span>
+                                    )}
                                 </div>
                                 <div className="flex items-center gap-2 mb-1">
                                     <span className="text-xl font-bold text-white">${item.amount}</span>

@@ -6,6 +6,7 @@ import User from '../models/User.js';
 import Deposit from '../models/Deposit.js';
 import AdminLog from '../models/AdminLog.js';
 import { createNotification } from '../utils/notifications.js';
+import { sendWithdrawalRequestEmail, sendWithdrawalApprovedEmail } from '../services/emailService.js';
 
 const router = express.Router();
 
@@ -102,6 +103,11 @@ router.post('/request', authMiddleware, async (req, res) => {
             amount,
             relatedId: withdrawal._id
         });
+
+        // Send email notification
+        if (user.email) {
+            await sendWithdrawalRequestEmail(user, withdrawal);
+        }
 
         res.status(201).json({
             message: 'Withdrawal request submitted successfully. Balance deducted.',
@@ -270,6 +276,11 @@ router.post('/admin/:id/approve', authMiddleware, adminMiddleware, async (req, r
             amount: withdrawal.amount,
             relatedId: withdrawal._id
         });
+
+        // Send email notification
+        if (user.email) {
+            await sendWithdrawalApprovedEmail(user, withdrawal);
+        }
 
         // Log admin action
         const log = new AdminLog({

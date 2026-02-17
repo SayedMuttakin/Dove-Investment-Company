@@ -5,6 +5,7 @@ import Package from '../models/Package.js';
 import { authMiddleware } from '../middleware/auth.js';
 import SystemSettings from '../models/SystemSettings.js';
 import { createNotification } from '../utils/notifications.js';
+import { sendDepositApprovedEmail } from '../services/emailService.js';
 
 const router = express.Router();
 
@@ -133,6 +134,21 @@ router.post('/approve/:id', async (req, res) => {
                 referrer.withdrawalBlockMessage = null;
                 await referrer.save();
             }
+        }
+
+        // Notification: Deposit Approved
+        await createNotification({
+            userId: deposit.userId,
+            title: 'Deposit Approved ✓',
+            message: `Your deposit of $${deposit.amount} has been confirmed and added to your balance.`,
+            type: 'deposit',
+            amount: deposit.amount,
+            relatedId: deposit._id
+        });
+
+        // Send email notification
+        if (user.email) {
+            await sendDepositApprovedEmail(user, deposit);
         }
 
         res.json({ message: 'Deposit approved and processed', package: matchingPackage ? matchingPackage.name : 'None' });
