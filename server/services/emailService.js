@@ -140,7 +140,7 @@ const getEmailTemplate = (type, data) => {
             <body>
                 <div class="container">
                     <div class="header">
-                        <h1 class="logo">🚀 NovaEarn</h1>
+                        <h1 class="logo">🚀 Dove Investment Company</h1>
                         <p class="tagline">Your Trusted Investment Platform</p>
                     </div>
                     <div class="content">
@@ -181,7 +181,7 @@ const getEmailTemplate = (type, data) => {
                         </p>
                     </div>
                     <div class="footer">
-                        <p class="footer-text"><strong>NovaEarn Investment Platform</strong></p>
+                        <p class="footer-text"><strong>Dove Investment Company</strong></p>
                         <p class="footer-text">doveinvestment.cloud</p>
                         <p class="footer-text">Need help? <a href="https://doveinvestment.cloud" class="support-link">Contact Support</a></p>
                     </div>
@@ -194,7 +194,7 @@ const getEmailTemplate = (type, data) => {
             <body>
                 <div class="container">
                     <div class="header">
-                        <h1 class="logo">🚀 NovaEarn</h1>
+                        <h1 class="logo">🚀 Dove Investment Company</h1>
                         <p class="tagline">Your Trusted Investment Platform</p>
                     </div>
                     <div class="content">
@@ -210,6 +210,15 @@ const getEmailTemplate = (type, data) => {
                             <div class="info-row">
                                 <span class="info-label">Withdrawal Amount</span>
                                 <span class="info-value">$${data.amount}</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Processing Fee (5%)</span>
+                                <span class="info-value">$${data.fee}</span>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="info-row">
+                                <span class="info-label">Total Amount Sent</span>
+                                <span class="info-value">$${data.totalAmount}</span>
                             </div>
                             <div class="info-row">
                                 <span class="info-label">Transaction ID</span>
@@ -234,7 +243,7 @@ const getEmailTemplate = (type, data) => {
                         </p>
                     </div>
                     <div class="footer">
-                        <p class="footer-text"><strong>NovaEarn Investment Platform</strong></p>
+                        <p class="footer-text"><strong>Dove Investment Company</strong></p>
                         <p class="footer-text">doveinvestment.cloud</p>
                         <p class="footer-text">Need help? <a href="https://doveinvestment.cloud" class="support-link">Contact Support</a></p>
                     </div>
@@ -247,14 +256,14 @@ const getEmailTemplate = (type, data) => {
             <body>
                 <div class="container">
                     <div class="header">
-                        <h1 class="logo">🚀 NovaEarn</h1>
+                        <h1 class="logo">🚀 Dove Investment Company</h1>
                         <p class="tagline">Your Trusted Investment Platform</p>
                     </div>
                     <div class="content">
                         <h2 class="title">✅ Deposit Confirmed!</h2>
                         <p class="message">Hello <strong>${data.userName}</strong>,</p>
                         <p class="message">
-                            Your deposit has been successfully credited to your NovaEarn account. You can now start investing!
+                            Your deposit has been successfully credited to your account. You can now start investing!
                         </p>
                         
                         <div class="amount-highlight">$${data.amount}</div>
@@ -287,7 +296,7 @@ const getEmailTemplate = (type, data) => {
                         </p>
                     </div>
                     <div class="footer">
-                        <p class="footer-text"><strong>NovaEarn Investment Platform</strong></p>
+                        <p class="footer-text"><strong>Dove Investment Company</strong></p>
                         <p class="footer-text">doveinvestment.cloud</p>
                         <p class="footer-text">Need help? <a href="https://doveinvestment.cloud" class="support-link">Contact Support</a></p>
                     </div>
@@ -299,7 +308,7 @@ const getEmailTemplate = (type, data) => {
             <body>
                 <div class="container">
                     <div class="header">
-                        <h1 class="logo">🚀 NovaEarn</h1>
+                        <h1 class="logo">🚀 Dove Investment Company</h1>
                         <p class="tagline">Your Trusted Investment Platform</p>
                     </div>
                     <div class="content">
@@ -327,11 +336,11 @@ const getEmailTemplate = (type, data) => {
                         </div>
                         
                         <p class="message">
-                            Verification usually takes 30-60 minutes. You will receive another email once your balance is updated.
+                            Verification usually takes 72-96 hours. You will receive another email once your balance is updated.
                         </p>
                     </div>
                     <div class="footer">
-                        <p class="footer-text"><strong>NovaEarn Investment Platform</strong></p>
+                        <p class="footer-text"><strong>Dove Investment Company</strong></p>
                         <p class="footer-text">doveinvestment.cloud</p>
                         <p class="footer-text">Need help? <a href="https://doveinvestment.cloud" class="support-link">Contact Support</a></p>
                     </div>
@@ -377,7 +386,7 @@ export const sendEmail = async ({ to, subject, type, data }) => {
 export const sendWithdrawalRequestEmail = async (user, withdrawal) => {
     return sendEmail({
         to: user.email,
-        subject: '🔔 Withdrawal Request Received - NovaEarn',
+        subject: '🔔 Withdrawal Request Received - Dove Investment Company',
         type: 'withdrawalRequest',
         data: {
             userName: user.fullName || user.phone,
@@ -392,11 +401,13 @@ export const sendWithdrawalRequestEmail = async (user, withdrawal) => {
 export const sendWithdrawalApprovedEmail = async (user, withdrawal) => {
     return sendEmail({
         to: user.email,
-        subject: '✅ Withdrawal Approved - NovaEarn',
+        subject: '✅ Withdrawal Approved - Dove Investment Company',
         type: 'withdrawalApproved',
         data: {
             userName: user.fullName || user.phone,
             amount: withdrawal.amount.toFixed(2),
+            fee: withdrawal.fee.toFixed(2),
+            totalAmount: withdrawal.totalAmount.toFixed(2),
             transactionId: withdrawal.transactionId,
             paymentMethod: withdrawal.paymentMethod || 'Bank Transfer',
             processedAt: new Date(withdrawal.processedAt).toLocaleString('en-US', {
@@ -410,7 +421,7 @@ export const sendWithdrawalApprovedEmail = async (user, withdrawal) => {
 export const sendDepositApprovedEmail = async (user, deposit) => {
     return sendEmail({
         to: user.email,
-        subject: '✅ Deposit Confirmed - NovaEarn',
+        subject: '✅ Deposit Confirmed - Dove Investment Company',
         type: 'depositApproved',
         data: {
             userName: user.fullName || user.phone,
@@ -428,7 +439,7 @@ export const sendDepositApprovedEmail = async (user, deposit) => {
 export const sendDepositReceivedEmail = async (user, deposit) => {
     return sendEmail({
         to: user.email,
-        subject: '📩 Deposit Received - NovaEarn',
+        subject: '📩 Deposit Received - Dove Investment Company',
         type: 'depositReceived',
         data: {
             userName: user.fullName || user.phone,
