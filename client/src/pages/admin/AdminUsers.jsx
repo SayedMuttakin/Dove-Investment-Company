@@ -16,19 +16,23 @@ const AdminUsers = () => {
     }, [searchTerm]);
 
     const fetchUsers = async () => {
+        setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const url = searchTerm
-                ? `/api/admin/users?search=${searchTerm}`
+            const trimmedSearch = searchTerm.trim();
+            const url = trimmedSearch
+                ? `/api/admin/users?search=${encodeURIComponent(trimmedSearch)}`
                 : '/api/admin/users';
 
             const response = await axios.get(url, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            setUsers(response.data);
-            setLoading(false);
+            setUsers(Array.isArray(response.data) ? response.data : []);
         } catch (error) {
             console.error('Error fetching users:', error);
+            toast.error('Failed to load users');
+            setUsers([]);
+        } finally {
             setLoading(false);
         }
     };
@@ -59,14 +63,14 @@ const AdminUsers = () => {
 
     return (
         <div className="space-y-6 p-4">
-            <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-white">Registered Users</h2>
-                <div className="relative">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                <h2 className="text-xl md:text-2xl font-bold text-white">Registered Users</h2>
+                <div className="relative w-full md:w-80">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" size={18} />
                     <input
-                        type="text"
-                        placeholder="Search name, phone, email or code..."
-                        className="bg-dark-200 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-white focus:outline-none focus:border-blue-500 w-80"
+                        type="search"
+                        placeholder="Search users..."
+                        className="bg-dark-200 border border-white/10 rounded-lg pl-10 pr-4 py-2.5 text-white focus:outline-none focus:border-blue-500 w-full text-sm"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
