@@ -285,7 +285,7 @@ const Withdraw = () => {
                                             </div>
                                         </div>
                                         <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${getStatusColor(item.status)}`}>
-                                            {item.status}
+                                            {item.status === 'approved' ? 'Success' : item.status}
                                         </span>
                                     </div>
                                     <div className="h-px bg-white/5"></div>
