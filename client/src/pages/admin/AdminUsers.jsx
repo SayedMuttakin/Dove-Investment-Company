@@ -35,7 +35,7 @@ const AdminUsers = () => {
 
     const handleEdit = (user) => {
         setEditingUser(user);
-        setEditForm({ balance: user.balance, vipLevel: user.vipLevel });
+        setEditForm({ balance: user.balance ?? 0, vipLevel: user.vipLevel ?? 0 });
         setShowModal(true);
     };
 
@@ -100,13 +100,13 @@ const AdminUsers = () => {
                                     <tr key={user._id} className="hover:bg-white/5 transition-colors">
                                         <td className="p-4">
                                             <div className="text-white font-medium text-sm">{user.fullName || 'No Name'}</div>
-                                            <div className="text-white/60 text-xs">{user.phone || user.email}</div>
+                                            <div className="text-white/60 text-xs">{user.phone || user.email || 'No Contact'}</div>
                                         </td>
-                                        <td className="p-4 text-white/60 text-xs font-mono">{user.invitationCode}</td>
-                                        <td className="p-4 text-green-400 font-bold text-sm">${user.balance.toFixed(2)}</td>
-                                        <td className="p-4 text-yellow-400 text-sm font-bold">Lvl {user.vipLevel}</td>
-                                        <td className="p-4 text-white/60 text-xs">
-                                            {new Date(user.createdAt).toLocaleDateString()}
+                                        <td className="p-4 text-white/60 text-xs font-mono">{user.invitationCode || 'N/A'}</td>
+                                        <td className="p-4 text-green-400 font-bold text-sm">${(user.balance || 0).toFixed(2)}</td>
+                                        <td className="p-4 text-yellow-400 text-sm font-bold">Lvl {user.vipLevel ?? 0}</td>
+                                        <td className="p-4 text-white/60 text-xs text-nowrap">
+                                            {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
                                         </td>
                                         <td className="p-4">
                                             <button
