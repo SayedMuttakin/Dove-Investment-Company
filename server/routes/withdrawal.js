@@ -124,7 +124,7 @@ router.post('/request', authMiddleware, async (req, res) => {
 // Get user's withdrawal history
 router.get('/history', authMiddleware, async (req, res) => {
     try {
-        const userId = req.user._id;
+        const userId = req.userId;
 
         const withdrawals = await Withdrawal.find({ userId })
             .sort({ createdAt: -1 })

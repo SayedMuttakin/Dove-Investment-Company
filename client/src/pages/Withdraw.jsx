@@ -68,6 +68,35 @@ const Withdraw = () => {
         }
     };
 
+    const [withdrawals, setWithdrawals] = useState([]);
+    const [loadingHistory, setLoadingHistory] = useState(true);
+
+    const fetchWithdrawals = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await axios.get('/api/withdrawal/history', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setWithdrawals(res.data);
+        } catch (error) {
+            console.error('Failed to fetch history:', error);
+        } finally {
+            setLoadingHistory(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchWithdrawals();
+    }, []);
+
+    const getStatusColor = (status) => {
+        switch (status) {
+            case 'approved': return 'text-green-500 bg-green-500/10';
+            case 'rejected': return 'text-red-500 bg-red-500/10';
+            default: return 'text-yellow-500 bg-yellow-500/10';
+        }
+    };
+
     return (
         <div className="min-h-screen bg-dark-300 pb-20">
             {/* Header - Matching Home.jsx */}
@@ -233,13 +262,70 @@ const Withdraw = () => {
                         Processing time: 72-96 hours depending on network traffic and bank hours. 5% processing fee applies.
                     </p>
                 </form>
+
+                {/* Withdrawal History Section */}
+                <div className="space-y-4">
+                    <h3 className="text-white font-bold text-sm ml-1">Withdrawal Records</h3>
+                    <div className="space-y-3">
+                        {loadingHistory ? (
+                            <div className="flex justify-center py-8">
+                                <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+                            </div>
+                        ) : withdrawals.length > 0 ? (
+                            withdrawals.map((item) => (
+                                <div key={item._id} className="glass-card p-4 border border-white/5 space-y-3">
+                                    <div className="flex justify-between items-start">
+                                        <div className="flex gap-3">
+                                            <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center">
+                                                <Wallet className="text-primary" size={20} />
+                                            </div>
+                                            <div>
+                                                <p className="text-white font-bold text-sm">${item.amount}</p>
+                                                <p className="text-white/40 text-[10px]">{new Date(item.createdAt).toLocaleString()}</p>
+                                            </div>
+                                        </div>
+                                        <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${getStatusColor(item.status)}`}>
+                                            {item.status}
+                                        </span>
+                                    </div>
+                                    <div className="h-px bg-white/5"></div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <p className="text-white/40 text-[9px] uppercase font-bold tracking-widest">Network</p>
+                                            <p className="text-white/80 text-[11px] font-medium">{item.paymentMethod?.toUpperCase()}</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-white/40 text-[9px] uppercase font-bold tracking-widest">Fee</p>
+                                            <p className="text-white/80 text-[11px] font-medium">${item.fee?.toFixed(2)}</p>
+                                        </div>
+                                    </div>
+                                    {item.transactionId && (
+                                        <div className="bg-dark-300/50 p-2 rounded-lg border border-white/5">
+                                            <p className="text-white/40 text-[9px] uppercase font-bold tracking-widest mb-1">Transaction ID</p>
+                                            <p className="text-primary text-[10px] font-mono break-all">{item.transactionId}</p>
+                                        </div>
+                                    )}
+                                    {item.rejectionReason && (
+                                        <p className="text-red-400 text-[10px] bg-red-400/5 p-2 rounded-lg border border-red-400/10">
+                                            Rejection Reason: {item.rejectionReason}
+                                        </p>
+                                    )}
+                                </div>
+                            ))
+                        ) : (
+                            <div className="text-center py-10 glass-card border border-dashed border-white/10">
+                                <p className="text-white/40 text-xs">No withdrawal records found</p>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
 
             <SuccessModal
                 isOpen={showSuccess}
                 onClose={() => {
                     setShowSuccess(false);
-                    navigate('/me');
+                    fetchWithdrawals(); // Refresh list after success
                 }}
                 title="Withdrawal Requested!"
                 message={`Your withdrawal request for $${amount} has been submitted successfully.`}
