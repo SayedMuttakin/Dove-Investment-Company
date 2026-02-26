@@ -87,6 +87,7 @@ const Me = () => {
     };
 
     const getVIPBadge = (level) => {
+        // level here is internal (0-5), display as 1-6
         const badges = {
             5: { name: '👑 ELITE', color: 'from-yellow-400 to-amber-500', textColor: 'text-black' },
             4: { name: '💎 PLATINUM', color: 'from-purple-500 to-pink-500', textColor: 'text-white' },
@@ -271,8 +272,8 @@ const Me = () => {
                                     {/* Level Banner */}
                                     <div className="relative">
                                         <img
-                                            src={`/images/vip/vip_level_${level.from}.png`}
-                                            alt={`VIP Level ${level.from}`}
+                                            src={`/images/vip/vip_level_${level.from + 1}.png`}
+                                            alt={`VIP Level ${level.from + 1}`}
                                             className={`w-full h-28 rounded-t-2xl border-2 border-b-0 transition-all duration-300 object-cover ${isCurrentLevel ? 'border-[#a4f13a]' : (currentLevel >= level.from ? 'border-white/30' : 'border-white/10 hover:border-white/30')
                                                 }`}
                                         />
@@ -292,7 +293,7 @@ const Me = () => {
                                     <div className={`bg-dark-200 border-2 border-t-0 rounded-b-2xl p-4 pt-4 relative z-0 ${isCurrentLevel ? 'border-[#a4f13a] shadow-[0_10px_20px_rgba(164,241,58,0.1)]' : 'border-white/10'
                                         }`}>
                                         <div className="flex items-center gap-2 mb-4">
-                                            <span className="text-white font-bold text-xs">VIP Level {level.from}</span>
+                                            <span className="text-white font-bold text-xs">VIP Level {level.from + 1}</span>
                                             {!isCurrentLevel && <Shield size={12} className="text-white/20" />}
                                         </div>
 

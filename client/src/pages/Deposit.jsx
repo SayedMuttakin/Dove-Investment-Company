@@ -131,7 +131,7 @@ const Deposit = () => {
                                 <p className="text-white/60 text-xs mb-0.5">Investment Package</p>
                                 <h3 className="text-white font-bold text-sm">{packageInfo.packageName}</h3>
                                 <p className="text-primary text-xs mt-0.5">
-                                    Level {packageInfo.vipLevel} • {packageInfo.minAmount} - {packageInfo.maxAmount} USDT
+                                    Level {packageInfo.vipLevel + 1} • {packageInfo.minAmount} - {packageInfo.maxAmount} USDT
                                 </p>
                             </div>
                         </div>

@@ -108,7 +108,7 @@ const AdminUsers = () => {
                                         </td>
                                         <td className="p-4 text-white/60 text-xs font-mono">{user.invitationCode || 'N/A'}</td>
                                         <td className="p-4 text-green-400 font-bold text-sm">${(user.balance || 0).toFixed(2)}</td>
-                                        <td className="p-4 text-yellow-400 text-sm font-bold">Lvl {user.vipLevel ?? 0}</td>
+                                        <td className="p-4 text-yellow-400 text-sm font-bold">Lvl {(user.vipLevel ?? 0) + 1}</td>
                                         <td className="p-4 text-white/60 text-xs text-nowrap">
                                             {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
                                         </td>
