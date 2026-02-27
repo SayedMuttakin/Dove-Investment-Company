@@ -18,7 +18,8 @@ import {
     Bell,
     Briefcase,
     History,
-    UserPlus
+    UserPlus,
+    Sparkles
 } from 'lucide-react';
 import axios from 'axios';
 import { usePWA } from '../hooks/usePWA';
@@ -279,6 +280,26 @@ const Me = () => {
             <div className="max-w-md mx-auto px-4 -mt-3 space-y-3">
                 {/* Level Status Card */}
                 <LevelStatusCard />
+
+                {/* Star Reward System Entry */}
+                <div
+                    onClick={() => navigate('/star-rewards')}
+                    className="relative overflow-hidden bg-gradient-to-r from-yellow-500/20 to-orange-500/10 rounded-3xl p-5 border border-yellow-500/20 group cursor-pointer active:scale-[0.98] transition-all shadow-lg"
+                >
+                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-700">
+                        <Star size={60} className="text-yellow-400" fill="currentColor" />
+                    </div>
+                    <div className="flex items-center gap-4 relative z-10">
+                        <div className="w-12 h-12 rounded-2xl bg-yellow-500/20 shadow-inner flex items-center justify-center border border-yellow-500/30">
+                            <Sparkles size={24} className="text-yellow-400" />
+                        </div>
+                        <div className="flex-1">
+                            <h3 className="text-white font-black text-sm uppercase tracking-wider italic leading-none">Star Member Rewards</h3>
+                            <p className="text-yellow-400/60 text-[10px] font-bold mt-1 uppercase tracking-tighter">Claim up to $130 in bonuses!</p>
+                        </div>
+                        <ChevronRight size={18} className="text-white/20 group-hover:text-primary transition-colors" />
+                    </div>
+                </div>
 
 
                 {/* Utility Options */}

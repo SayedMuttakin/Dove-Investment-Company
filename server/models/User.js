@@ -154,6 +154,14 @@ const userSchema = new mongoose.Schema({
     withdrawalBlockMessage: {
         type: String,
         default: null
+    },
+    claimedStarRewards: {
+        type: [String],
+        default: []
+    },
+    starPoints: {
+        type: Number,
+        default: 0
     }
 }, {
     timestamps: true

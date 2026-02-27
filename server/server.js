@@ -17,6 +17,7 @@ import notificationRoutes from './routes/notification.js';
 import profileRoutes from './routes/profile.js';
 import supportRoutes from './routes/support.js';
 import statsRoutes from './routes/stats.js';
+import rewardsRoutes from './routes/rewards.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -55,6 +56,7 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/support', supportRoutes);
 app.use('/api/stats', statsRoutes);
+app.use('/api/rewards', rewardsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

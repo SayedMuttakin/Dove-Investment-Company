@@ -31,6 +31,7 @@ import Settings from './pages/Settings';
 import ProfileSettings from './pages/ProfileSettings';
 import SecuritySettings from './pages/SecuritySettings';
 import LevelRequirements from './pages/LevelRequirements';
+import StarRewards from './pages/StarRewards';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Maintenance from './pages/Maintenance';
@@ -140,6 +141,7 @@ function App() {
                 <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
                 <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>} />
                 <Route path="/level-requirements" element={<ProtectedRoute><LevelRequirements /></ProtectedRoute>} />
+                <Route path="/star-rewards" element={<ProtectedRoute><StarRewards /></ProtectedRoute>} />
                 <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
                 <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                 <Route path="/settings/profile" element={<ProtectedRoute><ProfileSettings /></ProtectedRoute>} />

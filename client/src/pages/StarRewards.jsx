@@ -1,0 +1,182 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { ChevronLeft, Star, TrendingUp, Users, Info, Sparkles, CheckCircle2 } from 'lucide-react';
+import { toast } from 'react-toastify';
+
+const StarRewards = () => {
+    const navigate = useNavigate();
+    const [status, setStatus] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [claiming, setClaiming] = useState(null);
+
+    const fetchStatus = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await axios.get('/api/rewards/status', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setStatus(res.data);
+        } catch (error) {
+            console.error('Error fetching star rewards status:', error);
+            toast.error('Failed to load rewards status');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchStatus();
+    }, []);
+
+    const handleClaim = async (tierId) => {
+        setClaiming(tierId);
+        try {
+            const token = localStorage.getItem('token');
+            const res = await axios.post('/api/rewards/claim', { tierId }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            toast.success(res.data.message);
+            fetchStatus();
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to claim reward');
+        } finally {
+            setClaiming(null);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-dark-300 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="min-h-screen bg-dark-300 pb-10">
+            {/* Header */}
+            <div className="bg-dark-200/50 backdrop-blur-md sticky top-0 z-50 px-4 py-4 border-b border-white/5">
+                <div className="flex items-center gap-4">
+                    <button onClick={() => navigate(-1)} className="p-2 hover:bg-white/5 rounded-full transition-colors text-white/60">
+                        <ChevronLeft size={24} />
+                    </button>
+                    <h1 className="text-xl font-black text-white italic uppercase tracking-tighter">Star Rewards</h1>
+                </div>
+            </div>
+
+            <div className="max-w-md mx-auto px-4 mt-6">
+                {/* Points Overview Card */}
+                <div className="relative overflow-hidden bg-gradient-to-br from-primary/20 via-primary/5 to-transparent rounded-[2.5rem] p-8 border border-primary/20 mb-8 shadow-2xl">
+                    <div className="absolute top-0 right-0 p-4 opacity-10">
+                        <Star size={120} className="text-primary animate-pulse" fill="currentColor" />
+                    </div>
+
+                    <div className="relative z-10">
+                        <div className="flex items-center gap-2 mb-2">
+                            <Sparkles size={16} className="text-primary" />
+                            <span className="text-primary text-[10px] font-black uppercase tracking-widest">Active Points</span>
+                        </div>
+                        <div className="flex items-end gap-2">
+                            <span className="text-6xl font-black text-white tracking-tighter leading-none italic">{status?.points || 0}</span>
+                            <span className="text-white/40 font-bold mb-1">Points</span>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4 mt-8">
+                            <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
+                                <div className="flex items-center gap-2 text-white/40 text-[9px] font-bold uppercase mb-1">
+                                    <Users size={12} />
+                                    Gen 1 (A)
+                                </div>
+                                <div className="text-xl font-black text-white leading-none">{status?.aCount || 0}</div>
+                            </div>
+                            <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
+                                <div className="flex items-center gap-2 text-white/40 text-[9px] font-bold uppercase mb-1">
+                                    <Users size={12} />
+                                    Gen 2 (B)
+                                </div>
+                                <div className="text-xl font-black text-white leading-none">{status?.bCount || 0}</div>
+                            </div>
+                        </div>
+
+                        <div className="mt-6 flex items-start gap-2 bg-black/40 p-3 rounded-xl border border-white/5">
+                            <Info size={14} className="text-primary shrink-0 mt-0.5" />
+                            <p className="text-[10px] text-white/60 leading-relaxed font-medium">
+                                * Points = A + (B/2). Only referrals from the last {status?.windowDays} days are counted. Missions reset period-wise.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Reward Tiers */}
+                <div className="space-y-4">
+                    <h2 className="text-white/40 text-xs font-black uppercase tracking-[0.2em] px-2 mb-2">Available Missions</h2>
+
+                    {status?.tiers.map((tier) => {
+                        const isClaimed = status?.claimed.includes(tier.id);
+                        const progress = Math.min((status?.points / tier.points) * 100, 100);
+                        const isEligible = status?.points >= tier.points && !isClaimed;
+
+                        return (
+                            <div key={tier.id} className="glass-card relative overflow-hidden group">
+                                <div className="p-6">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <div className="flex flex-col">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <span className="text-2xl">{tier.icon}</span>
+                                                <h3 className="text-white font-black text-lg tracking-tight uppercase italic underline decoration-primary/30 underline-offset-4">
+                                                    Star Member Tier {tier.id.replace('tier', '')}
+                                                </h3>
+                                            </div>
+                                            <p className="text-white/40 text-[10px] font-bold uppercase tracking-wider">
+                                                Reward: <span className="text-primary">${tier.amount}</span>
+                                            </p>
+                                        </div>
+
+                                        {isClaimed ? (
+                                            <div className="flex items-center gap-1.5 px-4 py-2 bg-green-500/10 border border-green-500/20 rounded-full">
+                                                <CheckCircle2 size={14} className="text-green-500" />
+                                                <span className="text-green-500 text-[10px] font-black uppercase tracking-tighter">Collected</span>
+                                            </div>
+                                        ) : (
+                                            <button
+                                                disabled={!isEligible || claiming === tier.id}
+                                                onClick={() => handleClaim(tier.id)}
+                                                className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isEligible
+                                                        ? 'bg-primary text-black hover:shadow-[0_0_20px_rgba(164,241,58,0.4)] active:scale-95'
+                                                        : 'bg-white/5 text-white/20 border border-white/10'
+                                                    }`}
+                                            >
+                                                {claiming === tier.id ? 'Claiming...' : 'Collect'}
+                                            </button>
+                                        )}
+                                    </div>
+
+                                    {/* Progress Bar Container */}
+                                    <div className="relative">
+                                        <div className="flex justify-between items-end mb-2">
+                                            <span className="text-[10px] text-white/40 font-bold uppercase tracking-widest">Progress</span>
+                                            <div className="flex items-baseline gap-1">
+                                                <span className="text-sm font-black text-white leading-none">{status?.points}</span>
+                                                <span className="text-[9px] text-white/40 font-bold">/ {tier.points}</span>
+                                            </div>
+                                        </div>
+                                        <div className="h-2.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                                            <div
+                                                className={`h-full rounded-full transition-all duration-1000 ease-out shadow-[0_0_15px_rgba(164,241,58,0.3)] ${progress >= 100 ? 'bg-primary' : 'bg-gradient-to-r from-primary/50 to-primary'
+                                                    }`}
+                                                style={{ width: `${progress}%` }}
+                                            ></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default StarRewards;
