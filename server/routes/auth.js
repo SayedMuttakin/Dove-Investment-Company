@@ -407,15 +407,20 @@ router.get('/me', authMiddleware, async (req, res) => {
             await user.save();
         }
 
-        // Star Reward Logic (A + B/2) - Lifetime
+        // Star Reward Logic (A + B/2) - Last 10 Days
+        const tenDaysAgo = new Date();
+        tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+
         const starDirects = await User.find({
-            referredBy: user.invitationCode
+            referredBy: user.invitationCode,
+            createdAt: { $gte: tenDaysAgo }
         });
         const starACount = starDirects.length;
 
         const starDirectCodes = starDirects.map(u => u.invitationCode);
         const starSecondGen = await User.find({
-            referredBy: { $in: starDirectCodes }
+            referredBy: { $in: starDirectCodes },
+            createdAt: { $gte: tenDaysAgo }
         });
         const starBCount = starSecondGen.length;
         const currentStarPoints = starACount + Math.floor(starBCount / 2);

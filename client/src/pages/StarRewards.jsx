@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ChevronLeft, Star, Sparkles, CheckCircle2 } from 'lucide-react';
+import { ChevronLeft, Star, Sparkles, CheckCircle2, Info, Users } from 'lucide-react';
 import { toast } from 'react-toastify';
 import BottomNav from '../components/BottomNav';
 
@@ -69,14 +69,53 @@ const StarRewards = () => {
                 </div>
             </div>
 
-            <div className="max-w-md mx-auto px-4 mt-8">
-                {/* Reward Tiers */}
-                <div className="space-y-6">
-                    <div className="flex items-center justify-between px-2 mb-2">
-                        <div className="flex items-center gap-2">
+            <div className="max-w-md mx-auto px-4 mt-6">
+                {/* Points Overview Card */}
+                <div className="relative overflow-hidden bg-gradient-to-br from-primary/20 via-primary/5 to-transparent rounded-[2.5rem] p-8 border border-primary/20 mb-8 shadow-2xl">
+                    <div className="absolute top-0 right-0 p-4 opacity-5">
+                        <Star size={120} className="text-primary animate-pulse" fill="currentColor" />
+                    </div>
+
+                    <div className="relative z-10 flex flex-col items-center">
+                        <div className="flex items-center gap-2 mb-3">
                             <Sparkles size={16} className="text-primary" />
-                            <h2 className="text-white/40 text-[10px] font-black uppercase tracking-[0.25em]">Star Missions</h2>
+                            <span className="text-primary text-[10px] font-black uppercase tracking-[0.2em]">Active Points</span>
                         </div>
+                        <div className="flex items-end gap-2 mb-6 text-center">
+                            <span className="text-7xl font-black text-white tracking-tighter leading-none italic drop-shadow-[0_0_20px_rgba(164,241,58,0.3)]">{status?.points || 0}</span>
+                            <span className="text-white/40 font-bold mb-2 uppercase text-xs tracking-widest">Points</span>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4 w-full mb-6">
+                            <div className="bg-white/5 rounded-2xl p-4 border border-white/10 text-center">
+                                <div className="flex items-center justify-center gap-2 text-white/40 text-[9px] font-bold uppercase mb-1">
+                                    <Users size={12} />
+                                    Gen 1 (A)
+                                </div>
+                                <div className="text-xl font-black text-white leading-none">{status?.aCount || 0}</div>
+                            </div>
+                            <div className="bg-white/5 rounded-2xl p-4 border border-white/10 text-center">
+                                <div className="flex items-center justify-center gap-2 text-white/40 text-[9px] font-bold uppercase mb-1">
+                                    <Users size={12} />
+                                    Gen 2 (B)
+                                </div>
+                                <div className="text-xl font-black text-white leading-none">{status?.bCount || 0}</div>
+                            </div>
+                        </div>
+
+                        <div className="w-full flex items-start gap-2 bg-black/40 p-3 rounded-xl border border-white/5">
+                            <Info size={14} className="text-primary shrink-0 mt-0.5" />
+                            <p className="text-[10px] text-white/60 leading-relaxed font-medium">
+                                * Points = A + (B/2). Only referrals from the last {status?.windowDays} days are counted. Missions reset period-wise.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Reward Tiers */}
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between px-2 mb-2">
+                        <h2 className="text-white/40 text-[10px] font-black uppercase tracking-[0.25em]">Available Missions</h2>
                         <div className="h-[1px] flex-1 bg-white/5 ml-4"></div>
                     </div>
 
@@ -139,7 +178,7 @@ const StarRewards = () => {
                                                 <span className="text-[10px] text-white/30 font-bold">/ {tier.points}</span>
                                             </div>
                                         </div>
-                                        <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                                        <div className="h-2.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
                                             <div
                                                 className={`h-full rounded-full transition-all duration-[1500ms] ease-out shadow-[0_0_15px_rgba(164,241,58,0.4)] ${progress >= 100 ? 'bg-primary' : 'bg-gradient-to-r from-primary/40 to-primary'
                                                     }`}
