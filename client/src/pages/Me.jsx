@@ -87,6 +87,7 @@ const Me = () => {
     };
 
     const currentLevel = user?.vipLevel || 0;
+    const currentTeam = user?.stats?.teamMembers || 0;
 
     const LevelStatusCard = () => {
         const levelNum = currentLevel + 1;
