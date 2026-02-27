@@ -124,7 +124,7 @@ const Me = () => {
                 <div className="relative h-full px-4 sm:px-8 flex items-center justify-between">
                     {/* Level Identity Section */}
                     <div className="flex flex-col items-center">
-                        <div className="relative w-20 h-20 sm:w-28 sm:h-28 flex items-center justify-center">
+                        <div className="relative w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center">
                             <div className="absolute inset-0 bg-primary/10 blur-3xl rounded-full scale-150"></div>
                             <img
                                 src={`/images/levels/level_${levelNum}.png`}
@@ -133,7 +133,7 @@ const Me = () => {
                                 onError={(e) => { e.target.src = `/images/vip/vip_level_${levelNum}.png` }}
                             />
                         </div>
-                        <div className="mt-0.5 sm:mt-1 flex flex-col items-center text-center">
+                        <div className="mt-0 flex sm:mt-1 flex-col items-center text-center">
                             <span className="text-white/40 text-[7px] sm:text-[9px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] mb-0.5 sm:mb-1">Current Status</span>
                             <span className="text-white font-black text-xl sm:text-2xl tracking-tighter italic uppercase leading-none shadow-primary/20 drop-shadow-lg scale-y-110">Level {levelNum}</span>
                         </div>
