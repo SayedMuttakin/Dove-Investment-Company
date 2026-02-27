@@ -318,7 +318,18 @@ const Me = () => {
                                                     <Users size={10} /> Team Structure
                                                 </div>
                                                 <TeamStructureTree l1={level.tree.l1} l2={level.tree.l2} />
-                                                <div className="mt-2 text-[10px] text-white/60 font-medium">
+                                                <div className="mt-2 w-full bg-black/30 rounded-md p-1.5 border border-white/5">
+                                                    <div className="flex items-center justify-center gap-1 text-[9px] font-bold">
+                                                        <span className="text-purple-400">A</span>
+                                                        <span className="text-white">{level.tree.l1}</span>
+                                                        <span className="text-white/30 mx-0.5">|</span>
+                                                        <span className="text-pink-400">B+C</span>
+                                                        <span className="text-white">{level.tree.l2}</span>
+                                                        <span className="text-white/30 mx-0.5">=</span>
+                                                        <span className={isCurrentLevel ? "text-[#a4f13a]" : "text-cyan-400"}>{level.members ? level.members : '∞'}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="mt-1.5 text-[10px] text-white/60 font-medium">
                                                     Total: <span className={isCurrentLevel ? "text-[#a4f13a]" : "text-white"}>{currentTeam}</span> / {level.members ? level.members : '∞'}
                                                 </div>
                                                 <div className="mt-2 pt-2 border-t border-white/5 space-y-0.5 w-full">
