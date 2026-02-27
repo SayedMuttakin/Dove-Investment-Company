@@ -107,7 +107,7 @@ const Me = () => {
         const levelNum = currentLevel + 1;
 
         return (
-            <div className="relative w-full aspect-[2.2/1] bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] rounded-[2.5rem] overflow-hidden border border-white/5 mb-6 group shadow-2xl">
+            <div className="relative w-full aspect-[1.8/1] sm:aspect-[2.2/1] bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] rounded-[2.5rem] overflow-hidden border border-white/5 mb-6 group shadow-2xl">
                 {/* 3D Animated Grid Background */}
                 <div className="absolute inset-0 opacity-20">
                     <div className="absolute inset-0" style={{
@@ -121,10 +121,10 @@ const Me = () => {
                 <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/10 blur-[80px] rounded-full animate-pulse"></div>
                 <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-cyan-500/10 blur-[80px] rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
 
-                <div className="relative h-full px-8 flex items-center justify-between">
+                <div className="relative h-full px-4 sm:px-8 flex items-center justify-between">
                     {/* Level Identity Section */}
                     <div className="flex flex-col items-center">
-                        <div className="relative w-28 h-28 flex items-center justify-center">
+                        <div className="relative w-20 h-20 sm:w-28 sm:h-28 flex items-center justify-center">
                             <div className="absolute inset-0 bg-primary/10 blur-3xl rounded-full scale-150"></div>
                             <img
                                 src={`/images/levels/level_${levelNum}.png`}
@@ -133,30 +133,30 @@ const Me = () => {
                                 onError={(e) => { e.target.src = `/images/vip/vip_level_${levelNum}.png` }}
                             />
                         </div>
-                        <div className="mt-1 flex flex-col items-center text-center">
-                            <span className="text-white/40 text-[9px] font-black uppercase tracking-[0.3em] mb-1">Current Status</span>
-                            <span className="text-white font-black text-2xl tracking-tighter italic uppercase leading-none shadow-primary/20 drop-shadow-lg scale-y-110">Level {levelNum}</span>
+                        <div className="mt-0.5 sm:mt-1 flex flex-col items-center text-center">
+                            <span className="text-white/40 text-[7px] sm:text-[9px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] mb-0.5 sm:mb-1">Current Status</span>
+                            <span className="text-white font-black text-xl sm:text-2xl tracking-tighter italic uppercase leading-none shadow-primary/20 drop-shadow-lg scale-y-110">Level {levelNum}</span>
                         </div>
                     </div>
 
                     {/* Action Hub Section */}
-                    <div className="flex flex-col gap-3 items-end">
+                    <div className="flex flex-col gap-2 sm:gap-3 items-end">
                         <button
                             onClick={() => navigate('/history')}
-                            className="group/btn relative overflow-hidden bg-white/5 backdrop-blur-md border border-white/10 text-white font-black text-[10px] px-7 py-3.5 rounded-2xl hover:bg-white/10 active:scale-95 transition-all uppercase tracking-widest"
+                            className="group/btn relative overflow-hidden bg-white/5 backdrop-blur-md border border-white/10 text-white font-black text-[9px] sm:text-[10px] px-5 sm:px-7 py-2.5 sm:py-3.5 rounded-2xl hover:bg-white/10 active:scale-95 transition-all uppercase tracking-widest"
                         >
                             <span className="relative z-10 flex items-center gap-2">
-                                <Users size={14} className="text-primary" />
+                                <Users size={12} className="sm:size-14 text-primary" />
                                 My team
                             </span>
                         </button>
                         <button
                             onClick={() => navigate('/level-requirements')}
-                            className="group/btn relative overflow-hidden bg-primary text-black font-black text-[10px] px-7 py-3.5 rounded-2xl hover:shadow-[0_0_30px_rgba(164,241,58,0.6)] active:scale-95 transition-all uppercase tracking-widest"
+                            className="group/btn relative overflow-hidden bg-primary text-black font-black text-[9px] sm:text-[10px] px-5 sm:px-7 py-2.5 sm:py-3.5 rounded-2xl hover:shadow-[0_0_30px_rgba(164,241,58,0.6)] active:scale-95 transition-all uppercase tracking-widest"
                         >
                             <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300"></div>
                             <span className="relative z-10 flex items-center gap-2">
-                                <Star size={14} fill="black" />
+                                <Star size={12} className="sm:size-14" fill="black" />
                                 Upgrade credit
                             </span>
                         </button>
