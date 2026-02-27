@@ -111,38 +111,44 @@ const Me = () => {
         { from: 5, to: 6, members: null, minInvestment: 3000, maxInvestment: 7000, tree: { l1: 45, l2: 95 }, incomeRates: { d7: '2.70%', d30: '3.30%', d60: '4.00%', d90: '4.70%' }, teamIncome: { first: '14%', second: '11%', third: '8%' } }
     ];
 
-    const TeamStructureTree = ({ l1, l2 }) => (
-        <div className="flex flex-col items-center justify-center py-2 relative w-full px-2">
-            <div className="z-10 mb-4">
-                <div className="w-8 h-8 rounded-full border-2 border-white/20 bg-indigo-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
-                    1
-                </div>
-            </div>
-            <div className="absolute top-[28px] h-8 border-t-2 border-l-2 border-r-2 border-white/10 rounded-t-xl" style={{ width: '60%' }}></div>
-            <div className="flex justify-between w-full mb-4 relative z-10 px-2">
-                <div className="flex flex-col items-center">
-                    <div className="w-8 h-8 rounded-full border-2 border-white/20 bg-purple-500 flex items-center justify-center text-white font-bold text-sm shadow-md mb-1">
-                        {l1}
+    const TeamStructureTree = ({ l1, l2 }) => {
+        const l1Left = Math.ceil(l1 / 2);
+        const l1Right = Math.floor(l1 / 2);
+        const l2Left = Math.ceil(l2 / 2);
+        const l2Right = Math.floor(l2 / 2);
+        return (
+            <div className="flex flex-col items-center justify-center py-2 relative w-full px-2">
+                <div className="z-10 mb-4">
+                    <div className="w-8 h-8 rounded-full border-2 border-white/20 bg-indigo-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                        1
                     </div>
-                    <div className="h-4 w-[2px] bg-white/10"></div>
                 </div>
-                <div className="flex flex-col items-center">
-                    <div className="w-8 h-8 rounded-full border-2 border-white/20 bg-pink-500 flex items-center justify-center text-white font-bold text-sm shadow-md mb-1">
-                        {l1}
+                <div className="absolute top-[28px] h-8 border-t-2 border-l-2 border-r-2 border-white/10 rounded-t-xl" style={{ width: '60%' }}></div>
+                <div className="flex justify-between w-full mb-4 relative z-10 px-2">
+                    <div className="flex flex-col items-center">
+                        <div className="w-8 h-8 rounded-full border-2 border-white/20 bg-purple-500 flex items-center justify-center text-white font-bold text-sm shadow-md mb-1">
+                            {l1Left}
+                        </div>
+                        <div className="h-4 w-[2px] bg-white/10"></div>
                     </div>
-                    <div className="h-4 w-[2px] bg-white/10"></div>
+                    <div className="flex flex-col items-center">
+                        <div className="w-8 h-8 rounded-full border-2 border-white/20 bg-pink-500 flex items-center justify-center text-white font-bold text-sm shadow-md mb-1">
+                            {l1Right}
+                        </div>
+                        <div className="h-4 w-[2px] bg-white/10"></div>
+                    </div>
+                </div>
+                <div className="flex justify-between w-full relative z-10 px-2">
+                    <div className="w-8 h-8 rounded-full border-2 border-white/20 bg-rose-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                        {l2Left}
+                    </div>
+                    <div className="w-8 h-8 rounded-full border-2 border-white/20 bg-orange-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
+                        {l2Right}
+                    </div>
                 </div>
             </div>
-            <div className="flex justify-between w-full relative z-10 px-2">
-                <div className="w-8 h-8 rounded-full border-2 border-white/20 bg-rose-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
-                    {l2}
-                </div>
-                <div className="w-8 h-8 rounded-full border-2 border-white/20 bg-orange-500 flex items-center justify-center text-white font-bold text-sm shadow-md">
-                    {l2}
-                </div>
-            </div>
-        </div>
-    );
+        );
+    };
 
     return (
         <div className="min-h-screen bg-dark-300 pb-20">
