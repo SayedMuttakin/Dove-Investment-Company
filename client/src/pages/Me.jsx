@@ -305,12 +305,12 @@ const Me = () => {
                                     return (
                                         <div key={tier.id} className="relative">
                                             <Star
-                                                size={14}
-                                                className={`transition-all duration-500 ${isReached ? 'text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]' : 'text-white/20'}`}
+                                                size={22}
+                                                className={`transition-all duration-500 ${isReached ? 'text-yellow-400 drop-shadow-[0_0_12px_rgba(250,204,21,0.8)]' : 'text-white/10'}`}
                                                 fill={isReached ? "currentColor" : "none"}
                                             />
                                             {isReached && (
-                                                <div className="absolute inset-0 bg-yellow-400 blur-sm opacity-20 animate-pulse rounded-full"></div>
+                                                <div className="absolute inset-0 bg-yellow-400 blur-md opacity-30 animate-pulse rounded-full"></div>
                                             )}
                                         </div>
                                     );
