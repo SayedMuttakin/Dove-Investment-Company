@@ -162,6 +162,10 @@ const userSchema = new mongoose.Schema({
     starPoints: {
         type: Number,
         default: 0
+    },
+    starMissionStart: {
+        type: Date,
+        default: null
     }
 }, {
     timestamps: true

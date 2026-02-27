@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ChevronLeft, Star, Sparkles, CheckCircle2, Info, Users } from 'lucide-react';
+import { ChevronLeft, Star, Sparkles, CheckCircle2, Info, Users, Clock, AlertCircle } from 'lucide-react';
 import { toast } from 'react-toastify';
 import BottomNav from '../components/BottomNav';
 
@@ -10,6 +10,7 @@ const StarRewards = () => {
     const [status, setStatus] = useState(null);
     const [loading, setLoading] = useState(true);
     const [claiming, setClaiming] = useState(null);
+    const [timeLeft, setTimeLeft] = useState('');
 
     const fetchStatus = async () => {
         try {
@@ -29,6 +30,40 @@ const StarRewards = () => {
     useEffect(() => {
         fetchStatus();
     }, []);
+
+    // Timer logic
+    useEffect(() => {
+        if (!status?.missionEnd) return;
+
+        const updateTimer = () => {
+            const end = new Date(status.missionEnd).getTime();
+            const now = new Date().getTime();
+            const distance = end - now;
+
+            if (distance < 0) {
+                setTimeLeft('EXPIRED');
+                // Refresh status if just expired
+                if (distance > -2000) fetchStatus();
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            if (days > 0) {
+                setTimeLeft(`${days}d ${hours}h ${minutes}m`);
+            } else {
+                setTimeLeft(`${hours}h ${minutes}m ${seconds}s`);
+            }
+        };
+
+        const timer = setInterval(updateTimer, 1000);
+        updateTimer();
+
+        return () => clearInterval(timer);
+    }, [status?.missionEnd]);
 
     const handleClaim = async (tierId) => {
         setClaiming(tierId);
@@ -70,6 +105,36 @@ const StarRewards = () => {
             </div>
 
             <div className="max-w-md mx-auto px-4 mt-6">
+
+                {/* Mission Status Bar */}
+                {status?.missionStart ? (
+                    <div className="bg-primary/10 border border-primary/20 rounded-2xl p-4 mb-6 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="bg-primary/20 p-2 rounded-xl">
+                                <Clock size={16} className="text-primary animate-pulse" />
+                            </div>
+                            <div>
+                                <p className="text-[10px] font-black text-primary uppercase tracking-widest">Mission Ends In</p>
+                                <p className="text-lg font-black text-white italic">{timeLeft}</p>
+                            </div>
+                        </div>
+                        <div className="text-right">
+                            <p className="text-[9px] font-bold text-white/30 uppercase tracking-tighter">Cycle Started</p>
+                            <p className="text-[10px] font-black text-white/60">{new Date(status.missionStart).toLocaleDateString()}</p>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-4 mb-6 flex items-center gap-3">
+                        <div className="bg-yellow-500/20 p-2 rounded-xl">
+                            <AlertCircle size={16} className="text-yellow-500" />
+                        </div>
+                        <div>
+                            <p className="text-[10px] font-black text-yellow-500 uppercase tracking-widest">No Active Mission</p>
+                            <p className="text-[10px] font-medium text-white/60">Refer your first friend to start your 10-day mission!</p>
+                        </div>
+                    </div>
+                )}
+
                 {/* Points Overview Card */}
                 <div className="relative overflow-hidden bg-gradient-to-br from-primary/20 via-primary/5 to-transparent rounded-[2.5rem] p-8 border border-primary/20 mb-8 shadow-2xl">
                     <div className="absolute top-0 right-0 p-4 opacity-5">
@@ -105,9 +170,14 @@ const StarRewards = () => {
 
                         <div className="w-full flex items-start gap-2 bg-black/40 p-3 rounded-xl border border-white/5">
                             <Info size={14} className="text-primary shrink-0 mt-0.5" />
-                            <p className="text-[10px] text-white/60 leading-relaxed font-medium">
-                                * Points = A + (B/2). Only referrals from the last {status?.windowDays} days are counted. Missions reset period-wise.
-                            </p>
+                            <div className="flex flex-col gap-1">
+                                <p className="text-[10px] text-white/60 leading-relaxed font-medium">
+                                    * Points = A + (B/2).
+                                </p>
+                                <p className="text-[10px] text-white/40 leading-relaxed font-medium">
+                                    A mission starts on your first referral and lasts exactly 10 days. After that, it resets.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>

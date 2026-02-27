@@ -407,23 +407,32 @@ router.get('/me', authMiddleware, async (req, res) => {
             await user.save();
         }
 
-        // Star Reward Logic (A + B/2) - Last 10 Days
-        const tenDaysAgo = new Date();
-        tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+        // Star Reward Logic (A + B/2) - Dynamic 10-Day Cycle
+        let currentStarPoints = 0;
+        const now = new Date();
+        let missionStart = user.starMissionStart;
 
-        const starDirects = await User.find({
-            referredBy: user.invitationCode,
-            createdAt: { $gte: tenDaysAgo }
-        });
-        const starACount = starDirects.length;
+        // Auto-handle expiration check (basic)
+        if (missionStart && now > new Date(missionStart.getTime() + 10 * 24 * 60 * 60 * 1000)) {
+            missionStart = null;
+        }
 
-        const starDirectCodes = starDirects.map(u => u.invitationCode);
-        const starSecondGen = await User.find({
-            referredBy: { $in: starDirectCodes },
-            createdAt: { $gte: tenDaysAgo }
-        });
-        const starBCount = starSecondGen.length;
-        const currentStarPoints = starACount + Math.floor(starBCount / 2);
+        if (missionStart) {
+            const missionEnd = new Date(missionStart.getTime() + 10 * 24 * 60 * 60 * 1000);
+            const starDirects = await User.find({
+                referredBy: user.invitationCode,
+                createdAt: { $gte: missionStart, $lte: missionEnd }
+            });
+            const starACount = starDirects.length;
+
+            const starDirectCodes = starDirects.map(u => u.invitationCode);
+            const starSecondGen = await User.find({
+                referredBy: { $in: starDirectCodes },
+                createdAt: { $gte: missionStart, $lte: missionEnd }
+            });
+            const starBCount = starSecondGen.length;
+            currentStarPoints = starACount + Math.floor(starBCount / 2);
+        }
 
         res.json({
             id: user._id,
