@@ -69,29 +69,14 @@ const StarRewards = () => {
                 </div>
             </div>
 
-            <div className="max-w-md mx-auto px-4 mt-6">
-                {/* Points Overview Card */}
-                <div className="relative overflow-hidden bg-gradient-to-br from-primary/20 via-primary/5 to-transparent rounded-[2.5rem] p-10 border border-primary/20 mb-8 shadow-2xl flex flex-col items-center justify-center text-center">
-                    <div className="absolute top-0 right-0 p-4 opacity-5">
-                        <Star size={120} className="text-primary animate-pulse" fill="currentColor" />
-                    </div>
-
-                    <div className="relative z-10 flex flex-col items-center">
-                        <div className="flex items-center gap-2 mb-3">
-                            <Sparkles size={16} className="text-primary" />
-                            <span className="text-primary text-[10px] font-black uppercase tracking-[0.2em]">Active Points</span>
-                        </div>
-                        <div className="flex items-end gap-2">
-                            <span className="text-7xl font-black text-white tracking-tighter leading-none italic drop-shadow-[0_0_20px_rgba(164,241,58,0.3)]">{status?.points || 0}</span>
-                            <span className="text-white/40 font-bold mb-2 uppercase text-xs tracking-widest">Points</span>
-                        </div>
-                    </div>
-                </div>
-
+            <div className="max-w-md mx-auto px-4 mt-8">
                 {/* Reward Tiers */}
-                <div className="space-y-4">
+                <div className="space-y-6">
                     <div className="flex items-center justify-between px-2 mb-2">
-                        <h2 className="text-white/40 text-[10px] font-black uppercase tracking-[0.25em]">Available Missions</h2>
+                        <div className="flex items-center gap-2">
+                            <Sparkles size={16} className="text-primary" />
+                            <h2 className="text-white/40 text-[10px] font-black uppercase tracking-[0.25em]">Star Missions</h2>
+                        </div>
                         <div className="h-[1px] flex-1 bg-white/5 ml-4"></div>
                     </div>
 
@@ -111,7 +96,7 @@ const StarRewards = () => {
                                                     {[...Array(starCount)].map((_, i) => (
                                                         <Star
                                                             key={i}
-                                                            size={20}
+                                                            size={22}
                                                             className={`transition-all duration-700 ${progress >= 100 ? 'text-yellow-400 drop-shadow-[0_0_12px_rgba(250,204,21,0.6)] scale-110' : 'text-white/10'}`}
                                                             fill={progress >= 100 ? "currentColor" : "none"}
                                                         />
@@ -122,7 +107,7 @@ const StarRewards = () => {
                                                 </h3>
                                             </div>
                                             <p className="text-white/40 text-[10px] font-bold uppercase tracking-wider">
-                                                Reward: <span className="text-primary">${tier.amount}</span>
+                                                Reward: <span className="text-primary font-black ml-1">${tier.amount}</span>
                                             </p>
                                         </div>
 
@@ -150,11 +135,11 @@ const StarRewards = () => {
                                         <div className="flex justify-between items-end mb-2">
                                             <span className="text-[10px] text-white/40 font-bold uppercase tracking-widest">Progress</span>
                                             <div className="flex items-baseline gap-1">
-                                                <span className="text-sm font-black text-white">{status?.points}</span>
-                                                <span className="text-[9px] text-white/30 font-bold">/ {tier.points}</span>
+                                                <span className="text-base font-black text-white">{status?.points}</span>
+                                                <span className="text-[10px] text-white/30 font-bold">/ {tier.points}</span>
                                             </div>
                                         </div>
-                                        <div className="h-2.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                                        <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
                                             <div
                                                 className={`h-full rounded-full transition-all duration-[1500ms] ease-out shadow-[0_0_15px_rgba(164,241,58,0.4)] ${progress >= 100 ? 'bg-primary' : 'bg-gradient-to-r from-primary/40 to-primary'
                                                     }`}

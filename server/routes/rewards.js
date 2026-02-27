@@ -17,22 +17,17 @@ router.get('/status', authMiddleware, async (req, res) => {
         const user = await User.findById(req.userId);
         if (!user) return res.status(404).json({ message: 'User not found' });
 
-        // Calculate points based on referrals in the last 10 days
-        const tenDaysAgo = new Date();
-        tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
-
+        // Calculate points based on total referrals
         // Gen 1 (Directs)
         const directs = await User.find({
-            referredBy: user.invitationCode,
-            createdAt: { $gte: tenDaysAgo }
+            referredBy: user.invitationCode
         });
         const aCount = directs.length;
 
         // Gen 2 (Indirects)
         const directCodes = directs.map(u => u.invitationCode);
         const secondGen = await User.find({
-            referredBy: { $in: directCodes },
-            createdAt: { $gte: tenDaysAgo }
+            referredBy: { $in: directCodes }
         });
         const bCount = secondGen.length;
 
@@ -44,8 +39,7 @@ router.get('/status', authMiddleware, async (req, res) => {
             aCount,
             bCount,
             claimed: user.claimedStarRewards || [],
-            tiers: REWARD_TIERS,
-            windowDays: 10
+            tiers: REWARD_TIERS
         });
     } catch (error) {
         console.error('Reward status error:', error);
@@ -68,19 +62,14 @@ router.post('/claim', authMiddleware, async (req, res) => {
         }
 
         // Re-calculate points for verification
-        const tenDaysAgo = new Date();
-        tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
-
         const directs = await User.find({
-            referredBy: user.invitationCode,
-            createdAt: { $gte: tenDaysAgo }
+            referredBy: user.invitationCode
         });
         const aCount = directs.length;
 
         const directCodes = directs.map(u => u.invitationCode);
         const secondGen = await User.find({
-            referredBy: { $in: directCodes },
-            createdAt: { $gte: tenDaysAgo }
+            referredBy: { $in: directCodes }
         });
         const bCount = secondGen.length;
 
