@@ -103,12 +103,12 @@ const Me = () => {
     const currentTeam = user?.stats?.teamMembers || 0;
 
     const levelRequirements = [
-        { from: 0, to: 1, members: 12, minInvestment: 50, maxInvestment: 2000, tree: { l1: 2, l2: 4 }, incomeRates: { d7: '0.90%', d30: '1.20%', d60: '1.50%', d90: '1.80%' }, teamIncome: { first: '9%', second: '6%', third: '3%' } },
-        { from: 1, to: 2, members: 24, minInvestment: 300, maxInvestment: 3000, tree: { l1: 4, l2: 8 }, incomeRates: { d7: '1.10%', d30: '1.40%', d60: '1.70%', d90: '2.00%' }, teamIncome: { first: '10%', second: '7%', third: '4%' } },
-        { from: 2, to: 3, members: 48, minInvestment: 800, maxInvestment: 4000, tree: { l1: 8, l2: 16 }, incomeRates: { d7: '1.40%', d30: '1.70%', d60: '2.00%', d90: '2.40%' }, teamIncome: { first: '11%', second: '8%', third: '5%' } },
-        { from: 3, to: 4, members: 72, minInvestment: 1300, maxInvestment: 5000, tree: { l1: 12, l2: 24 }, incomeRates: { d7: '1.80%', d30: '2.20%', d60: '2.70%', d90: '3.20%' }, teamIncome: { first: '12%', second: '9%', third: '6%' } },
-        { from: 4, to: 5, members: 90, minInvestment: 2000, maxInvestment: 6000, tree: { l1: 15, l2: 30 }, incomeRates: { d7: '2.20%', d30: '2.60%', d60: '3.10%', d90: '3.70%' }, teamIncome: { first: '13%', second: '10%', third: '7%' } },
-        { from: 5, to: 6, members: 120, minInvestment: 3000, maxInvestment: 7000, tree: { l1: 20, l2: 40 }, incomeRates: { d7: '2.70%', d30: '3.30%', d60: '4.00%', d90: '4.70%' }, teamIncome: { first: '14%', second: '11%', third: '8%' } }
+        { from: 0, to: 1, members: 7, minInvestment: 50, maxInvestment: 2000, tree: { l1: 3, l2: 4 }, incomeRates: { d7: '0.90%', d30: '1.20%', d60: '1.50%', d90: '1.80%' }, teamIncome: { first: '9%', second: '6%', third: '3%' } },
+        { from: 1, to: 2, members: 18, minInvestment: 300, maxInvestment: 3000, tree: { l1: 8, l2: 10 }, incomeRates: { d7: '1.10%', d30: '1.40%', d60: '1.70%', d90: '2.00%' }, teamIncome: { first: '10%', second: '7%', third: '4%' } },
+        { from: 2, to: 3, members: 50, minInvestment: 800, maxInvestment: 4000, tree: { l1: 15, l2: 35 }, incomeRates: { d7: '1.40%', d30: '1.70%', d60: '2.00%', d90: '2.40%' }, teamIncome: { first: '11%', second: '8%', third: '5%' } },
+        { from: 3, to: 4, members: 80, minInvestment: 1300, maxInvestment: 5000, tree: { l1: 30, l2: 50 }, incomeRates: { d7: '1.80%', d30: '2.20%', d60: '2.70%', d90: '3.20%' }, teamIncome: { first: '12%', second: '9%', third: '6%' } },
+        { from: 4, to: 5, members: 140, minInvestment: 2000, maxInvestment: 6000, tree: { l1: 45, l2: 95 }, incomeRates: { d7: '2.20%', d30: '2.60%', d60: '3.10%', d90: '3.70%' }, teamIncome: { first: '13%', second: '10%', third: '7%' } },
+        { from: 5, to: 6, members: null, minInvestment: 3000, maxInvestment: 7000, tree: { l1: 45, l2: 95 }, incomeRates: { d7: '2.70%', d30: '3.30%', d60: '4.00%', d90: '4.70%' }, teamIncome: { first: '14%', second: '11%', third: '8%' } }
     ];
 
     const TeamStructureTree = ({ l1, l2 }) => (
@@ -265,7 +265,7 @@ const Me = () => {
                     <div className="space-y-4">
                         {levelRequirements.map((level) => {
                             const isCurrentLevel = currentLevel === level.from;
-                            const progress = isCurrentLevel ? Math.min((currentTeam / level.members) * 100, 100) : 0;
+                            const progress = isCurrentLevel ? (level.members ? Math.min((currentTeam / level.members) * 100, 100) : 100) : 0;
 
                             return (
                                 <div key={`${level.from}-${level.to}`} className="relative group">
@@ -319,7 +319,7 @@ const Me = () => {
                                                 </div>
                                                 <TeamStructureTree l1={level.tree.l1} l2={level.tree.l2} />
                                                 <div className="mt-2 text-[10px] text-white/60 font-medium">
-                                                    Total: <span className={isCurrentLevel ? "text-[#a4f13a]" : "text-white"}>{currentTeam}</span> / {level.members}
+                                                    Total: <span className={isCurrentLevel ? "text-[#a4f13a]" : "text-white"}>{currentTeam}</span> / {level.members ? level.members : '∞'}
                                                 </div>
                                                 <div className="mt-2 pt-2 border-t border-white/5 space-y-0.5 w-full">
                                                     <div className="text-[10px] text-white/40 font-medium flex justify-between">
