@@ -409,6 +409,8 @@ router.get('/me', authMiddleware, async (req, res) => {
 
         // Star Reward Logic (A + B/2) - Dynamic 10-Day Cycle
         let currentStarPoints = 0;
+        let starACount = 0;
+        let starBCount = 0;
         const now = new Date();
         let missionStart = user.starMissionStart;
 
@@ -423,14 +425,14 @@ router.get('/me', authMiddleware, async (req, res) => {
                 referredBy: user.invitationCode,
                 createdAt: { $gte: missionStart, $lte: missionEnd }
             });
-            const starACount = starDirects.length;
+            starACount = starDirects.length;
 
             const starDirectCodes = starDirects.map(u => u.invitationCode);
             const starSecondGen = await User.find({
                 referredBy: { $in: starDirectCodes },
                 createdAt: { $gte: missionStart, $lte: missionEnd }
             });
-            const starBCount = starSecondGen.length;
+            starBCount = starSecondGen.length;
             currentStarPoints = starACount + Math.floor(starBCount / 2);
         }
 
