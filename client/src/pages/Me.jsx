@@ -150,6 +150,58 @@ const Me = () => {
         );
     };
 
+    const VIPStatusCard = () => {
+        const vipNum = currentLevel + 1;
+        return (
+            <div className="relative w-full aspect-[2.8/1] bg-[#0a0a0a] rounded-3xl overflow-hidden border border-white/10 mb-6 group">
+                {/* 3D Room Grid Pattern Background */}
+                <div className="absolute inset-0 opacity-20 pointer-events-none">
+                    <div className="absolute inset-0" style={{
+                        backgroundImage: `linear-gradient(to right, #333 1px, transparent 1px), linear-gradient(to bottom, #333 1px, transparent 1px)`,
+                        backgroundSize: '20px 20px',
+                        transform: 'perspective(500px) rotateX(60deg) translateY(-20%)',
+                        transformOrigin: 'top'
+                    }}></div>
+                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#0a0a0a] to-transparent"></div>
+                    <div className="absolute inset-y-0 right-0 w-1/2 bg-gradient-to-l from-[#0a0a0a] to-transparent"></div>
+                    <div className="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-[#0a0a0a] to-transparent"></div>
+                </div>
+
+                <div className="relative h-full px-6 flex items-center justify-between">
+                    {/* VIP Level Badge Section */}
+                    <div className="flex flex-col items-center">
+                        <div className="relative w-14 h-14 flex items-center justify-center">
+                            {/* Small Glow behind badge */}
+                            <div className="absolute inset-0 bg-[#a4f13a]/10 blur-xl rounded-full animate-pulse"></div>
+                            <img
+                                src={`/images/vip/vip_level_${vipNum}.png`}
+                                alt={`VIP${vipNum}`}
+                                className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_10px_rgba(164,241,58,0.3)] transition-transform group-hover:scale-110"
+                            />
+                        </div>
+                        <span className="text-white font-black text-lg mt-1 tracking-widest italic uppercase">VIP{vipNum}</span>
+                    </div>
+
+                    {/* Action Buttons Section */}
+                    <div className="flex items-center gap-2.5">
+                        <button
+                            onClick={() => navigate('/history')}
+                            className="bg-white text-black font-black text-[10px] px-5 py-2.5 rounded-full hover:bg-gray-200 active:scale-95 transition-all shadow-[0_4px_10px_rgba(255,255,255,0.1)] uppercase tracking-tight"
+                        >
+                            My team
+                        </button>
+                        <button
+                            onClick={() => navigate('/lend')}
+                            className="bg-[#a4f13a] text-black font-black text-[10px] px-5 py-2.5 rounded-full hover:shadow-[0_0_15px_rgba(164,241,58,0.4)] active:scale-95 transition-all shadow-[0_4px_10px_rgba(164,241,58,0.2)] uppercase tracking-tight"
+                        >
+                            Upgrade credit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     return (
         <div className="min-h-screen bg-dark-300 pb-20">
             {/* Compact Header */}
@@ -261,6 +313,9 @@ const Me = () => {
 
             {/* Main Content Area */}
             <div className="max-w-md mx-auto px-4 -mt-3 space-y-3">
+                {/* VIP Status Card */}
+                <VIPStatusCard />
+
                 {/* VIP Levels Section */}
                 <div>
                     <h2 className="text-white font-bold text-sm mb-3 flex items-center gap-2">
