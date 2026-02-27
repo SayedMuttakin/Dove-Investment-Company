@@ -35,6 +35,7 @@ import StarRewards from './pages/StarRewards';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Maintenance from './pages/Maintenance';
+import MyTeam from './pages/MyTeam';
 import axios from 'axios';
 
 // Restoring Placeholder components
@@ -141,6 +142,7 @@ function App() {
                 <Route path="/help" element={<ProtectedRoute><Help /></ProtectedRoute>} />
                 <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>} />
                 <Route path="/level-requirements" element={<ProtectedRoute><LevelRequirements /></ProtectedRoute>} />
+                <Route path="/my-team" element={<ProtectedRoute><MyTeam /></ProtectedRoute>} />
                 <Route path="/star-rewards" element={<ProtectedRoute><StarRewards /></ProtectedRoute>} />
                 <Route path="/about" element={<ProtectedRoute><About /></ProtectedRoute>} />
                 <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />

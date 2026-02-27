@@ -108,8 +108,8 @@ const LevelRequirements = () => {
                                     )}
                                     <div className="absolute bottom-3 right-4">
                                         <div className={`inline-flex px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase backdrop-blur-md border ${currentLevel >= level.from
-                                                ? 'bg-primary/20 text-primary border-primary/30'
-                                                : 'bg-black/60 text-white/40 border-white/10'
+                                            ? 'bg-primary/20 text-primary border-primary/30'
+                                            : 'bg-black/60 text-white/40 border-white/10'
                                             }`}>
                                             {currentLevel >= level.from ? 'Unlocked Zone' : 'Locked Zone'}
                                         </div>
@@ -214,8 +214,8 @@ const LevelRequirements = () => {
                                         onClick={() => (isCurrentLevel || currentLevel > level.from) && navigate('/lend', { state: { viewLevel: level.from } })}
                                         disabled={!(isCurrentLevel || currentLevel > level.from)}
                                         className={`w-full py-4 rounded-2xl font-black text-xs tracking-[0.2em] uppercase shadow-lg transition-all duration-300 ${isCurrentLevel || currentLevel > level.from
-                                                ? 'bg-gradient-to-r from-primary to-[#82c91e] text-black hover:shadow-primary/20 hover:-translate-y-0.5 active:scale-95'
-                                                : 'bg-white/5 text-white/10 cursor-not-allowed border border-white/5'
+                                            ? 'bg-gradient-to-r from-primary to-[#82c91e] text-black hover:shadow-primary/20 hover:-translate-y-0.5 active:scale-95'
+                                            : 'bg-white/5 text-white/10 cursor-not-allowed border border-white/5'
                                             }`}
                                     >
                                         {isCurrentLevel || currentLevel > level.from ? 'Upgrade & Earn' : 'Level Locked'}

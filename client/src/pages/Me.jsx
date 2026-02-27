@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import BottomNav from '../components/BottomNav';
@@ -29,10 +29,10 @@ const Me = () => {
     const navigate = useNavigate();
     const { user, logout, updateUserInfo } = useAuth();
     const { isInstallable, installApp } = usePWA();
-    const [uploading, setUploading] = React.useState(false);
-    const fileInputRef = React.useRef(null);
+    const [uploading, setUploading] = useState(false);
+    const fileInputRef = useRef(null);
 
-    React.useEffect(() => {
+    useEffect(() => {
         console.log('Current User Data in Me.jsx:', user);
     }, [user]);
 
@@ -71,7 +71,6 @@ const Me = () => {
         if (installed) {
             console.log('App installed successfully');
         } else {
-            // If the prompt isn't valid (e.g. iOS or already installed or event missed)
             toast.info('To install: Tap browser menu (⋮ or Share) > Add to Home Screen/Install App');
         }
     };
@@ -87,29 +86,13 @@ const Me = () => {
         toast.info('Referral link copied!');
     };
 
-    const getLevelBadge = (level) => {
-        // level here is internal (0-5), display as 1-6
-        const badges = {
-            5: { name: '👑 ELITE', color: 'from-yellow-400 to-amber-500', textColor: 'text-black' },
-            4: { name: '💎 PLATINUM', color: 'from-purple-500 to-pink-500', textColor: 'text-white' },
-            3: { name: '⭐ GOLD', color: 'from-blue-500 to-cyan-400', textColor: 'text-white' },
-            2: { name: '🥈 SILVER', color: 'from-violet-500 to-purple-400', textColor: 'text-white' },
-            1: { name: '🥉 BRONZE', color: 'from-indigo-500 to-blue-400', textColor: 'text-white' },
-            0: { name: '🌟 STARTER', color: 'from-slate-500 to-gray-400', textColor: 'text-white' }
-        };
-        return badges[level] || badges[0];
-    };
-
     const currentLevel = user?.vipLevel || 0;
-    const currentTeam = user?.stats?.teamMembers || 0;
-
 
     const LevelStatusCard = () => {
         const levelNum = currentLevel + 1;
 
         return (
             <div className="relative w-full aspect-[1.8/1] sm:aspect-[2.2/1] bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] rounded-[2.5rem] overflow-hidden border border-white/5 mb-6 group shadow-2xl">
-                {/* 3D Animated Grid Background */}
                 <div className="absolute inset-0 opacity-20">
                     <div className="absolute inset-0" style={{
                         backgroundImage: `radial-gradient(circle at 2px 2px, #333 1px, transparent 0)`,
@@ -118,12 +101,10 @@ const Me = () => {
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent"></div>
                 </div>
 
-                {/* Floating Elements */}
                 <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/10 blur-[80px] rounded-full animate-pulse"></div>
                 <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-cyan-500/10 blur-[80px] rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
 
                 <div className="relative h-full px-4 sm:px-8 flex items-center justify-between">
-                    {/* Level Identity Section */}
                     <div className="flex flex-col items-center">
                         <div className="relative w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center">
                             <div className="absolute inset-0 bg-primary/10 blur-3xl rounded-full scale-150"></div>
@@ -140,10 +121,9 @@ const Me = () => {
                         </div>
                     </div>
 
-                    {/* Action Hub Section */}
                     <div className="flex flex-col gap-2 sm:gap-3 items-end">
                         <button
-                            onClick={() => navigate('/history?showTeam=true')}
+                            onClick={() => navigate('/my-team')}
                             className="group/btn relative overflow-hidden bg-white/5 backdrop-blur-md border border-white/10 text-white font-black text-[9px] sm:text-[10px] px-5 sm:px-7 py-2.5 sm:py-3.5 rounded-2xl hover:bg-white/10 active:scale-95 transition-all uppercase tracking-widest"
                         >
                             <span className="relative z-10 flex items-center gap-2">
@@ -167,195 +147,156 @@ const Me = () => {
         );
     };
 
+    const profilePic = user?.profileImage || '/images/avatar-placeholder.png';
+
     return (
-        <div className="min-h-screen bg-dark-300 pb-20">
-            {/* Compact Header */}
-            <div className="bg-gradient-to-br from-primary/20 via-dark-200 to-dark-200 pt-3 pb-4">
-                <div className="max-w-md mx-auto px-4">
-                    {/* Profile Info Row */}
-                    <div className="flex items-center justify-between mb-3 relative">
-                        <div className="flex items-center gap-3 relative z-10">
-                            <div
-                                onClick={() => fileInputRef.current?.click()}
-                                className="relative group cursor-pointer"
-                            >
-                                <div className="w-12 h-12 rounded-full border-2 border-white/20 overflow-hidden bg-gradient-to-br from-primary to-cyan-400 flex items-center justify-center shadow-lg transition-transform group-active:scale-95">
-                                    {user?.profileImage ? (
-                                        <img
-                                            src={user.profileImage}
-                                            alt="Profile"
-                                            className="w-full h-full object-cover"
-                                            onError={(e) => {
-                                                e.target.src = '';
-                                                e.target.parentElement.innerHTML = '<User class="text-white" size={24} />';
-                                            }}
-                                        />
-                                    ) : (
-                                        <User className="text-white" size={24} />
-                                    )}
-                                </div>
-                                <div className="absolute -bottom-1 -right-1 bg-primary p-1 rounded-full border-2 border-dark-200 shadow-md">
-                                    <Camera size={8} className="text-black" />
-                                </div>
-                                {uploading && (
-                                    <div className="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center">
-                                        <div className="w-4 h-4 border-2 border-primary border-t-transparent animate-spin rounded-full"></div>
-                                    </div>
-                                )}
-                                <input
-                                    type="file"
-                                    ref={fileInputRef}
-                                    className="hidden"
-                                    accept="image/*"
-                                    onChange={handleImageUpload}
-                                />
+        <div className="min-h-screen bg-dark-300 pb-24 font-sans text-gray-100">
+            <div className="max-w-md mx-auto px-4 pt-8">
+                <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-4">
+                        <div className="relative group">
+                            <div className="w-16 h-16 rounded-3xl overflow-hidden border-2 border-primary/20 group-hover:border-primary transition-colors bg-dark-200">
+                                <img src={profilePic} alt="Profile" className="w-full h-full object-cover" />
                             </div>
-                            <div className="flex flex-col">
-                                <h1 className="text-white font-black text-lg tracking-tight leading-none">Dove</h1>
-                                <span className="text-white/60 text-[10px] font-bold mt-1">
-                                    User: {user?.fullName || user?.phone || 'User'}
-                                </span>
-                                <span className="text-white/40 text-[9px] font-medium leading-none mt-0.5">
-                                    User ID: {user?.memberId || 'N/A'}
-                                </span>
-                            </div>
-                        </div>
-
-                        {/* Action Buttons & Invite */}
-                        <div className="flex items-center gap-1 relative z-10 justify-end">
-                            <button onClick={() => navigate('/notifications')} className="p-2 text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full">
-                                <Bell size={18} />
-                            </button>
-                            <button onClick={() => navigate('/help')} className="p-2 text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full">
-                                <HelpCircle size={18} />
-                            </button>
-                            <button onClick={() => navigate('/settings')} className="p-2 text-white/60 hover:text-white transition-colors hover:bg-white/5 rounded-full">
-                                <Settings size={18} />
-                            </button>
-
-                            {/* Invite Button at the end */}
                             <button
-                                onClick={copyInvitationCode}
-                                className="flex flex-col items-center gap-0.5 ml-1 group"
+                                onClick={() => fileInputRef.current.click()}
+                                className="absolute -bottom-1 -right-1 w-6 h-6 bg-primary rounded-xl flex items-center justify-center text-black border-2 border-dark-300 hover:scale-110 active:scale-90 transition-all shadow-lg overflow-hidden"
                             >
-                                <div className="w-9 h-9 rounded-full bg-[#a4f13a]/10 border border-[#a4f13a]/20 flex items-center justify-center text-[#a4f13a] transition-all group-active:scale-90 group-hover:bg-[#a4f13a]/20 shadow-lg shadow-[#a4f13a]/5">
-                                    <UserPlus size={18} />
-                                </div>
-                                <span className="text-[#a4f13a] text-[7px] font-black uppercase tracking-tighter">Invite</span>
+                                {uploading ? (
+                                    <div className="w-3 h-3 border-2 border-black/20 border-t-black animate-spin rounded-full"></div>
+                                ) : (
+                                    <Camera size={12} />
+                                )}
                             </button>
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleImageUpload}
+                                className="hidden"
+                                accept="image/*"
+                            />
+                        </div>
+                        <div>
+                            <h2 className="text-xl font-black text-white tracking-tight uppercase italic">{user?.fullName || 'User'}</h2>
+                            <div className="flex items-center gap-2 mt-1">
+                                <div className="px-2 py-0.5 bg-primary/10 rounded-lg border border-primary/20">
+                                    <span className="text-[10px] font-black text-primary uppercase tracking-widest">ID: {user?.memberId}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
-                    {/* Stats Grid */}
-                    <div className="grid grid-cols-3 gap-1.5">
-                        <div className="glass-card p-2">
-                            <div className="text-white/40 text-[7px] uppercase mb-0.5">Balance</div>
-                            <div className="text-white font-bold text-[10px]">${user?.balance?.toFixed(2) || '0.00'}</div>
-                        </div>
-                        <div
-                            onClick={() => navigate('/history')}
-                            className="glass-card p-2 cursor-pointer hover:bg-white/5 transition-colors border-white/5"
+                    <div className="flex gap-2">
+                        <button
+                            onClick={() => navigate('/notifications')}
+                            className="p-3 bg-white/5 rounded-2xl hover:bg-white/10 transition-colors text-white/60 relative"
                         >
-                            <div className="text-white/40 text-[7px] uppercase mb-0.5 flex items-center gap-1">
-                                <History size={8} />
-                                History
-                            </div>
-                            <div className="text-white font-bold text-[10px]">View Detail</div>
-                        </div>
-                        <div
-                            onClick={() => navigate('/lend-funding')}
-                            className="glass-card p-2 cursor-pointer hover:bg-white/5 transition-colors border-white/5"
+                            <Bell size={20} />
+                            <div className="absolute top-3 right-3 w-2 h-2 bg-primary rounded-full border-2 border-dark-300 animate-pulse"></div>
+                        </button>
+                        <button
+                            onClick={() => navigate('/settings')}
+                            className="p-3 bg-white/5 rounded-2xl hover:bg-white/10 transition-colors text-white/60"
                         >
-                            <div className="text-white/40 text-[7px] uppercase mb-0.5 flex items-center gap-1">
-                                <Briefcase size={8} />
-                                Profits
-                            </div>
-                            <div className="text-white font-bold text-[10px]">Record</div>
-                        </div>
+                            <Settings size={20} />
+                        </button>
                     </div>
                 </div>
-            </div>
 
-            {/* Main Content Area */}
-            <div className="max-w-md mx-auto px-4 -mt-3 space-y-3">
-                {/* Level Status Card */}
                 <LevelStatusCard />
 
-                {/* Star Reward System Entry */}
-                <div
-                    onClick={() => navigate('/star-rewards')}
-                    className="relative overflow-hidden bg-gradient-to-r from-yellow-500/20 to-orange-500/10 rounded-3xl p-5 border border-yellow-500/20 group cursor-pointer active:scale-[0.98] transition-all shadow-lg"
-                >
-                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-700">
-                        <Star size={60} className="text-yellow-400" fill="currentColor" />
-                    </div>
-                    <div className="flex items-center gap-4 relative z-10">
-                        <div className="w-12 h-12 rounded-2xl bg-yellow-500/20 shadow-inner flex items-center justify-center border border-yellow-500/30">
-                            <Sparkles size={24} className="text-yellow-400" />
-                        </div>
-                        <div className="flex-1">
-                            <h3 className="text-white font-black text-sm uppercase tracking-wider italic leading-none">Star Member Rewards</h3>
-                            <div className="flex items-center gap-1.5 mt-1.5">
-                                {[
-                                    { id: 'tier1', pts: 7 },
-                                    { id: 'tier2', pts: 12 },
-                                    { id: 'tier3', pts: 18 }
-                                ].map((tier, idx) => {
-                                    const isReached = (user?.starPoints || 0) >= tier.pts || user?.claimedStarRewards?.includes(tier.id);
-                                    return (
-                                        <div key={tier.id} className="relative">
-                                            <Star
-                                                size={22}
-                                                className={`transition-all duration-500 ${isReached ? 'text-yellow-400 drop-shadow-[0_0_12px_rgba(250,204,21,0.8)]' : 'text-white/10'}`}
-                                                fill={isReached ? "currentColor" : "none"}
-                                            />
-                                            {isReached && (
-                                                <div className="absolute inset-0 bg-yellow-400 blur-md opacity-30 animate-pulse rounded-full"></div>
-                                            )}
-                                        </div>
-                                    );
-                                })}
-                                <span className="text-yellow-400/60 text-[10px] font-bold uppercase tracking-tighter ml-1">
-                                    {(user?.starPoints || 0)} pts
-                                </span>
+                <div className="grid grid-cols-2 gap-4 mb-8">
+                    <div className="bg-dark-200 border border-white/5 p-5 rounded-[2rem] hover:border-primary/20 transition-all">
+                        <div className="flex items-center gap-3 mb-2">
+                            <div className="p-2 bg-primary/10 rounded-xl text-primary">
+                                <DollarSign size={18} />
                             </div>
+                            <span className="text-[10px] font-black text-white/40 uppercase tracking-widest leading-none">Total Profit</span>
                         </div>
-                        <ChevronRight size={18} className="text-white/20 group-hover:text-primary transition-colors" />
+                        <p className="text-xl font-black text-white tracking-tighter">${user?.totalEarnings?.toFixed(2) || '0.00'}</p>
+                    </div>
+                    <div className="bg-dark-200 border border-white/5 p-5 rounded-[2rem] hover:border-cyan-500/20 transition-all">
+                        <div className="flex items-center gap-3 mb-2">
+                            <div className="p-2 bg-cyan-500/10 rounded-xl text-cyan-400">
+                                <Users size={18} />
+                            </div>
+                            <span className="text-[10px] font-black text-white/40 uppercase tracking-widest leading-none">Team Members</span>
+                        </div>
+                        <p className="text-xl font-black text-white tracking-tighter">{currentTeam}</p>
                     </div>
                 </div>
 
+                <div className="space-y-3">
+                    <div className="flex items-center justify-between px-2 mb-4">
+                        <h3 className="text-xs font-black text-white/40 uppercase tracking-[0.2em]">Service Menu</h3>
+                        <Sparkles size={14} className="text-primary animate-pulse" />
+                    </div>
 
-                {/* Utility Options */}
-                <div className="space-y-3 pb-4">
-                    <div className="glass-card overflow-hidden">
-                        <button
-                            onClick={handleDownload}
-                            className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-primary/10 transition-colors"
-                        >
-                            <div className="flex items-center gap-2">
-                                <Download size={16} className="text-primary" />
-                                <span className="text-white text-sm font-medium">App Download</span>
+                    <div className="bg-dark-200 border border-white/5 rounded-[2.5rem] p-2">
+                        <button onClick={copyInvitationCode} className="w-full flex items-center justify-between p-4 hover:bg-white/5 rounded-[2rem] transition-all group">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-indigo-500/10 rounded-2xl text-indigo-400 group-hover:scale-110 transition-transform">
+                                    <UserPlus size={20} />
+                                </div>
+                                <div className="text-left">
+                                    <span className="text-sm font-black text-white tracking-tight">Invite Friends</span>
+                                    <p className="text-[10px] text-white/30 uppercase font-bold mt-0.5">Share your link</p>
+                                </div>
                             </div>
-                            <ChevronRight size={14} className="text-white/40" />
+                            <ChevronRight size={18} className="text-white/20 group-hover:text-primary transition-colors" />
+                        </button>
+
+                        <button onClick={() => navigate('/history')} className="w-full flex items-center justify-between p-4 hover:bg-white/5 rounded-[2rem] transition-all group mt-1">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-blue-500/10 rounded-2xl text-blue-400 group-hover:scale-110 transition-transform">
+                                    <History size={20} />
+                                </div>
+                                <div className="text-left">
+                                    <span className="text-sm font-black text-white tracking-tight">Financial History</span>
+                                    <p className="text-[10px] text-white/30 uppercase font-bold mt-0.5">Track your money</p>
+                                </div>
+                            </div>
+                            <ChevronRight size={18} className="text-white/20 group-hover:text-primary transition-colors" />
+                        </button>
+
+                        <button onClick={() => navigate('/about')} className="w-full flex items-center justify-between p-4 hover:bg-white/5 rounded-[2rem] transition-all group mt-1">
+                            <div className="flex items-center gap-4">
+                                <div className="p-3 bg-emerald-500/10 rounded-2xl text-emerald-400 group-hover:scale-110 transition-transform">
+                                    <Shield size={20} />
+                                </div>
+                                <div className="text-left">
+                                    <span className="text-sm font-black text-white tracking-tight">About NovaEarn</span>
+                                    <p className="text-[10px] text-white/30 uppercase font-bold mt-0.5">Learn more about us</p>
+                                </div>
+                            </div>
+                            <ChevronRight size={18} className="text-white/20 group-hover:text-primary transition-colors" />
                         </button>
                     </div>
 
-                    <div className="glass-card overflow-hidden">
-                        <button
-                            onClick={handleLogout}
-                            className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-red-500/10 transition-colors"
-                        >
-                            <div className="flex items-center gap-2">
-                                <LogOut size={16} className="text-red-400" />
-                                <span className="text-red-400 text-sm font-medium">Logout</span>
+                    <button
+                        onClick={handleDownload}
+                        className="w-full mt-6 flex items-center justify-between p-5 bg-gradient-to-r from-primary/10 to-transparent border border-primary/20 rounded-[2.5rem] group hover:from-primary/20 transition-all"
+                    >
+                        <div className="flex items-center gap-4">
+                            <div className="p-3 bg-primary text-black rounded-2xl shadow-lg shadow-primary/20">
+                                <Download size={20} />
                             </div>
-                            <ChevronRight size={14} className="text-red-400/40" />
-                        </button>
-                    </div>
+                            <div className="text-left">
+                                <span className="text-sm font-black text-white tracking-tight uppercase italic">Download App</span>
+                                <p className="text-[10px] text-primary font-black uppercase tracking-widest mt-0.5 italic">Premium Experience</p>
+                            </div>
+                        </div>
+                        <ChevronRight size={20} className="text-primary group-hover:translate-x-1 transition-transform" />
+                    </button>
+
+                    <button
+                        onClick={handleLogout}
+                        className="w-full mt-4 flex items-center justify-center gap-2 p-5 bg-red-500/5 hover:bg-red-500/10 border border-red-500/10 text-red-500 rounded-[2.5rem] transition-all font-black uppercase text-xs tracking-[0.2em] mb-8"
+                    >
+                        <LogOut size={16} />
+                        Logout Session
+                    </button>
                 </div>
             </div>
-
-            {/* Bottom Navigation */}
             <BottomNav />
         </div>
     );
