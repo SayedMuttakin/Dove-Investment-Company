@@ -103,7 +103,8 @@ router.post('/register', async (req, res) => {
             token,
             user: {
                 id: user._id,
-                phone: user.phone || user.email,
+                phone: user.phone || '',
+                email: user.email || '',
                 fullName: user.fullName,
                 invitationCode: user.invitationCode,
                 memberId: user.memberId,
@@ -181,7 +182,8 @@ router.post('/login', async (req, res) => {
             token,
             user: {
                 id: user._id,
-                phone: user.phone || user.email,
+                phone: user.phone || '',
+                email: user.email || '',
                 fullName: user.fullName,
                 invitationCode: user.invitationCode,
                 memberId: user.memberId,
@@ -263,18 +265,24 @@ router.put('/profile', authMiddleware, async (req, res) => {
         const isEmail = newIdentifier && newIdentifier.includes('@');
 
         if (newIdentifier) {
-            const existingUser = await User.findOne(isEmail ? { email: newIdentifier } : { phone: newIdentifier });
-            // Only throw error if the found user is NOT the current user
-            if (existingUser && existingUser._id.toString() !== user._id.toString()) {
-                return res.status(400).json({ message: `${isEmail ? 'Email' : 'Phone'} already in use` });
+            // Check uniqueness across both phone and email fields
+            const existingUser = await User.findOne(
+                isEmail
+                    ? { email: newIdentifier.toLowerCase(), _id: { $ne: user._id } }
+                    : { phone: newIdentifier, _id: { $ne: user._id } }
+            );
+            if (existingUser) {
+                return res.status(400).json({ message: `This ${isEmail ? 'email' : 'phone number'} is already used by another account` });
             }
 
             if (isEmail) {
                 user.email = newIdentifier.toLowerCase();
-                // If switching from phone to email, clear phone? Or keep both? 
-                // The schema seems to rely on one primary identifier usually, but let's just set the one provided.
+                // Clear old phone so the new email becomes the primary identifier
+                user.phone = undefined;
             } else {
                 user.phone = newIdentifier;
+                // Clear old email so the new phone becomes the primary identifier
+                user.email = undefined;
             }
         }
 
@@ -285,7 +293,8 @@ router.put('/profile', authMiddleware, async (req, res) => {
             message: 'Profile updated successfully',
             user: {
                 id: user._id,
-                phone: user.phone || user.email,
+                phone: user.phone || '',
+                email: user.email || '',
                 fullName: user.fullName,
                 memberId: user.memberId,
                 invitationCode: user.invitationCode,
@@ -293,6 +302,8 @@ router.put('/profile', authMiddleware, async (req, res) => {
                 totalEarnings: user.totalEarnings,
                 investments: user.investments,
                 profileImage: user.profileImage,
+                vipLevel: user.vipLevel,
+                hasTransactionPin: !!user.transactionPin,
                 role: user.role
             }
         });
@@ -398,7 +409,8 @@ router.get('/me', authMiddleware, async (req, res) => {
 
         res.json({
             id: user._id,
-            phone: user.phone || user.email,
+            phone: user.phone || '',
+            email: user.email || '',
             fullName: user.fullName,
             memberId: user.memberId,
             invitationCode: user.invitationCode,

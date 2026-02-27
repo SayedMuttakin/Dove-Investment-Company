@@ -10,10 +10,10 @@ const ProfileSettings = () => {
     const { user, updateUserInfo } = useAuth();
     const [loading, setLoading] = useState(false);
 
-    // Initial state from user context
+    // Initial state from user context - prefer email over phone
     const [formData, setFormData] = useState({
         fullName: user?.fullName || '',
-        phone: user?.phone || user?.email || ''
+        phone: user?.email || user?.phone || ''
     });
 
     const handleChange = (e) => {

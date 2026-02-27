@@ -47,7 +47,7 @@ const Withdraw = () => {
         try {
             const token = localStorage.getItem('token');
             const bankData = {
-                accountName: user.phone, // Using phone as reference name
+                accountName: user.email || user.phone, // Using email/phone as reference name
                 accountNumber: details.address,
                 bankName: paymentMethod.toUpperCase(),
             };

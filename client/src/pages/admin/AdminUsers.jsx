@@ -104,7 +104,7 @@ const AdminUsers = () => {
                                     <tr key={user._id} className="hover:bg-white/5 transition-colors">
                                         <td className="p-4">
                                             <div className="text-white font-medium text-sm">{user.fullName || 'No Name'}</div>
-                                            <div className="text-white/60 text-xs">{user.phone || user.email || 'No Contact'}</div>
+                                            <div className="text-white/60 text-xs">{user.email || user.phone || 'No Contact'}</div>
                                         </td>
                                         <td className="p-4 text-white/60 text-xs font-mono">{user.invitationCode || 'N/A'}</td>
                                         <td className="p-4 text-green-400 font-bold text-sm">${(user.balance || 0).toFixed(2)}</td>
