@@ -366,7 +366,7 @@ export const sendEmail = async ({ to, subject, type, data }) => {
         const transporter = createTransporter();
 
         const mailOptions = {
-            from: `"${process.env.SMTP_FROM_NAME || 'NovaEarn'}" <${process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER}>`,
+            from: `"${process.env.SMTP_FROM_NAME || 'Dove'}" <${process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER}>`,
             to,
             subject,
             html: getEmailTemplate(type, data)
