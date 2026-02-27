@@ -195,7 +195,7 @@ const Me = () => {
                                 />
                             </div>
                             <div className="flex flex-col">
-                                <h1 className="text-white font-black text-lg tracking-tight leading-none uppercase italic">NovaEarn</h1>
+                                <h1 className="text-white font-black text-lg tracking-tight leading-none uppercase italic">Dove</h1>
                                 <span className="text-white/60 text-[10px] font-bold mt-1">
                                     User: {user?.fullName || 'Anonymous'}
                                 </span>
