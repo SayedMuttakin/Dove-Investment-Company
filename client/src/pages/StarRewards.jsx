@@ -112,10 +112,11 @@ const StarRewards = () => {
                 <div className="space-y-4">
                     <h2 className="text-white/40 text-xs font-black uppercase tracking-[0.2em] px-2 mb-2">Available Missions</h2>
 
-                    {status?.tiers.map((tier) => {
+                    {status?.tiers.map((tier, idx) => {
                         const isClaimed = status?.claimed.includes(tier.id);
                         const progress = Math.min((status?.points / tier.points) * 100, 100);
                         const isEligible = status?.points >= tier.points && !isClaimed;
+                        const starCount = idx + 1;
 
                         return (
                             <div key={tier.id} className="glass-card relative overflow-hidden group">
@@ -123,9 +124,18 @@ const StarRewards = () => {
                                     <div className="flex items-center justify-between mb-6">
                                         <div className="flex flex-col">
                                             <div className="flex items-center gap-2 mb-1">
-                                                <span className="text-2xl">{tier.icon}</span>
+                                                <div className="flex items-center gap-0.5">
+                                                    {[...Array(starCount)].map((_, i) => (
+                                                        <Star
+                                                            key={i}
+                                                            size={18}
+                                                            className={`transition-all duration-700 ${progress >= 100 ? 'text-yellow-400 drop-shadow-[0_0_10px_rgba(250,204,21,0.5)] scale-110' : 'text-white/10'}`}
+                                                            fill={progress >= 100 ? "currentColor" : "none"}
+                                                        />
+                                                    ))}
+                                                </div>
                                                 <h3 className="text-white font-black text-lg tracking-tight uppercase italic underline decoration-primary/30 underline-offset-4">
-                                                    Star Member Tier {tier.id.replace('tier', '')}
+                                                    Tier {idx + 1} Mission
                                                 </h3>
                                             </div>
                                             <p className="text-white/40 text-[10px] font-bold uppercase tracking-wider">
@@ -143,8 +153,8 @@ const StarRewards = () => {
                                                 disabled={!isEligible || claiming === tier.id}
                                                 onClick={() => handleClaim(tier.id)}
                                                 className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isEligible
-                                                        ? 'bg-primary text-black hover:shadow-[0_0_20px_rgba(164,241,58,0.4)] active:scale-95'
-                                                        : 'bg-white/5 text-white/20 border border-white/10'
+                                                    ? 'bg-primary text-black hover:shadow-[0_0_20px_rgba(164,241,58,0.4)] active:scale-95'
+                                                    : 'bg-white/5 text-white/20 border border-white/10'
                                                     }`}
                                             >
                                                 {claiming === tier.id ? 'Claiming...' : 'Collect'}

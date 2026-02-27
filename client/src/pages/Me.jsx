@@ -295,7 +295,30 @@ const Me = () => {
                         </div>
                         <div className="flex-1">
                             <h3 className="text-white font-black text-sm uppercase tracking-wider italic leading-none">Star Member Rewards</h3>
-                            <p className="text-yellow-400/60 text-[10px] font-bold mt-1 uppercase tracking-tighter">Claim up to $130 in bonuses!</p>
+                            <div className="flex items-center gap-1.5 mt-1.5">
+                                {[
+                                    { id: 'tier1', pts: 7 },
+                                    { id: 'tier2', pts: 12 },
+                                    { id: 'tier3', pts: 18 }
+                                ].map((tier, idx) => {
+                                    const isReached = (user?.starPoints || 0) >= tier.pts || user?.claimedStarRewards?.includes(tier.id);
+                                    return (
+                                        <div key={tier.id} className="relative">
+                                            <Star
+                                                size={14}
+                                                className={`transition-all duration-500 ${isReached ? 'text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]' : 'text-white/20'}`}
+                                                fill={isReached ? "currentColor" : "none"}
+                                            />
+                                            {isReached && (
+                                                <div className="absolute inset-0 bg-yellow-400 blur-sm opacity-20 animate-pulse rounded-full"></div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                                <span className="text-yellow-400/60 text-[10px] font-bold uppercase tracking-tighter ml-1">
+                                    {(user?.starPoints || 0)} pts
+                                </span>
+                            </div>
                         </div>
                         <ChevronRight size={18} className="text-white/20 group-hover:text-primary transition-colors" />
                     </div>
