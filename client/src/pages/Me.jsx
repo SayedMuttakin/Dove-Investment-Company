@@ -143,7 +143,7 @@ const Me = () => {
                     {/* Action Hub Section */}
                     <div className="flex flex-col gap-2 sm:gap-3 items-end">
                         <button
-                            onClick={() => navigate('/history')}
+                            onClick={() => navigate('/history?showTeam=true')}
                             className="group/btn relative overflow-hidden bg-white/5 backdrop-blur-md border border-white/10 text-white font-black text-[9px] sm:text-[10px] px-5 sm:px-7 py-2.5 sm:py-3.5 rounded-2xl hover:bg-white/10 active:scale-95 transition-all uppercase tracking-widest"
                         >
                             <span className="relative z-10 flex items-center gap-2">

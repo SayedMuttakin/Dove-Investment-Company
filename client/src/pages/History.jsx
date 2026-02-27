@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import {
     ArrowLeft, TrendingUp, Gift, DollarSign, ArrowRight, Wallet, History as HistoryIcon,
@@ -95,6 +95,7 @@ const TeamDetailsModal = ({ isOpen, onClose, teamData }) => {
 
 const History = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState(null);
     const [teamModalOpen, setTeamModalOpen] = useState(false);
@@ -104,6 +105,14 @@ const History = () => {
     useEffect(() => {
         fetchHistory();
     }, []);
+
+    // Auto-open team modal if navigated with ?showTeam=true
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        if (params.get('showTeam') === 'true' && !teamListData) {
+            fetchTeamList();
+        }
+    }, [location.search]);
 
     const fetchHistory = async () => {
         try {
@@ -205,21 +214,6 @@ const History = () => {
                         <span className="text-black font-black text-lg mb-1">{data?.totalWithdrawn?.toFixed(0) || '0'}</span>
                         <span className="text-[#5b6e36] text-[10px] font-bold uppercase tracking-wider">Total Withdrawal</span>
                     </div>
-                    <div className="w-[1px] h-10 bg-[#5b6e36]/10"></div>
-                    <button
-                        onClick={fetchTeamList}
-                        disabled={fetchingTeam}
-                        className="flex flex-col items-center flex-1 hover:bg-black/5 rounded-xl py-1 transition-colors relative"
-                    >
-                        {fetchingTeam ? (
-                            <div className="w-5 h-5 border-2 border-black/20 border-t-black animate-spin rounded-full mb-1"></div>
-                        ) : (
-                            <span className="text-black font-black text-lg mb-1">{data?.team?.total || 0}</span>
-                        )}
-                        <span className="text-[#5b6e36] text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
-                            Team Size <Users size={10} />
-                        </span>
-                    </button>
                 </div>
 
                 {/* Detailed Income List */}
