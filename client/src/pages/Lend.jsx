@@ -211,7 +211,7 @@ const Lend = () => {
                                         <div className="flex flex-col">
                                             <span className="text-white/40 text-[10px] uppercase tracking-wider font-bold mb-0.5">Current Level</span>
                                             <div className="flex items-center gap-1.5">
-                                                <span className="text-lg font-bold text-white tracking-tight">LV{currentLevel + 1}</span>
+                                                <span className="text-lg font-bold text-white tracking-tight">Level {currentLevel + 1}</span>
                                             </div>
                                         </div>
                                         <div className="px-3 py-1 bg-white/5 backdrop-blur-md border border-white/10 rounded-full text-[10px] font-bold text-white/80">

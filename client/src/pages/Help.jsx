@@ -78,15 +78,15 @@ const Help = () => {
     const faqs = [
         {
             q: "How to invest in packages?",
-            a: "Go to the 'Lend' page, select a VIP level matching your balance, and click on an investment package to start earning daily income."
+            a: "Go to the 'Lend' page, select a level matching your balance, and click on an investment package to start earning daily income."
         },
         {
             q: "How much can I withdrawal?",
-            a: "The minimum withdrawal amount depends on your VIP level. Withdrawals are usually processed within 24 hours."
+            a: "The minimum withdrawal amount depends on your level. Withdrawals are usually processed within 24 hours."
         },
         {
             q: "How to earn team benefits?",
-            a: "Share your referral link from the 'Me' page. When your friends invest, you earn a percentage based on your VIP level across 3 levels."
+            a: "Share your referral link from the 'Me' page. When your friends invest, you earn a percentage based on your level across 3 levels."
         }
     ];
 

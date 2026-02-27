@@ -147,9 +147,9 @@ const AdminPackages = () => {
                         <div key={level} className="space-y-4">
                             <h3 className="text-xl font-bold text-white flex items-center gap-3 border-b border-white/10 pb-2">
                                 <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${level === 0 ? 'from-slate-500 to-gray-400' : level === 1 ? 'from-indigo-500 to-blue-400' : level === 2 ? 'from-violet-500 to-purple-400' : level === 3 ? 'from-blue-500 to-cyan-400' : level === 4 ? 'from-purple-500 to-pink-500' : 'from-yellow-400 to-amber-500'} flex items-center justify-center text-xs text-white`}>
-                                    VIP {level + 1}
+                                    Level {level + 1}
                                 </div>
-                                Packages for VIP {level + 1}
+                                Packages for Level {level + 1}
                             </h3>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -209,7 +209,7 @@ const AdminPackages = () => {
                                                 <span className="text-white font-bold">${pkg.maxAmount}</span>
                                             </div>
                                             <div className="flex justify-between text-sm pt-2 border-t border-white/5">
-                                                <span className="text-white/40 font-medium">VIP Required</span>
+                                                <span className="text-white/40 font-medium">Level Required</span>
                                                 <span className="text-yellow-400 font-black">LEVEL {pkg.vipLevel + 1}</span>
                                             </div>
                                         </div>
@@ -294,7 +294,7 @@ const AdminPackages = () => {
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-white/60 text-sm mb-1 block">VIP Level</label>
+                                    <label className="text-white/60 text-sm mb-1 block">Level</label>
                                     <input
                                         type="number"
                                         required

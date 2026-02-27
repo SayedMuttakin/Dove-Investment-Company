@@ -86,7 +86,7 @@ const Me = () => {
         toast.info('Referral link copied!');
     };
 
-    const getVIPBadge = (level) => {
+    const getLevelBadge = (level) => {
         // level here is internal (0-5), display as 1-6
         const badges = {
             5: { name: '👑 ELITE', color: 'from-yellow-400 to-amber-500', textColor: 'text-black' },
@@ -150,51 +150,70 @@ const Me = () => {
         );
     };
 
-    const VIPStatusCard = () => {
-        const vipNum = currentLevel + 1;
+    const LevelStatusCard = () => {
+        const levelNum = currentLevel + 1;
+        const requirementsRef = React.useRef(null);
+
+        const scrollToRequirements = () => {
+            const element = document.getElementById('level-requirements-section');
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        };
+
         return (
-            <div className="relative w-full aspect-[2.8/1] bg-[#0a0a0a] rounded-3xl overflow-hidden border border-white/10 mb-6 group">
-                {/* 3D Room Grid Pattern Background */}
-                <div className="absolute inset-0 opacity-20 pointer-events-none">
+            <div className="relative w-full aspect-[2.4/1] bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] rounded-[2rem] overflow-hidden border border-white/5 mb-6 group shadow-2xl">
+                {/* 3D Animated Grid Background */}
+                <div className="absolute inset-0 opacity-20">
                     <div className="absolute inset-0" style={{
-                        backgroundImage: `linear-gradient(to right, #333 1px, transparent 1px), linear-gradient(to bottom, #333 1px, transparent 1px)`,
-                        backgroundSize: '20px 20px',
-                        transform: 'perspective(500px) rotateX(60deg) translateY(-20%)',
-                        transformOrigin: 'top'
+                        backgroundImage: `radial-gradient(circle at 2px 2px, #333 1px, transparent 0)`,
+                        backgroundSize: '24px 24px',
                     }}></div>
-                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#0a0a0a] to-transparent"></div>
-                    <div className="absolute inset-y-0 right-0 w-1/2 bg-gradient-to-l from-[#0a0a0a] to-transparent"></div>
-                    <div className="absolute inset-y-0 left-0 w-1/2 bg-gradient-to-r from-[#0a0a0a] to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent"></div>
                 </div>
 
-                <div className="relative h-full px-6 flex items-center justify-between">
-                    {/* VIP Level Badge Section */}
+                {/* Floating Elements */}
+                <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/10 blur-[80px] rounded-full animate-pulse"></div>
+                <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-cyan-500/10 blur-[80px] rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
+
+                <div className="relative h-full px-8 flex items-center justify-between">
+                    {/* Level Identity Section */}
                     <div className="flex flex-col items-center">
-                        <div className="relative w-14 h-14 flex items-center justify-center">
-                            {/* Small Glow behind badge */}
-                            <div className="absolute inset-0 bg-[#a4f13a]/10 blur-xl rounded-full animate-pulse"></div>
+                        <div className="relative w-16 h-16 flex items-center justify-center">
+                            <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full scale-110"></div>
                             <img
-                                src={`/images/vip/vip_level_${vipNum}.png`}
-                                alt={`VIP${vipNum}`}
-                                className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_10px_rgba(164,241,58,0.3)] transition-transform group-hover:scale-110"
+                                src={`/images/levels/level_${levelNum}.png`}
+                                alt={`Level ${levelNum}`}
+                                className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_20px_rgba(164,241,58,0.4)] transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3"
+                                onError={(e) => { e.target.src = `/images/vip/vip_level_${levelNum}.png` }}
                             />
                         </div>
-                        <span className="text-white font-black text-lg mt-1 tracking-widest italic uppercase">VIP{vipNum}</span>
+                        <div className="mt-2 flex flex-col items-center">
+                            <span className="text-white/40 text-[9px] font-black uppercase tracking-[0.2em]">Current Status</span>
+                            <span className="text-white font-black text-2xl tracking-tighter italic uppercase leading-none">Level {levelNum}</span>
+                        </div>
                     </div>
 
-                    {/* Action Buttons Section */}
-                    <div className="flex items-center gap-2.5">
+                    {/* Action Hub Section */}
+                    <div className="flex flex-col gap-2.5 items-end">
                         <button
                             onClick={() => navigate('/history')}
-                            className="bg-white text-black font-black text-[10px] px-5 py-2.5 rounded-full hover:bg-gray-200 active:scale-95 transition-all shadow-[0_4px_10px_rgba(255,255,255,0.1)] uppercase tracking-tight"
+                            className="group/btn relative overflow-hidden bg-white/5 backdrop-blur-md border border-white/10 text-white font-black text-[10px] px-6 py-3 rounded-2xl hover:bg-white/10 active:scale-95 transition-all uppercase tracking-widest"
                         >
-                            My team
+                            <span className="relative z-10 flex items-center gap-2">
+                                <Users size={12} className="text-primary" />
+                                My team
+                            </span>
                         </button>
                         <button
-                            onClick={() => navigate('/lend')}
-                            className="bg-[#a4f13a] text-black font-black text-[10px] px-5 py-2.5 rounded-full hover:shadow-[0_0_15px_rgba(164,241,58,0.4)] active:scale-95 transition-all shadow-[0_4px_10px_rgba(164,241,58,0.2)] uppercase tracking-tight"
+                            onClick={scrollToRequirements}
+                            className="group/btn relative overflow-hidden bg-primary text-black font-black text-[10px] px-6 py-3 rounded-2xl hover:shadow-[0_0_25px_rgba(164,241,58,0.5)] active:scale-95 transition-all uppercase tracking-widest"
                         >
-                            Upgrade credit
+                            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300"></div>
+                            <span className="relative z-10 flex items-center gap-2">
+                                <Star size={12} fill="black" />
+                                Upgrade credit
+                            </span>
                         </button>
                     </div>
                 </div>
@@ -313,14 +332,14 @@ const Me = () => {
 
             {/* Main Content Area */}
             <div className="max-w-md mx-auto px-4 -mt-3 space-y-3">
-                {/* VIP Status Card */}
-                <VIPStatusCard />
+                {/* Level Status Card */}
+                <LevelStatusCard />
 
-                {/* VIP Levels Section */}
-                <div>
+                {/* Level Requirements Section */}
+                <div id="level-requirements-section">
                     <h2 className="text-white font-bold text-sm mb-3 flex items-center gap-2">
                         <Star size={14} className="text-primary" />
-                        VIP Level Requirements
+                        Level Requirements
                     </h2>
 
                     <div className="space-y-4">
@@ -354,7 +373,7 @@ const Me = () => {
                                     <div className={`bg-dark-200 border-2 border-t-0 rounded-b-2xl p-4 pt-4 relative z-0 ${isCurrentLevel ? 'border-[#a4f13a] shadow-[0_10px_20px_rgba(164,241,58,0.1)]' : 'border-white/10'
                                         }`}>
                                         <div className="flex items-center gap-2 mb-4">
-                                            <span className="text-white font-bold text-xs">VIP Level {level.from + 1}</span>
+                                            <span className="text-white font-bold text-xs">Level {level.from + 1}</span>
                                             {!isCurrentLevel && <Shield size={12} className="text-white/20" />}
                                         </div>
 
