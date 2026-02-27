@@ -1,7 +1,7 @@
 import express from 'express';
 import User from '../models/User.js';
 import authMiddleware from '../middleware/auth.js';
-import { createNotification } from './notifications.js';
+import { createNotification } from '../utils/notifications.js';
 
 const router = express.Router();
 
@@ -137,12 +137,12 @@ router.post('/claim', authMiddleware, async (req, res) => {
         await user.save();
 
         // Create notification
-        await createNotification(
-            user._id,
-            'Star Reward Claimed!',
-            `Congratulations! You claimed $${tier.amount} for Star Member ${tier.stars} Mission.`,
-            'reward'
-        );
+        await createNotification({
+            userId: user._id,
+            title: 'Star Reward Claimed!',
+            message: `Congratulations! You claimed $${tier.amount} for Star Member ${tier.stars} Mission.`,
+            type: 'reward'
+        });
 
         res.json({
             message: `Successfully claimed $${tier.amount}`,
