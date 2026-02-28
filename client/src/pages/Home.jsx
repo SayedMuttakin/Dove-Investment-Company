@@ -214,7 +214,7 @@ const Home = () => {
                         <div className="grid grid-cols-3 gap-4">
                             {/* Telegram */}
                             <a
-                                href="http://t.me/+HLU8tk3MCGYwMWQ1"
+                                href="https://t.me/doveinvestmentgoldmine"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex flex-col items-center gap-2 group"

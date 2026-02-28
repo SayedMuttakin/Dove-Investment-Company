@@ -102,7 +102,7 @@ const Help = () => {
             name: "Telegram Channel",
             icon: <Send className="text-[#0088cc]" size={24} />,
             desc: "Official Updates",
-            link: "https://t.me/doveinvestment",
+            link: "https://t.me/doveinvestmentgoldmine",
             color: "hover:bg-[#0088cc]/10"
         }
     ];
