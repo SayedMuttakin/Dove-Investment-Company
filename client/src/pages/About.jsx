@@ -39,7 +39,7 @@ const About = () => {
                     {/* Title & Subtitle */}
                     <div className="space-y-2">
                         <h1 className="text-black font-extrabold text-4xl leading-tight tracking-tighter">
-                            Dove Investment <br /> Company
+                            Dove Investment <br /> Gold Mine Growth
                         </h1>
                         <p className="text-black/60 font-semibold text-lg max-w-[280px]">
                             The Future of Finance at Your Fingertips
@@ -111,7 +111,7 @@ const About = () => {
                 {/* Bottom Credit */}
                 <div className="px-8 text-center pb-8 opacity-20 mt-auto">
                     <p className="text-black text-[9px] font-bold uppercase tracking-[0.3em]">
-                        Dove Investment Company © 2025
+                        Dove Investment Gold Mine Growth © 2025
                     </p>
                 </div>
             </div>

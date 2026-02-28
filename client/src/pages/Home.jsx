@@ -193,7 +193,7 @@ const Home = () => {
                 <div className="px-4">
                     <div className="glass-card p-6 text-center">
                         <div className="mb-4">
-                            <h2 className="text-white text-xl font-bold mb-2">{companyInfo?.name || 'Dove Investment Company'}</h2>
+                            <h2 className="text-white text-xl font-bold mb-2">{companyInfo?.name || 'Dove Investment Gold Mine Growth'}</h2>
                             <p className="text-white/70 text-sm leading-relaxed">
                                 {companyInfo?.description || 'Your trusted partner in financial growth. We provide secure and profitable investment solutions with transparency and excellence.'}
                             </p>

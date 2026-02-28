@@ -139,7 +139,7 @@ const Register = () => {
                 </div>
 
                 <h1 className="text-2xl font-bold text-white mb-1">Welcome To,</h1>
-                <p className="text-white/60">Dove Investment Company</p>
+                <p className="text-white/60">Dove Investment Gold Mine Growth</p>
             </div>
 
             {/* Registration Form */}
