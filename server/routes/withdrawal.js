@@ -55,8 +55,8 @@ router.post('/request', authMiddleware, async (req, res) => {
         }
 
         // Validate amount
-        if (!amount || amount < 10) {
-            return res.status(400).json({ message: 'Minimum withdrawal amount is $10' });
+        if (!amount || amount < 50) {
+            return res.status(400).json({ message: 'Minimum withdrawal amount is $50' });
         }
 
         // Calculate 5% fee and total deduction

@@ -28,10 +28,10 @@ const Withdraw = () => {
     const [loading, setLoading] = useState(false);
 
     const methods = [
-        { id: 'trc20', name: 'USDT (TRC20)', logo: 'https://cryptologos.cc/logos/tether-usdt-logo.png' },
-        { id: 'btc', name: 'Bitcoin', logo: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png' },
-        { id: 'eth', name: 'Ethereum', logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.png' },
-        { id: 'bsc', name: 'BSC', logo: 'https://cryptologos.cc/logos/bnb-bnb-logo.png' }
+        { id: 'trc20', name: 'USDT (TRC20)', color: '#26A17B', symbol: '₮' },
+        { id: 'btc', name: 'Bitcoin', color: '#F7931A', symbol: '₿' },
+        { id: 'eth', name: 'Ethereum', color: '#627EEA', symbol: 'Ξ' },
+        { id: 'bsc', name: 'BSC', color: '#F0B90B', symbol: 'B' }
     ];
 
     const isCrypto = true; // All methods are now crypto
@@ -159,7 +159,7 @@ const Withdraw = () => {
                             <input
                                 type="number"
                                 required
-                                min="10"
+                                min="50"
                                 placeholder="0.00"
                                 className="w-full bg-dark-200 border border-white/10 rounded-2xl py-4 pl-10 pr-4 text-white text-xl font-bold focus:outline-none focus:border-primary focus:bg-dark-100 transition-all"
                                 value={amount}
@@ -167,7 +167,7 @@ const Withdraw = () => {
                             />
                         </div>
                         <div className="flex justify-between px-1">
-                            <p className="text-white/40 text-xs text-secondary">Minimum withdrawal: $10</p>
+                            <p className="text-white/40 text-xs text-secondary">Minimum withdrawal: $50</p>
                             <button
                                 type="button"
                                 onClick={() => setAmount(user?.balance?.toFixed(0))}
@@ -193,11 +193,7 @@ const Withdraw = () => {
                                         }`}
                                 >
                                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden ${paymentMethod === method.id ? 'bg-white' : 'bg-white/10'}`}>
-                                        {method.logo ? (
-                                            <img src={method.logo} alt={method.name} className="w-6 h-6 object-contain" />
-                                        ) : (
-                                            <div className={paymentMethod === method.id ? 'text-primary' : 'text-white'}>{method.icon}</div>
-                                        )}
+                                        <span style={{ color: method.color, fontSize: '18px', fontWeight: 900, lineHeight: 1 }}>{method.symbol}</span>
                                     </div>
                                     <span className={`text-[10px] font-bold truncate w-full text-center ${paymentMethod === method.id ? 'text-white' : 'text-white/60'}`}>
                                         {method.name}
