@@ -247,7 +247,7 @@ const Me = () => {
                             <div className="text-white font-bold text-[10px]">View Detail</div>
                         </div>
                         <div
-                            onClick={() => navigate('/income')}
+                            onClick={() => navigate('/lend-funding')}
                             className="glass-card p-2 cursor-pointer hover:bg-white/5 transition-colors border border-white/5 rounded-xl"
                         >
                             <div className="text-white/40 text-[7px] uppercase mb-0.5 flex items-center gap-1">
