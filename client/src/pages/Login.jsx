@@ -83,7 +83,7 @@ const Login = () => {
                 </div>
 
                 <h1 className="text-2xl font-bold text-white mb-1">Hello,</h1>
-                <p className="text-white/60">Welcome Dove Investment Gold Mine Growth</p>
+                <p className="text-white/60">Welcome Dove Investment Gold Mine</p>
             </div>
 
             {/* Login Form */}

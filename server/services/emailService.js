@@ -140,7 +140,7 @@ const getEmailTemplate = (type, data) => {
             <body>
                 <div class="container">
                     <div class="header">
-                        <h1 class="logo">🚀 Dove Investment Gold Mine Growth</h1>
+                        <h1 class="logo">🚀 Dove Investment Gold Mine</h1>
                         <p class="tagline">Your Trusted Investment Platform</p>
                     </div>
                     <div class="content">
@@ -181,7 +181,7 @@ const getEmailTemplate = (type, data) => {
                         </p>
                     </div>
                     <div class="footer">
-                        <p class="footer-text"><strong>Dove Investment Gold Mine Growth</strong></p>
+                        <p class="footer-text"><strong>Dove Investment Gold Mine</strong></p>
                         <p class="footer-text">doveinvestment.cloud</p>
                         <p class="footer-text">Need help? <a href="https://doveinvestment.cloud" class="support-link">Contact Support</a></p>
                     </div>
@@ -194,7 +194,7 @@ const getEmailTemplate = (type, data) => {
             <body>
                 <div class="container">
                     <div class="header">
-                        <h1 class="logo">🚀 Dove Investment Gold Mine Growth</h1>
+                        <h1 class="logo">🚀 Dove Investment Gold Mine</h1>
                         <p class="tagline">Your Trusted Investment Platform</p>
                     </div>
                     <div class="content">
@@ -243,7 +243,7 @@ const getEmailTemplate = (type, data) => {
                         </p>
                     </div>
                     <div class="footer">
-                        <p class="footer-text"><strong>Dove Investment Gold Mine Growth</strong></p>
+                        <p class="footer-text"><strong>Dove Investment Gold Mine</strong></p>
                         <p class="footer-text">doveinvestment.cloud</p>
                         <p class="footer-text">Need help? <a href="https://doveinvestment.cloud" class="support-link">Contact Support</a></p>
                     </div>
@@ -256,7 +256,7 @@ const getEmailTemplate = (type, data) => {
             <body>
                 <div class="container">
                     <div class="header">
-                        <h1 class="logo">🚀 Dove Investment Gold Mine Growth</h1>
+                        <h1 class="logo">🚀 Dove Investment Gold Mine</h1>
                         <p class="tagline">Your Trusted Investment Platform</p>
                     </div>
                     <div class="content">
@@ -296,7 +296,7 @@ const getEmailTemplate = (type, data) => {
                         </p>
                     </div>
                     <div class="footer">
-                        <p class="footer-text"><strong>Dove Investment Gold Mine Growth</strong></p>
+                        <p class="footer-text"><strong>Dove Investment Gold Mine</strong></p>
                         <p class="footer-text">doveinvestment.cloud</p>
                         <p class="footer-text">Need help? <a href="https://doveinvestment.cloud" class="support-link">Contact Support</a></p>
                     </div>
@@ -308,7 +308,7 @@ const getEmailTemplate = (type, data) => {
             <body>
                 <div class="container">
                     <div class="header">
-                        <h1 class="logo">🚀 Dove Investment Gold Mine Growth</h1>
+                        <h1 class="logo">🚀 Dove Investment Gold Mine</h1>
                         <p class="tagline">Your Trusted Investment Platform</p>
                     </div>
                     <div class="content">
@@ -340,7 +340,7 @@ const getEmailTemplate = (type, data) => {
                         </p>
                     </div>
                     <div class="footer">
-                        <p class="footer-text"><strong>Dove Investment Gold Mine Growth</strong></p>
+                        <p class="footer-text"><strong>Dove Investment Gold Mine</strong></p>
                         <p class="footer-text">doveinvestment.cloud</p>
                         <p class="footer-text">Need help? <a href="https://doveinvestment.cloud" class="support-link">Contact Support</a></p>
                     </div>
@@ -386,7 +386,7 @@ export const sendEmail = async ({ to, subject, type, data }) => {
 export const sendWithdrawalRequestEmail = async (user, withdrawal) => {
     return sendEmail({
         to: user.email,
-        subject: '🔔 Withdrawal Request Received - Dove Investment Gold Mine Growth',
+        subject: '🔔 Withdrawal Request Received - Dove Investment Gold Mine',
         type: 'withdrawalRequest',
         data: {
             userName: user.fullName || user.phone,
@@ -401,7 +401,7 @@ export const sendWithdrawalRequestEmail = async (user, withdrawal) => {
 export const sendWithdrawalApprovedEmail = async (user, withdrawal) => {
     return sendEmail({
         to: user.email,
-        subject: '✅ Withdrawal Approved - Dove Investment Gold Mine Growth',
+        subject: '✅ Withdrawal Approved - Dove Investment Gold Mine',
         type: 'withdrawalApproved',
         data: {
             userName: user.fullName || user.phone,
@@ -421,7 +421,7 @@ export const sendWithdrawalApprovedEmail = async (user, withdrawal) => {
 export const sendDepositApprovedEmail = async (user, deposit) => {
     return sendEmail({
         to: user.email,
-        subject: '✅ Deposit Confirmed - Dove Investment Gold Mine Growth',
+        subject: '✅ Deposit Confirmed - Dove Investment Gold Mine',
         type: 'depositApproved',
         data: {
             userName: user.fullName || user.phone,
@@ -439,7 +439,7 @@ export const sendDepositApprovedEmail = async (user, deposit) => {
 export const sendDepositReceivedEmail = async (user, deposit) => {
     return sendEmail({
         to: user.email,
-        subject: '📩 Deposit Received - Dove Investment Gold Mine Growth',
+        subject: '📩 Deposit Received - Dove Investment Gold Mine',
         type: 'depositReceived',
         data: {
             userName: user.fullName || user.phone,

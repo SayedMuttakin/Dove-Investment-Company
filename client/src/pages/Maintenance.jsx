@@ -46,7 +46,7 @@ const Maintenance = () => {
                 </div>
 
                 <div className="mt-8 text-white/20 text-xs">
-                    Dove Investment Gold Mine Growth &copy; 2026
+                    Dove Investment Gold Mine &copy; 2026
                 </div>
             </div>
         </div>

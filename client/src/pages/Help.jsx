@@ -190,7 +190,7 @@ const Help = () => {
                 </div>
 
                 <div className="text-center pb-10">
-                    <p className="text-[10px] text-white/20 uppercase tracking-widest">Dove Investment Gold Mine Growth v1.2.0</p>
+                    <p className="text-[10px] text-white/20 uppercase tracking-widest">Dove Investment Gold Mine v1.2.0</p>
                 </div>
             </div>
         </div>

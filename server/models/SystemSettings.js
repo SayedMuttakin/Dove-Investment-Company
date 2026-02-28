@@ -4,7 +4,7 @@ const systemSettingsSchema = new mongoose.Schema({
     // Company Information
     companyName: {
         type: String,
-        default: 'Dove Investment Gold Mine Growth'
+        default: 'Dove Investment Gold Mine'
     },
     companyDescription: {
         type: String,
