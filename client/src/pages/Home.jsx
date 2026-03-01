@@ -9,8 +9,7 @@ import PinModal from '../components/PinModal';
 const HeroSlider = () => {
     const slides = [
         { type: 'image', url: '/images/dove-hero.png' },
-        { type: 'video', url: '/video/sayedai.mp4' },
-        { type: 'video', url: '/video/saydai2.mp4' }
+        { type: 'video', url: '/video/gold.mp4' }
     ];
     const [currentSlide, setCurrentSlide] = useState(0);
 
