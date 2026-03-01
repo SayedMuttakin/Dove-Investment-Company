@@ -8,50 +8,28 @@ import PinModal from '../components/PinModal';
 
 const HeroSlider = () => {
     const slides = [
-        { type: 'image', url: '/images/dove-hero.png' },
-        { type: 'video', url: '/video/gold.mp4' }
+        { type: 'image', url: '/images/dove-hero.png', duration: 5000 },
+        { type: 'video', url: '/video/gold.mp4', duration: 8000 }
     ];
     const [currentSlide, setCurrentSlide] = useState(0);
     const videoRef = React.useRef(null);
-    const timerRef = React.useRef(null);
 
-    // Handle slide transitions
+    // Auto-advance slides based on each slide's duration
     useEffect(() => {
-        const current = slides[currentSlide];
+        const timer = setTimeout(() => {
+            setCurrentSlide((prev) => (prev + 1) % slides.length);
+        }, slides[currentSlide].duration);
 
-        if (current.type === 'image') {
-            // For images: auto-advance after 5 seconds
-            timerRef.current = setTimeout(() => {
-                setCurrentSlide((prev) => (prev + 1) % slides.length);
-            }, 5000);
-        }
-        // For videos: we wait for the 'ended' event (handled in onEnded)
-
-        return () => {
-            if (timerRef.current) clearTimeout(timerRef.current);
-        };
-    }, [currentSlide, slides.length]);
-
-    // When video slide becomes active, play it from the start
-    useEffect(() => {
-        const current = slides[currentSlide];
-        if (current.type === 'video' && videoRef.current) {
-            videoRef.current.currentTime = 0;
-            const playPromise = videoRef.current.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(() => {
-                    // If autoplay fails (browser policy), skip to next slide after 3s
-                    timerRef.current = setTimeout(() => {
-                        setCurrentSlide((prev) => (prev + 1) % slides.length);
-                    }, 3000);
-                });
-            }
-        }
+        return () => clearTimeout(timer);
     }, [currentSlide]);
 
-    const handleVideoEnded = () => {
-        setCurrentSlide((prev) => (prev + 1) % slides.length);
-    };
+    // Play video when its slide becomes active
+    useEffect(() => {
+        if (slides[currentSlide].type === 'video' && videoRef.current) {
+            videoRef.current.currentTime = 0;
+            videoRef.current.play().catch(() => { });
+        }
+    }, [currentSlide]);
 
     return (
         <div className="relative overflow-hidden rounded-2xl mx-4 mt-4 bg-dark-200 h-56 shadow-xl">
@@ -62,12 +40,11 @@ const HeroSlider = () => {
                 >
                     {slide.type === 'video' ? (
                         <video
-                            ref={index === slides.findIndex(s => s.type === 'video') ? videoRef : null}
+                            ref={videoRef}
                             src={slide.url}
                             muted
                             playsInline
                             preload="auto"
-                            onEnded={handleVideoEnded}
                             className="w-full h-full object-cover"
                         />
                     ) : (
@@ -95,6 +72,7 @@ const HeroSlider = () => {
         </div>
     );
 };
+
 
 
 const Home = () => {
