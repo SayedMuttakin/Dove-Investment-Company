@@ -12,13 +12,46 @@ const HeroSlider = () => {
         { type: 'video', url: '/video/gold.mp4' }
     ];
     const [currentSlide, setCurrentSlide] = useState(0);
+    const videoRef = React.useRef(null);
+    const timerRef = React.useRef(null);
 
+    // Handle slide transitions
     useEffect(() => {
-        const timer = setInterval(() => {
-            setCurrentSlide((prev) => (prev + 1) % slides.length);
-        }, 5000); // Change slide every 5 seconds
-        return () => clearInterval(timer);
-    }, [slides.length]);
+        const current = slides[currentSlide];
+
+        if (current.type === 'image') {
+            // For images: auto-advance after 5 seconds
+            timerRef.current = setTimeout(() => {
+                setCurrentSlide((prev) => (prev + 1) % slides.length);
+            }, 5000);
+        }
+        // For videos: we wait for the 'ended' event (handled in onEnded)
+
+        return () => {
+            if (timerRef.current) clearTimeout(timerRef.current);
+        };
+    }, [currentSlide, slides.length]);
+
+    // When video slide becomes active, play it from the start
+    useEffect(() => {
+        const current = slides[currentSlide];
+        if (current.type === 'video' && videoRef.current) {
+            videoRef.current.currentTime = 0;
+            const playPromise = videoRef.current.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(() => {
+                    // If autoplay fails (browser policy), skip to next slide after 3s
+                    timerRef.current = setTimeout(() => {
+                        setCurrentSlide((prev) => (prev + 1) % slides.length);
+                    }, 3000);
+                });
+            }
+        }
+    }, [currentSlide]);
+
+    const handleVideoEnded = () => {
+        setCurrentSlide((prev) => (prev + 1) % slides.length);
+    };
 
     return (
         <div className="relative overflow-hidden rounded-2xl mx-4 mt-4 bg-dark-200 h-56 shadow-xl">
@@ -29,11 +62,12 @@ const HeroSlider = () => {
                 >
                     {slide.type === 'video' ? (
                         <video
+                            ref={index === slides.findIndex(s => s.type === 'video') ? videoRef : null}
                             src={slide.url}
-                            autoPlay
-                            muted={true}
-                            loop
+                            muted
                             playsInline
+                            preload="auto"
+                            onEnded={handleVideoEnded}
                             className="w-full h-full object-cover"
                         />
                     ) : (
@@ -61,6 +95,7 @@ const HeroSlider = () => {
         </div>
     );
 };
+
 
 const Home = () => {
     const { user } = useAuth();
