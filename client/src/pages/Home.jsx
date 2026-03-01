@@ -12,9 +12,10 @@ const HeroSlider = () => {
         { type: 'video', url: '/video/gold.mp4', duration: 8000 }
     ];
     const [currentSlide, setCurrentSlide] = useState(0);
+    const [videoReady, setVideoReady] = useState(false);
     const videoRef = React.useRef(null);
 
-    // Auto-advance slides based on each slide's duration
+    // Auto-advance slides
     useEffect(() => {
         const timer = setTimeout(() => {
             setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -23,13 +24,19 @@ const HeroSlider = () => {
         return () => clearTimeout(timer);
     }, [currentSlide]);
 
-    // Play video when its slide becomes active
+    // When video slide is active, play only if buffered
     useEffect(() => {
         if (slides[currentSlide].type === 'video' && videoRef.current) {
             videoRef.current.currentTime = 0;
-            videoRef.current.play().catch(() => { });
+            if (videoReady) {
+                videoRef.current.play().catch(() => { });
+            }
         }
-    }, [currentSlide]);
+        // Pause video when not visible
+        if (slides[currentSlide].type !== 'video' && videoRef.current) {
+            videoRef.current.pause();
+        }
+    }, [currentSlide, videoReady]);
 
     return (
         <div className="relative overflow-hidden rounded-2xl mx-4 mt-4 bg-dark-200 h-56 shadow-xl">
@@ -41,12 +48,14 @@ const HeroSlider = () => {
                     {slide.type === 'video' ? (
                         <video
                             ref={videoRef}
-                            src={slide.url}
                             muted
                             playsInline
                             preload="auto"
+                            onCanPlayThrough={() => setVideoReady(true)}
                             className="w-full h-full object-cover"
-                        />
+                        >
+                            <source src={slide.url} type="video/mp4" />
+                        </video>
                     ) : (
                         <img
                             src={slide.url}
@@ -72,6 +81,7 @@ const HeroSlider = () => {
         </div>
     );
 };
+
 
 
 
