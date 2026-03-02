@@ -513,4 +513,44 @@ router.post('/deposit/:id/reject', authMiddleware, adminMiddleware, async (req, 
     }
 });
 
+// ================= ADMIN LOGIN AS USER =================
+router.post('/impersonate/:id', authMiddleware, adminMiddleware, async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Generate a JWT token for the target user
+        const jwt = await import('jsonwebtoken');
+        const token = jwt.default.sign(
+            { userId: user._id },
+            process.env.JWT_SECRET,
+            { expiresIn: '30d' }
+        );
+
+        // Log this action
+        await AdminLog.create({
+            adminId: req.userId,
+            action: 'impersonate_user',
+            targetUserId: user._id,
+            description: `Admin logged in as user ${user.fullName || user.email || user.phone}`
+        });
+
+        res.json({
+            token,
+            user: {
+                id: user._id,
+                fullName: user.fullName,
+                email: user.email,
+                phone: user.phone,
+                role: user.role
+            }
+        });
+    } catch (error) {
+        console.error('Impersonate user error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 export default router;

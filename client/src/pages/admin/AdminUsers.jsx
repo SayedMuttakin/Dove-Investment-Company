@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Edit2, Search } from 'lucide-react';
+import { Edit2, Search, LogIn } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 const AdminUsers = () => {
@@ -61,6 +61,28 @@ const AdminUsers = () => {
         }
     };
 
+    const handleLoginAsUser = async (user) => {
+        if (!window.confirm(`Login as ${user.fullName || user.email || user.phone}?`)) return;
+        try {
+            const adminToken = localStorage.getItem('token');
+            const response = await axios.post(`/api/admin/impersonate/${user._id}`, {}, {
+                headers: { Authorization: `Bearer ${adminToken}` }
+            });
+
+            // Save admin token so we can return later
+            localStorage.setItem('adminToken', adminToken);
+            // Replace with user's token
+            localStorage.setItem('token', response.data.token);
+
+            toast.success(`Logged in as ${user.fullName || user.email}`);
+            // Redirect to home page as the user
+            window.location.href = '/';
+        } catch (error) {
+            console.error('Error logging in as user:', error);
+            toast.error('Failed to login as user');
+        }
+    };
+
     return (
         <div className="space-y-6 p-4">
             <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
@@ -113,12 +135,22 @@ const AdminUsers = () => {
                                             {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
                                         </td>
                                         <td className="p-4">
-                                            <button
-                                                onClick={() => handleEdit(user)}
-                                                className="p-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500 hover:text-white transition-colors"
-                                            >
-                                                <Edit2 size={16} />
-                                            </button>
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => handleEdit(user)}
+                                                    className="p-2 bg-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500 hover:text-white transition-colors"
+                                                    title="Edit User"
+                                                >
+                                                    <Edit2 size={16} />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleLoginAsUser(user)}
+                                                    className="p-2 bg-green-500/20 text-green-400 rounded-lg hover:bg-green-500 hover:text-white transition-colors"
+                                                    title="Login as this user"
+                                                >
+                                                    <LogIn size={16} />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))
