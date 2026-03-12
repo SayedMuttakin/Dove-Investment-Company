@@ -13,7 +13,7 @@ const Register = () => {
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
-        captcha: '',
+        otp: '',
         invitationCode: '',
         password: '',
         confirmPassword: '',
@@ -23,7 +23,8 @@ const Register = () => {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [captchaCode, setCaptchaCode] = useState(generateCaptcha());
+    const [isSendingOtp, setIsSendingOtp] = useState(false);
+    const [countdown, setCountdown] = useState(0);
     const { isInstallable, installApp } = usePWA();
     const [isReferralLink, setIsReferralLink] = useState(false);
 
@@ -47,14 +48,37 @@ const Register = () => {
         }
     };
 
-    function generateCaptcha() {
-        const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
-        let result = '';
-        for (let i = 0; i < 6; i++) {
-            result += chars.charAt(Math.floor(Math.random() * chars.length));
+    useEffect(() => {
+        let timer;
+        if (countdown > 0) {
+            timer = setInterval(() => {
+                setCountdown(prev => prev - 1);
+            }, 1000);
         }
-        return result;
-    }
+        return () => clearInterval(timer);
+    }, [countdown]);
+
+    const handleSendOtp = async () => {
+        if (!formData.email || !formData.email.includes('@')) {
+            setError('Please enter a valid email address first');
+            return;
+        }
+
+        setError('');
+        setIsSendingOtp(true);
+
+        try {
+            const response = await axios.post('/api/auth/register/send-otp', {
+                email: formData.email
+            });
+            console.log(response.data.message);
+            setCountdown(60); // Start 60s countdown
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to send verification code');
+        } finally {
+            setIsSendingOtp(false);
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -69,8 +93,8 @@ const Register = () => {
         setError('');
 
         // Validation
-        if (formData.captcha !== captchaCode) {
-            setError('Captcha code is incorrect');
+        if (!formData.otp || formData.otp.length !== 6) {
+            setError('Please enter the 6-digit verification code');
             return;
         }
 
@@ -95,8 +119,10 @@ const Register = () => {
             await register({
                 fullName: formData.fullName,
                 phone: formData.email,
+                email: formData.email,
                 password: formData.password,
-                invitationCode: formData.invitationCode
+                invitationCode: formData.invitationCode,
+                otp: formData.otp
             });
             navigate('/home');
         } catch (err) {
@@ -104,11 +130,6 @@ const Register = () => {
         } finally {
             setLoading(false);
         }
-    };
-
-    const refreshCaptcha = () => {
-        setCaptchaCode(generateCaptcha());
-        setFormData(prev => ({ ...prev, captcha: '' }));
     };
 
     return (
@@ -181,32 +202,38 @@ const Register = () => {
                         />
                     </div>
 
-                    {/* Captcha */}
+                    {/* Email Verification Code */}
                     <div>
-                        <label className="block text-white/80 text-sm mb-2">Captcha</label>
+                        <label className="block text-white/80 text-sm mb-2">Verification Code</label>
                         <div className="flex gap-2">
                             <input
                                 type="text"
-                                name="captcha"
-                                value={formData.captcha}
+                                name="otp"
+                                value={formData.otp}
                                 onChange={handleChange}
-                                placeholder="Please enter the captcha"
+                                placeholder="Enter 6-digit code"
                                 className="input-glass flex-1"
+                                maxLength={6}
                                 required
                             />
-                            <div className="relative">
-                                <div className="input-glass px-4 py-3 font-bold text-lg tracking-wider select-none bg-gradient-to-r from-primary/20 to-primary/10 min-w-[100px] text-center">
-                                    {captchaCode}
-                                </div>
-                                <button
-                                    type="button"
-                                    onClick={refreshCaptcha}
-                                    className="absolute -right-2 -top-2 bg-primary/20 hover:bg-primary/30 rounded-full p-1.5 transition-colors"
-                                    title="Refresh Captcha"
-                                >
-                                    <RefreshCw size={14} className="text-primary" />
-                                </button>
-                            </div>
+                            <button
+                                type="button"
+                                onClick={handleSendOtp}
+                                disabled={isSendingOtp || countdown > 0}
+                                className={`px-4 py-3 rounded-xl font-medium transition-all min-w-[120px] ${
+                                    isSendingOtp || countdown > 0 
+                                        ? 'bg-white/10 text-white/40 cursor-not-allowed' 
+                                        : 'bg-primary text-white hover:bg-primary-hover shadow-glow'
+                                }`}
+                            >
+                                {isSendingOtp ? (
+                                    <RefreshCw size={18} className="animate-spin mx-auto" />
+                                ) : countdown > 0 ? (
+                                    `${countdown}s`
+                                ) : (
+                                    'Send Code'
+                                )}
+                            </button>
                         </div>
                     </div>
 

@@ -3,6 +3,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import Deposit from '../models/Deposit.js';
+import Otp from '../models/Otp.js';
+import { sendVerificationEmail } from '../services/emailService.js';
 import { authMiddleware } from '../middleware/auth.js';
 import fs from 'fs';
 import path from 'path';
@@ -23,21 +25,77 @@ const log = (msg) => {
 
 const router = express.Router();
 
+// Generate a random 6-digit OTP
+const generateOtp = () => {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+// Send OTP for registration
+router.post('/register/send-otp', async (req, res) => {
+    try {
+        const email = req.body.email ? String(req.body.email).trim().toLowerCase() : '';
+        
+        if (!email) {
+            return res.status(400).json({ message: 'Email address is required' });
+        }
+
+        if (!email.includes('@')) {
+            return res.status(400).json({ message: 'Please enter a valid email address' });
+        }
+
+        // Check if user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: 'Email is already registered' });
+        }
+
+        // Generate and save OTP
+        const otpCode = generateOtp();
+        
+        // Remove any existing OTP for this email
+        await Otp.deleteMany({ email });
+        
+        // Save new OTP
+        await Otp.create({ email, code: otpCode });
+
+        // Send Email
+        const sent = await sendVerificationEmail(email, otpCode);
+        
+        if (!sent) {
+            return res.status(500).json({ message: 'Failed to send verification email. Please try again.' });
+        }
+
+        res.json({ message: 'Verification code sent to your email' });
+    } catch (error) {
+        console.error('Send OTP error:', error);
+        res.status(500).json({ message: 'Server error while sending verification code' });
+    }
+});
+
 // Register
 router.post('/register', async (req, res) => {
     try {
-        log(`Registration attempt: ${JSON.stringify(req.body)}`);
-        const { password, invitationCode, fullName } = req.body;
-        const phone = req.body.phone ? String(req.body.phone).trim() : '';
+        log(`Registration attempt: ${JSON.stringify({ ...req.body, password: '[HIDDEN]' })}`);
+        const { password, invitationCode, fullName, email: reqEmail, otp } = req.body;
+        
+        // We might receive phone instead of email from older frontend, so we handle both for backward compatibility initially,
+        // but new clients will send email
+        const identifier = reqEmail || req.body.phone;
+        const phone = identifier ? String(identifier).trim().toLowerCase() : '';
 
         if (!phone) {
             log('Error: Phone/Email missing');
-            return res.status(400).json({ message: 'Email or Phone Number is required' });
+            return res.status(400).json({ message: 'Email is required' });
         }
 
         if (!password) {
             log('Error: Password missing');
             return res.status(400).json({ message: 'Password is required' });
+        }
+
+        if (!otp) {
+            log('Error: OTP missing');
+            return res.status(400).json({ message: 'Verification code is required' });
         }
 
         // NEW USERS MUST REGISTER WITH EMAIL ONLY
@@ -49,8 +107,14 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ message: 'New registrations must use a Gmail address. Please provide an email instead of a phone number.' });
         }
 
+        // Verify OTP
+        const validOtp = await Otp.findOne({ email: phone, code: otp });
+        if (!validOtp) {
+            return res.status(400).json({ message: 'Invalid or expired verification code' });
+        }
+
         // Check if user already exists
-        const query = { email: phone.toLowerCase() };
+        const query = { email: phone };
         const existingUser = await User.findOne(query);
         if (existingUser) {
             return res.status(400).json({ message: 'Email already registered' });
@@ -65,6 +129,9 @@ router.post('/register', async (req, res) => {
             }
             referredBy = referrer.invitationCode;
         }
+
+        // OTP is valid and user doesn't exist, remove OTP
+        await Otp.deleteOne({ _id: validOtp._id });
 
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);

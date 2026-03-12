@@ -449,10 +449,45 @@ export const sendDepositReceivedEmail = async (user, deposit) => {
     });
 };
 
+export const sendVerificationEmail = async (email, otpCode) => {
+    try {
+        const transporter = createTransporter();
+        const subject = 'Your Verification Code - Dove Investment';
+        const template = `
+            ${getEmailTemplate('header', null)}
+            <div class="content">
+                <h1 class="title">Verify Your Email</h1>
+                <p class="message">Thank you for registering with Dove Investment! Please use the 6-digit verification code below to complete your registration.</p>
+                
+                <div class="amount-highlight" style="letter-spacing: 5px; font-size: 36px; margin: 30px 0;">
+                    ${otpCode}
+                </div>
+                
+                <p class="message" style="font-size: 14px;">This code will expire in 5 minutes. If you did not request this verification, please ignore this email.</p>
+            </div>
+            ${getEmailTemplate('footer', null)}
+        `;
+
+        await transporter.sendMail({
+            from: process.env.SMTP_FROM || `"Dove Investment" <${process.env.SMTP_USER}>`,
+            to: email,
+            subject: subject,
+            html: template
+        });
+
+        console.log(`Verification email sent successfully to ${email}`);
+        return true;
+    } catch (error) {
+        console.error('Verification email error:', error);
+        return false;
+    }
+};
+
 export default {
     sendEmail,
     sendWithdrawalRequestEmail,
     sendWithdrawalApprovedEmail,
     sendDepositApprovedEmail,
-    sendDepositReceivedEmail
+    sendDepositReceivedEmail,
+    sendVerificationEmail
 };
