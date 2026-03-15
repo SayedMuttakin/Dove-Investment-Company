@@ -76,7 +76,7 @@ const MyTeam = () => {
                                 <Users size={32} className="text-primary" />
                             </div>
                             <h2 className="text-4xl font-black text-white tracking-tighter">
-                                {teamListData?.total || 0}
+                                {teamListData?.total > 0 ? teamListData.total : ''}
                             </h2>
                         </div>
                     </div>

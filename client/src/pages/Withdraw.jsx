@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, Wallet, AlertCircle, Bell, HelpCircle, CheckCircle2, Lock } from 'lucide-react';
+import { ArrowLeft, Wallet, AlertCircle, Bell, HelpCircle, CheckCircle2, Lock, Shield } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 import SuccessModal from '../components/SuccessModal';
@@ -13,6 +13,36 @@ const Withdraw = () => {
     const [paymentMethod, setPaymentMethod] = useState('trc20');
     const [showSuccess, setShowSuccess] = useState(false);
     const [blockMessage, setBlockMessage] = useState(null);
+    const [twoFactorToken, setTwoFactorToken] = useState('');
+    const [emailOtp, setEmailOtp] = useState('');
+    const [otpSending, setOtpSending] = useState(false);
+    const [countdown, setCountdown] = useState(0);
+
+    useEffect(() => {
+        let timer;
+        if (countdown > 0) {
+            timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+        }
+        return () => clearTimeout(timer);
+    }, [countdown]);
+
+    const handleSendOtp = async () => {
+        if (otpSending || countdown > 0) return;
+        
+        setOtpSending(true);
+        try {
+            const token = localStorage.getItem('token');
+            await axios.post('/api/withdrawal/send-otp', {}, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            toast.success('Verification code sent to your email');
+            setCountdown(60);
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to send verification code');
+        } finally {
+            setOtpSending(false);
+        }
+    };
 
     useEffect(() => {
         if (user && user.withdrawalBlockMessage) {
@@ -42,8 +72,18 @@ const Withdraw = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
+        
+        if (user?.twoFactorEnabled && !twoFactorToken) {
+            return toast.error('Please enter 2FA verification code');
+        }
 
+        /*
+        if (!emailOtp) {
+            return toast.error('Please enter email verification code');
+        }
+        */
+
+        setLoading(true);
         try {
             const token = localStorage.getItem('token');
             const bankData = {
@@ -53,9 +93,11 @@ const Withdraw = () => {
             };
 
             await axios.post('/api/withdrawal/request', {
-                amount: Number(amount),
+                amount: parseFloat(amount),
                 paymentMethod,
-                bankDetails: bankData
+                bankDetails: bankData,
+                twoFactorToken: user?.twoFactorEnabled ? twoFactorToken : undefined,
+                // emailOtp
             }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -242,17 +284,92 @@ const Withdraw = () => {
                         </div>
                     )}
 
-                    <button
-                        type="submit"
-                        disabled={loading || !!blockMessage}
-                        className="w-full bg-gradient-primary text-white font-bold py-4 rounded-2xl shadow-glow-lg hover:shadow-glow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] flex items-center justify-center gap-2"
-                    >
-                        {loading ? (
-                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                        ) : (
-                            <>Confirm Withdrawal</>
-                        )}
-                    </button>
+                    {/* Email Verification - Hidden as per request */}
+                    {/*
+                    <div className="space-y-2">
+                        <label className="flex items-center gap-2 text-white text-xs font-medium">
+                            <Lock size={14} className="text-primary" />
+                            Email Verification Code
+                        </label>
+                        <div className="relative">
+                            <input
+                                type="text"
+                                value={emailOtp}
+                                onChange={(e) => setEmailOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                                placeholder="Enter 6-digit code"
+                                className="w-full bg-dark-200 border border-white/10 rounded-xl px-4 py-3 pr-28 text-white text-sm focus:outline-none focus:border-primary transition-all"
+                                required
+                            />
+                            <button
+                                type="button"
+                                onClick={handleSendOtp}
+                                disabled={otpSending || countdown > 0}
+                                className="absolute right-2 top-1.5 bottom-1.5 px-4 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-xs font-bold"
+                            >
+                                {otpSending ? 'Sending...' : countdown > 0 ? `${countdown}s` : 'Send Code'}
+                            </button>
+                        </div>
+                        <p className="text-[10px] text-white/40 italic">
+                            Click 'Send Code' to receive a verification code in your email.
+                        </p>
+                    </div>
+                    */}
+
+                    {/* 2FA Verification */}
+                    {user?.twoFactorEnabled ? (
+                        <div className="space-y-2">
+                            <label className="flex items-center gap-2 text-white text-xs font-medium">
+                                <Shield size={14} className="text-primary" />
+                                Google Authenticator Code
+                            </label>
+                            <input
+                                type="text"
+                                value={twoFactorToken}
+                                onChange={(e) => setTwoFactorToken(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                                placeholder="Enter 6-digit 2FA code"
+                                className="w-full bg-dark-200 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-primary transition-all"
+                                required
+                            />
+                            <p className="text-[10px] text-white/40 italic">
+                                Enter the code from your Google Authenticator app (Dove Investment Gold Mine).
+                            </p>
+                        </div>
+                    ) : (
+                        <div className="bg-primary/5 border border-primary/20 rounded-2xl p-4 space-y-3">
+                            <div className="flex items-start gap-3">
+                                <div className="p-2 bg-primary/20 rounded-lg shrink-0">
+                                    <Shield size={18} className="text-primary" />
+                                </div>
+                                <div>
+                                    <h4 className="text-sm font-bold text-white tracking-tight">Security Verification Required</h4>
+                                    <p className="text-xs text-white/50 mt-1 leading-relaxed">
+                                        For your security, withdrawals require Google Authenticator (2FA). Please connect your account to proceed.
+                                    </p>
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => navigate('/security')}
+                                className="w-full py-3 bg-primary text-black font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-primary-hover transition-all shadow-lg shadow-primary/20 active:scale-95"
+                            >
+                                Setup Google Authenticator
+                            </button>
+                        </div>
+                    )}
+
+                    {user?.twoFactorEnabled && (
+                        <button
+                            type="submit"
+                            disabled={loading || !!blockMessage}
+                            className="w-full bg-gradient-primary text-white font-bold py-4 rounded-2xl shadow-glow-lg hover:shadow-glow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] flex items-center justify-center gap-2"
+                        >
+                            {loading ? (
+                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                            ) : (
+                                <>Confirm Withdrawal</>
+                            )}
+                        </button>
+                    )}
 
                     <p className="text-center text-white/30 text-[11px] px-6 leading-relaxed">
                         Processing time: 72-96 hours depending on network traffic and bank hours. 5% processing fee applies.

@@ -177,7 +177,8 @@ router.post('/register', async (req, res) => {
                 invitationCode: user.invitationCode,
                 memberId: user.memberId,
                 balance: user.balance,
-                totalEarnings: user.totalEarnings
+                totalEarnings: user.totalEarnings,
+                twoFactorEnabled: user.twoFactorEnabled
             }
         });
     } catch (error) {
@@ -253,13 +254,14 @@ router.post('/login', async (req, res) => {
                 phone: user.phone || '',
                 email: user.email || '',
                 fullName: user.fullName,
-                invitationCode: user.invitationCode,
                 memberId: user.memberId,
+                invitationCode: user.invitationCode,
                 balance: user.balance,
                 totalEarnings: user.totalEarnings,
                 investments: user.investments,
                 hasTransactionPin: !!user.transactionPin,
-                role: user.role
+                role: user.role,
+                twoFactorEnabled: user.twoFactorEnabled
             }
         });
     } catch (error) {
@@ -372,7 +374,8 @@ router.put('/profile', authMiddleware, async (req, res) => {
                 profileImage: user.profileImage,
                 vipLevel: user.vipLevel,
                 hasTransactionPin: !!user.transactionPin,
-                role: user.role
+                role: user.role,
+                twoFactorEnabled: user.twoFactorEnabled
             }
         });
     } catch (error) {
@@ -536,6 +539,7 @@ router.get('/me', authMiddleware, async (req, res) => {
             referredBy: user.referredBy,
             hasTransactionPin: !!user.transactionPin,
             role: user.role,
+            twoFactorEnabled: user.twoFactorEnabled,
             teamEarnings: user.teamEarnings || 0,
             claimedStarRewards: user.claimedStarRewards || [],
             starPoints: currentStarPoints,

@@ -6,14 +6,16 @@ import User from '../models/User.js';
 import Deposit from '../models/Deposit.js';
 import AdminLog from '../models/AdminLog.js';
 import { createNotification } from '../utils/notifications.js';
-import { sendWithdrawalRequestEmail, sendWithdrawalApprovedEmail } from '../services/emailService.js';
+import { sendWithdrawalRequestEmail, sendWithdrawalApprovedEmail, sendEmail } from '../services/emailService.js';
+import speakeasy from 'speakeasy';
+import Otp from '../models/Otp.js';
 
 const router = express.Router();
 
 // Create withdrawal request
 router.post('/request', authMiddleware, async (req, res) => {
     try {
-        const { amount, bankDetails, paymentMethod } = req.body;
+        const { amount, bankDetails, paymentMethod, twoFactorToken, emailOtp } = req.body;
         const userId = req.userId;
 
         // Get user
@@ -29,6 +31,38 @@ router.post('/request', authMiddleware, async (req, res) => {
                 isBlocked: true
             });
         }
+
+        // 2FA Verification if enabled
+        if (user.twoFactorEnabled) {
+            if (!twoFactorToken) {
+                return res.status(400).json({ message: '2FA verification code is required' });
+            }
+
+            const verified = speakeasy.totp.verify({
+                secret: user.twoFactorSecret,
+                encoding: 'base32',
+                token: twoFactorToken
+            });
+
+            if (!verified) {
+                return res.status(400).json({ message: 'Invalid 2FA verification code' });
+            }
+        }
+
+        /*
+        // Email OTP Verification
+        if (!emailOtp) {
+            return res.status(400).json({ message: 'Email verification code is required' });
+        }
+
+        const otpRecord = await Otp.findOne({ email: user.email, code: emailOtp });
+        if (!otpRecord) {
+            return res.status(400).json({ message: 'Invalid or expired email verification code' });
+        }
+
+        // Delete the used OTP
+        await Otp.deleteOne({ _id: otpRecord._id });
+        */
 
         // Auto-process matured investments before withdrawal
         const now = new Date();
@@ -413,5 +447,39 @@ router.post('/admin/user/:userId/unblock', authMiddleware, adminMiddleware, asyn
     }
 });
 
+// Send withdrawal OTP
+router.post('/send-otp', authMiddleware, async (req, res) => {
+    try {
+        const user = await User.findById(req.userId);
+        if (!user || (!user.email && !user.phone)) {
+            return res.status(400).json({ message: 'User email not found' });
+        }
+
+        const email = user.email || user.phone; // Assuming phone might be used as email in some cases
+
+        // Generate 6-digit OTP
+        const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // Save OTP
+        await Otp.deleteMany({ email });
+        await Otp.create({ email, code: otpCode });
+
+        // Send Email
+        await sendEmail({
+            to: email,
+            subject: 'Withdrawal Verification Code - Dove Investment Gold Mine',
+            type: 'withdrawalOTP',
+            data: {
+                userName: user.fullName || email,
+                otpCode: otpCode
+            }
+        });
+
+        res.json({ message: 'Verification code sent to your email' });
+    } catch (error) {
+        console.error('Send withdrawal OTP error:', error);
+        res.status(500).json({ message: 'Server error sending verification code' });
+    }
+});
 
 export default router;

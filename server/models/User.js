@@ -166,6 +166,14 @@ const userSchema = new mongoose.Schema({
     starMissionStart: {
         type: Date,
         default: null
+    },
+    twoFactorSecret: {
+        type: String,
+        default: null
+    },
+    twoFactorEnabled: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

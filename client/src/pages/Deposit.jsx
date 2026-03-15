@@ -26,7 +26,7 @@ const Deposit = () => {
             address: 'TWTLHHvdcPT9RKHxUavSVujcZXgFgYjbDP',
             coin: 'USDT',
             network: 'TRC20',
-            logo: 'https://cryptologos.cc/logos/tether-usdt-logo.png'
+            logo: 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png'
         },
         {
             id: 'BTC',
@@ -34,7 +34,7 @@ const Deposit = () => {
             address: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
             coin: 'BTC',
             network: 'Bitcoin',
-            logo: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png'
+            logo: 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/btc.png'
         },
         {
             id: 'ETH',
@@ -42,7 +42,7 @@ const Deposit = () => {
             address: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb',
             coin: 'ETH',
             network: 'Ethereum',
-            logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.png'
+            logo: 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/eth.png'
         },
         {
             id: 'BSC',
@@ -50,7 +50,7 @@ const Deposit = () => {
             address: '0x28C6c06298d514Db089934071355E5743bf21d60',
             coin: 'BNB/USDT',
             network: 'BSC',
-            logo: 'https://cryptologos.cc/logos/bnb-bnb-logo.png'
+            logo: 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/bnb.png'
         }
     ]);
 
