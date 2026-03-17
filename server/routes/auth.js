@@ -215,6 +215,12 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ message: `Invalid ${isEmail ? 'email' : 'phone number'} or password` });
         }
 
+        // Check if user is blocked
+        if (user.isBlocked) {
+            console.log(`[Auth] Blocked user attempted login: ${phone}`);
+            return res.status(403).json({ message: 'Your account has been blocked by an administrator. Please contact support.' });
+        }
+
         // Check password
         console.log(`[Auth] Verifying password for user: ${user._id}`);
         // DEBUG: Log the stored hash (first few chars) to ensure it looks like a bcrypt hash

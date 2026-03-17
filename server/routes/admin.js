@@ -195,6 +195,32 @@ router.patch('/user/:id', authMiddleware, adminMiddleware, async (req, res) => {
     }
 });
 
+// Toggle User Block Status
+router.post('/user/:id/toggle-block', authMiddleware, adminMiddleware, async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        user.isBlocked = !user.isBlocked;
+        await user.save();
+
+        await AdminLog.create({
+            adminId: req.userId,
+            action: user.isBlocked ? 'user_blocked' : 'user_unblocked',
+            targetUserId: user._id,
+            description: `${user.isBlocked ? 'Blocked' : 'Unblocked'} user ${user.phone || user.email}`
+        });
+
+        res.json({ message: `User ${user.isBlocked ? 'blocked' : 'unblocked'} successfully`, isBlocked: user.isBlocked });
+    } catch (error) {
+        console.error('Toggle block user error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 // Get User Investment History
 router.get('/user/:id/investments', authMiddleware, adminMiddleware, async (req, res) => {
     try {

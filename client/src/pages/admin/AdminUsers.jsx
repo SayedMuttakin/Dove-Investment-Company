@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Edit2, Search, LogIn } from 'lucide-react';
+import { Edit2, Search, LogIn, ShieldBan, ShieldCheck } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 const AdminUsers = () => {
@@ -83,6 +83,22 @@ const AdminUsers = () => {
         }
     };
 
+    const handleToggleBlock = async (user) => {
+        const action = user.isBlocked ? 'unblock' : 'block';
+        if (!window.confirm(`Are you sure you want to ${action} ${user.fullName || user.email || user.phone}?`)) return;
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.post(`/api/admin/user/${user._id}/toggle-block`, {}, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            toast.success(response.data.message);
+            fetchUsers();
+        } catch (error) {
+            console.error('Error toggling block:', error);
+            toast.error('Failed to update user status');
+        }
+    };
+
     return (
         <div className="space-y-6 p-4">
             <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
@@ -125,7 +141,12 @@ const AdminUsers = () => {
                                 users.map((user) => (
                                     <tr key={user._id} className="hover:bg-white/5 transition-colors">
                                         <td className="p-4">
-                                            <div className="text-white font-medium text-sm">{user.fullName || 'No Name'}</div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-white font-medium text-sm">{user.fullName || 'No Name'}</span>
+                                                {user.isBlocked && (
+                                                    <span className="px-1.5 py-0.5 bg-red-500/20 text-red-400 text-[10px] font-bold rounded uppercase">Blocked</span>
+                                                )}
+                                            </div>
                                             <div className="text-white/60 text-xs">{user.email || user.phone || 'No Contact'}</div>
                                         </td>
                                         <td className="p-4 text-white/60 text-xs font-mono">{user.invitationCode || 'N/A'}</td>
@@ -149,6 +170,17 @@ const AdminUsers = () => {
                                                     title="Login as this user"
                                                 >
                                                     <LogIn size={16} />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleToggleBlock(user)}
+                                                    className={`p-2 rounded-lg transition-colors ${
+                                                        user.isBlocked
+                                                            ? 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500 hover:text-white'
+                                                            : 'bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white'
+                                                    }`}
+                                                    title={user.isBlocked ? 'Unblock User' : 'Block User'}
+                                                >
+                                                    {user.isBlocked ? <ShieldCheck size={16} /> : <ShieldBan size={16} />}
                                                 </button>
                                             </div>
                                         </td>
