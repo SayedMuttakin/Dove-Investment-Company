@@ -526,7 +526,7 @@ router.get('/me', authMiddleware, async (req, res) => {
                 status: 'approved'
             });
             starBCount = depositedSecondGenIds.length;
-            currentStarPoints = starACount + Math.floor(starBCount / 2);
+            currentStarPoints = (starACount * 100) + (starBCount * 50);
         }
 
         res.json({

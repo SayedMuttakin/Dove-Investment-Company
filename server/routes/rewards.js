@@ -7,9 +7,9 @@ import { createNotification } from '../utils/notifications.js';
 const router = express.Router();
 
 const REWARD_TIERS = [
-    { id: 'tier1', points: 7, amount: 50, stars: 1 },
-    { id: 'tier2', points: 12, amount: 85, stars: 2 },
-    { id: 'tier3', points: 18, amount: 130, stars: 3 }
+    { id: 'tier1', points: 700, amount: 50, stars: 1 },
+    { id: 'tier2', points: 1200, amount: 85, stars: 2 },
+    { id: 'tier3', points: 1800, amount: 130, stars: 3 }
 ];
 
 router.get('/status', authMiddleware, async (req, res) => {
@@ -84,7 +84,7 @@ router.get('/status', authMiddleware, async (req, res) => {
             });
             bCount = depositedSecondGenIds.length;
 
-            totalPoints = aCount + Math.floor(bCount / 2);
+            totalPoints = (aCount * 100) + (bCount * 50);
         }
 
         res.json({
@@ -156,7 +156,7 @@ router.post('/claim', authMiddleware, async (req, res) => {
         });
         const bCount = depositedSecondGenIds.length;
 
-        const totalPoints = aCount + Math.floor(bCount / 2);
+        const totalPoints = (aCount * 100) + (bCount * 50);
 
         if (totalPoints < tier.points) {
             return res.status(400).json({ message: 'Insufficient points for this tier' });

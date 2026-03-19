@@ -172,7 +172,7 @@ const StarRewards = () => {
                             <Info size={14} className="text-primary shrink-0 mt-0.5" />
                             <div className="flex flex-col gap-1">
                                 <p className="text-[10px] text-white/60 leading-relaxed font-medium">
-                                    * Points = A + (B/2).
+                                    * Points = (Gen 1 Active × 100) + (Gen 2 Active × 50).
                                 </p>
                                 <p className="text-[10px] text-white/40 leading-relaxed font-medium">
                                     A mission starts on your first referral and lasts exactly 10 days. After that, it resets.
