@@ -95,7 +95,7 @@ const userSchema = new mongoose.Schema({
     },
     balance: {
         type: Number,
-        default: 8
+        default: 5
     },
     totalEarnings: {
         type: Number,

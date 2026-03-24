@@ -151,8 +151,8 @@ router.post('/register', async (req, res) => {
             invitationCode: newInvitationCode,
             referredBy,
             memberId: nextMemberId,
-            balance: 8,
-            bonusIncome: 8
+            balance: 5,
+            bonusIncome: 5
         };
 
         const user = new User(userData);
