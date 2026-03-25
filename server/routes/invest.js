@@ -5,6 +5,7 @@ import User from '../models/User.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { createNotification } from '../utils/notifications.js';
 import Notification from '../models/Notification.js';
+import { distributeDailyTeamIncome } from '../utils/teamCommissions.js';
 
 const router = express.Router();
 
@@ -288,6 +289,13 @@ router.post('/collect', authMiddleware, async (req, res) => {
             user.totalEarnings += collectedTotal;
             user.interestIncome += collectedTotal; // Track specifically as interest income
             await user.save();
+
+            // Distribute team income to upline (Gen 1: 10%, Gen 2: 7%, Gen 3: 4%)
+            try {
+                await distributeDailyTeamIncome(user, collectedTotal);
+            } catch (teamErr) {
+                console.error('Team income distribution error:', teamErr);
+            }
 
             // Individual Notifications per Package
             for (const detail of incomeDetails) {
