@@ -118,6 +118,9 @@ export async function distributeDailyTeamIncome(collector, collectedAmount) {
         const rate = DAILY_TEAM_INCOME_RATES[level];
         if (!rate) continue;
 
+        // Only Level 2+ (vipLevel >= 1) can receive daily team income
+        if (referrer.vipLevel < 1) continue;
+
         const commissionAmount = collectedAmount * rate;
 
         if (commissionAmount > 0) {
