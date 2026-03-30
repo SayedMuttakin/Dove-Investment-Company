@@ -59,16 +59,16 @@ const AdminDeposits = () => {
     return (
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <h2 className="text-2xl font-bold text-white">Manage Deposits</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Manage Deposits</h2>
 
-                <div className="flex bg-dark-200 p-1 rounded-lg border border-white/5">
+                <div className="flex bg-white dark:bg-dark-200 p-1 rounded-lg border border-slate-200 dark:border-white/5">
                     {['all', 'pending', 'approved', 'rejected'].map((status) => (
                         <button
                             key={status}
                             onClick={() => setFilter(status)}
                             className={`px-4 py-1.5 rounded-md text-xs font-medium capitalize transition-all ${filter === status
-                                ? 'bg-primary text-white shadow-lg'
-                                : 'text-white/60 hover:text-white'
+                                ? 'bg-primary text-gray-900 dark:text-white shadow-lg'
+                                : 'text-gray-900/60 dark:text-white/60 hover:text-white'
                                 }`}
                         >
                             {status}
@@ -81,41 +81,41 @@ const AdminDeposits = () => {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="border-b border-white/10 bg-white/5">
-                                <th className="p-4 text-xs font-bold text-white/60 uppercase">User</th>
-                                <th className="p-4 text-xs font-bold text-white/60 uppercase">Amount</th>
-                                <th className="p-4 text-xs font-bold text-white/60 uppercase">Network</th>
-                                <th className="p-4 text-xs font-bold text-white/60 uppercase">TX Hash</th>
-                                <th className="p-4 text-xs font-bold text-white/60 uppercase">Date</th>
-                                <th className="p-4 text-xs font-bold text-white/60 uppercase">Status</th>
-                                <th className="p-4 text-xs font-bold text-white/60 uppercase text-right">Actions</th>
+                            <tr className="border-b border-slate-200 dark:border-white/10 bg-gray-900/5 dark:bg-white/5">
+                                <th className="p-4 text-xs font-bold text-gray-900/60 dark:text-white/60 uppercase">User</th>
+                                <th className="p-4 text-xs font-bold text-gray-900/60 dark:text-white/60 uppercase">Amount</th>
+                                <th className="p-4 text-xs font-bold text-gray-900/60 dark:text-white/60 uppercase">Network</th>
+                                <th className="p-4 text-xs font-bold text-gray-900/60 dark:text-white/60 uppercase">TX Hash</th>
+                                <th className="p-4 text-xs font-bold text-gray-900/60 dark:text-white/60 uppercase">Date</th>
+                                <th className="p-4 text-xs font-bold text-gray-900/60 dark:text-white/60 uppercase">Status</th>
+                                <th className="p-4 text-xs font-bold text-gray-900/60 dark:text-white/60 uppercase text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
                             {loading ? (
                                 <tr>
-                                    <td colSpan="7" className="p-8 text-center text-white/40 text-sm">Loading deposits...</td>
+                                    <td colSpan="7" className="p-8 text-center text-gray-900/40 dark:text-white/40 text-sm">Loading deposits...</td>
                                 </tr>
                             ) : deposits.length === 0 ? (
                                 <tr>
-                                    <td colSpan="7" className="p-8 text-center text-white/40 text-sm">No deposits found.</td>
+                                    <td colSpan="7" className="p-8 text-center text-gray-900/40 dark:text-white/40 text-sm">No deposits found.</td>
                                 </tr>
                             ) : (
                                 deposits.map((deposit) => (
                                     <tr key={deposit._id} className="hover:bg-white/5 transition-colors">
                                         <td className="p-4">
-                                            <div className="text-white font-medium text-sm">{deposit.userId?.fullName || 'No Name'}</div>
-                                            <div className="text-white/70 text-xs">{deposit.userId?.phone || 'Unknown'}</div>
-                                            <div className="text-white/40 text-xs">Code: {deposit.userId?.invitationCode}</div>
+                                            <div className="text-gray-900 dark:text-white font-medium text-sm">{deposit.userId?.fullName || 'No Name'}</div>
+                                            <div className="text-gray-900/70 dark:text-white/70 text-xs">{deposit.userId?.phone || 'Unknown'}</div>
+                                            <div className="text-gray-900/40 dark:text-white/40 text-xs">Code: {deposit.userId?.invitationCode}</div>
                                         </td>
-                                        <td className="p-4 text-white font-bold text-sm">${deposit.amount}</td>
-                                        <td className="p-4 text-white/70 text-xs">{deposit.network}</td>
+                                        <td className="p-4 text-gray-900 dark:text-white font-bold text-sm">${deposit.amount}</td>
+                                        <td className="p-4 text-gray-900/70 dark:text-white/70 text-xs">{deposit.network}</td>
                                         <td className="p-4">
-                                            <div className="text-white/60 text-xs font-mono break-all min-w-[200px]" title={deposit.transactionHash}>
+                                            <div className="text-gray-900/60 dark:text-white/60 text-xs font-mono break-all min-w-[200px]" title={deposit.transactionHash}>
                                                 {deposit.transactionHash}
                                             </div>
                                         </td>
-                                        <td className="p-4 text-white/60 text-xs text-nowrap">
+                                        <td className="p-4 text-gray-900/60 dark:text-white/60 text-xs text-nowrap">
                                             {new Date(deposit.createdAt).toLocaleDateString()}
                                         </td>
                                         <td className="p-4">

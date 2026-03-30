@@ -61,14 +61,14 @@ const Login = () => {
             <div className="text-center mb-8">
                 <button
                     onClick={() => navigate(-1)}
-                    className="absolute left-0 top-0 p-2 text-white/60 hover:text-white transition-colors"
+                    className="absolute left-0 top-0 p-2 text-gray-900/60 dark:text-white/60 hover:text-white transition-colors"
                 >
                     <ArrowLeft size={24} />
                 </button>
 
                 <div className="flex items-center justify-center gap-2 mb-2">
-                    <Globe size={20} className="text-white/60" />
-                    <RefreshCw size={20} className="text-white/60" />
+                    <Globe size={20} className="text-gray-900/60 dark:text-white/60" />
+                    <RefreshCw size={20} className="text-gray-900/60 dark:text-white/60" />
                 </div>
 
                 <div className="flex items-center justify-center gap-3 mb-3">
@@ -82,13 +82,13 @@ const Login = () => {
                     </div>
                 </div>
 
-                <h1 className="text-2xl font-bold text-white mb-1">Hello,</h1>
-                <p className="text-white/60">Welcome Dove Investment Gold Mine</p>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Hello,</h1>
+                <p className="text-gray-900/60 dark:text-white/60">Welcome Dove Investment Gold Mine</p>
             </div>
 
             {/* Login Form */}
             <div className="glass-card p-6 space-y-5 shadow-glow">
-                <h2 className="text-xl font-semibold text-white mb-4">Account Login</h2>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Account Login</h2>
 
                 {error && (
                     <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3 text-red-400 text-sm">
@@ -99,7 +99,7 @@ const Login = () => {
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {/* Email or Phone Number */}
                     <div>
-                        <label className="block text-white/80 text-sm mb-2">Email or Phone Number</label>
+                        <label className="block text-gray-900/80 dark:text-white/80 text-sm mb-2">Email or Phone Number</label>
                         <div className="flex gap-2">
                             {!formData.phone.includes('@') && (
                                 <CountrySelector
@@ -122,7 +122,7 @@ const Login = () => {
 
                     {/* Password */}
                     <div>
-                        <label className="block text-white/80 text-sm mb-2">Password</label>
+                        <label className="block text-gray-900/80 dark:text-white/80 text-sm mb-2">Password</label>
                         <div className="relative">
                             <input
                                 type={showPassword ? 'text' : 'password'}
@@ -136,7 +136,7 @@ const Login = () => {
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
-                                className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white/60 transition-colors"
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-900/40 dark:text-white/40 hover:text-white/60 transition-colors"
                             >
                                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                             </button>
@@ -151,9 +151,9 @@ const Login = () => {
                                 name="rememberMe"
                                 checked={formData.rememberMe}
                                 onChange={handleChange}
-                                className="w-4 h-4 rounded border-white/20 bg-glass-light text-primary focus:ring-primary/50"
+                                className="w-4 h-4 rounded border-slate-200 dark:border-white/20 bg-glass-light text-primary focus:ring-primary/50"
                             />
-                            <span className="text-white/80">Remember Account Password</span>
+                            <span className="text-gray-900/80 dark:text-white/80">Remember Account Password</span>
                         </label>
                         <Link to="/forgot-password" className="text-primary hover:text-primary-light transition-colors">
                             Forgot Password?
@@ -182,7 +182,7 @@ const Login = () => {
 
                 {/* App Download Button */}
                 {isInstallable && (
-                    <div className="pt-4 border-t border-white/10">
+                    <div className="pt-4 border-t border-slate-200 dark:border-white/10">
                         <button
                             onClick={handleDownload}
                             className="btn-glass w-full flex items-center justify-center gap-2 hover:shadow-glow"
@@ -196,7 +196,7 @@ const Login = () => {
 
             {/* Register Link */}
             <div className="text-center mt-6">
-                <span className="text-white/60">No Account </span>
+                <span className="text-gray-900/60 dark:text-white/60">No Account </span>
                 <Link to="/register" className="text-primary hover:text-primary-light font-semibold transition-colors">
                     Register Now
                 </Link>

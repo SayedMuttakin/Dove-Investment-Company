@@ -108,20 +108,20 @@ const Help = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-dark-300 pb-24">
+        <div className="min-h-screen bg-gray-50 dark:bg-dark-300 pb-24">
             {/* Header */}
-            <div className="sticky top-0 z-50 bg-dark-200/80 backdrop-blur-md border-b border-white/5 py-1.5 px-4 shadow-lg">
+            <div className="sticky top-0 z-50 bg-dark-200/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5 py-1.5 px-4 shadow-lg">
                 <div className="max-w-md mx-auto flex items-center justify-between relative h-8">
                     <div className="relative z-10 w-10">
                         <button
                             onClick={() => navigate(-1)}
-                            className="p-2 -ml-2 text-white/60 hover:text-white transition-colors"
+                            className="p-2 -ml-2 text-gray-900/60 dark:text-white/60 hover:text-white transition-colors"
                         >
                             <ArrowLeft size={20} />
                         </button>
                     </div>
                     <div className="absolute left-1/2 -translate-x-1/2">
-                        <h1 className="text-base font-bold text-white">Support</h1>
+                        <h1 className="text-base font-bold text-gray-900 dark:text-white">Support</h1>
                     </div>
                     <div className="w-10"></div>
                 </div>
@@ -129,13 +129,13 @@ const Help = () => {
 
             <div className="max-w-md mx-auto px-4 pt-6 space-y-6">
                 {/* Live Chat Section */}
-                <div className="glass-card rounded-[2rem] overflow-hidden flex flex-col h-[550px] border border-white/5 bg-black/20 shadow-2xl">
-                    <div className="bg-white/5 px-6 py-4 border-b border-white/5 flex items-center gap-3">
+                <div className="glass-card rounded-[2rem] overflow-hidden flex flex-col h-[550px] border border-slate-200 dark:border-white/5 bg-black/20 shadow-2xl">
+                    <div className="bg-gray-900/5 dark:bg-white/5 px-6 py-4 border-b border-slate-200 dark:border-white/5 flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary">
                             <Shield size={16} />
                         </div>
                         <div>
-                            <h3 className="text-sm font-bold text-white">Live Support Chat</h3>
+                            <h3 className="text-sm font-bold text-gray-900 dark:text-white">Live Support Chat</h3>
                             <p className="text-[10px] text-primary">Admin is Online</p>
                         </div>
                     </div>
@@ -154,11 +154,11 @@ const Help = () => {
                             messages.map((msg, i) => (
                                 <div key={i} className={`flex ${msg.isAdmin ? 'justify-start' : 'justify-end'}`}>
                                     <div className={`max-w-[80%] rounded-2xl px-4 py-2.5 text-sm ${msg.isAdmin
-                                        ? 'bg-dark-200 text-white rounded-tl-none border border-white/5'
+                                        ? 'bg-white dark:bg-dark-200 text-gray-900 dark:text-white rounded-tl-none border border-slate-200 dark:border-white/5'
                                         : 'bg-primary text-black font-medium rounded-tr-none'
                                         }`}>
                                         <p className="leading-relaxed">{msg.message}</p>
-                                        <div className={`text-[9px] mt-1 opacity-50 ${msg.isAdmin ? 'text-white/60' : 'text-black/60'}`}>
+                                        <div className={`text-[9px] mt-1 opacity-50 ${msg.isAdmin ? 'text-gray-900/60 dark:text-white/60' : 'text-black/60'}`}>
                                             {formatDistanceToNow(new Date(msg.createdAt), { addSuffix: true })}
                                         </div>
                                     </div>
@@ -168,19 +168,19 @@ const Help = () => {
                     </div>
 
                     {/* Chat Input */}
-                    <form onSubmit={handleSendMessage} className="p-4 bg-white/5 border-t border-white/5">
+                    <form onSubmit={handleSendMessage} className="p-4 bg-gray-900/5 dark:bg-white/5 border-t border-slate-200 dark:border-white/5">
                         <div className="relative flex items-center">
                             <input
                                 type="text"
                                 value={newMessage}
                                 onChange={(e) => setNewMessage(e.target.value)}
                                 placeholder="Write a message..."
-                                className="w-full bg-dark-300 border border-white/10 rounded-full py-3 px-5 pr-12 text-sm text-white focus:outline-none focus:border-primary/50 transition-all"
+                                className="w-full bg-gray-50 dark:bg-dark-300 border border-slate-200 dark:border-white/10 rounded-full py-3 px-5 pr-12 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-primary/50 transition-all"
                             />
                             <button
                                 type="submit"
                                 disabled={loading || !newMessage.trim()}
-                                className={`absolute right-2 p-2 rounded-full transition-all ${newMessage.trim() ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'bg-white/5 text-white/20'
+                                className={`absolute right-2 p-2 rounded-full transition-all ${newMessage.trim() ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'bg-gray-900/5 dark:bg-white/5 text-gray-900/20 dark:text-white/20'
                                     }`}
                             >
                                 <Send size={18} />
@@ -190,7 +190,7 @@ const Help = () => {
                 </div>
 
                 <div className="text-center pb-10">
-                    <p className="text-[10px] text-white/20 uppercase tracking-widest">Dove Investment Gold Mine v1.2.0</p>
+                    <p className="text-[10px] text-gray-900/20 dark:text-white/20 uppercase tracking-widest">Dove Investment Gold Mine v1.2.0</p>
                 </div>
             </div>
         </div>

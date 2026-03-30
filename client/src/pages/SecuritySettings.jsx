@@ -121,20 +121,20 @@ const SecuritySettings = () => {
     };
 
     return (
-        <div className="min-h-screen bg-dark-300 pb-10 max-w-md mx-auto relative shadow-2xl overflow-hidden">
+        <div className="min-h-screen bg-gray-50 dark:bg-dark-300 pb-10 max-w-md mx-auto relative shadow-2xl overflow-hidden">
             {/* Header */}
-            <div className="bg-dark-200 p-4 flex items-center gap-3 sticky top-0 z-20 border-b border-white/5">
-                <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-white/60 hover:text-white">
+            <div className="bg-white dark:bg-dark-200 p-4 flex items-center gap-3 sticky top-0 z-20 border-b border-slate-200 dark:border-white/5">
+                <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-gray-900/60 dark:text-white/60 hover:text-white">
                     <ArrowLeft size={20} />
                 </button>
-                <h1 className="text-white font-bold text-lg">Security Settings</h1>
+                <h1 className="text-gray-900 dark:text-white font-bold text-lg">Security Settings</h1>
             </div>
 
             <div className="p-4 space-y-6">
                 {/* 2FA Section */}
                 <div className="glass-card p-5 border border-primary/20">
                     <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-white font-bold text-sm flex items-center gap-2">
+                        <h2 className="text-gray-900 dark:text-white font-bold text-sm flex items-center gap-2">
                             <Smartphone size={16} className="text-primary" />
                             Google Authenticator
                         </h2>
@@ -151,7 +151,7 @@ const SecuritySettings = () => {
 
                     {!user?.twoFactorEnabled && !isSettingUp2FA && (
                         <div className="space-y-3">
-                            <p className="text-white/40 text-xs leading-relaxed">
+                            <p className="text-gray-900/40 dark:text-white/40 text-xs leading-relaxed">
                                 Add an extra layer of security to your account. You will need to provide a code from your Google Authenticator app for withdrawals.
                             </p>
                             <button
@@ -166,7 +166,7 @@ const SecuritySettings = () => {
 
                     {isSettingUp2FA && (
                         <div className="space-y-4 text-center animate-in fade-in slide-in-from-top-4 duration-300">
-                            <p className="text-white/60 text-xs text-left">
+                            <p className="text-gray-900/60 dark:text-white/60 text-xs text-left">
                                 1. Scan this QR code in your Google Authenticator app:
                             </p>
                             
@@ -175,15 +175,15 @@ const SecuritySettings = () => {
                             </div>
 
                             <div className="text-left space-y-1">
-                                <p className="text-white/60 text-xs">2. Or enter this code manually:</p>
-                                <div className="bg-black/20 p-2 rounded border border-white/5 flex items-center justify-between">
+                                <p className="text-gray-900/60 dark:text-white/60 text-xs">2. Or enter this code manually:</p>
+                                <div className="bg-black/20 p-2 rounded border border-slate-200 dark:border-white/5 flex items-center justify-between">
                                     <code className="text-primary font-mono text-sm">{twoFactorData.secret}</code>
                                     <button 
                                         onClick={() => {
                                             navigator.clipboard.writeText(twoFactorData.secret);
                                             toast.info('Secret copied');
                                         }}
-                                        className="text-[10px] text-white/40 hover:text-white"
+                                        className="text-[10px] text-gray-900/40 dark:text-white/40 hover:text-white"
                                     >
                                         Copy
                                     </button>
@@ -196,14 +196,14 @@ const SecuritySettings = () => {
                                     value={twoFactorToken}
                                     onChange={(e) => setTwoFactorToken(e.target.value.replace(/\D/g, '').slice(0, 6))}
                                     placeholder="Enter 6-digit code"
-                                    className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white text-center tracking-[0.5em] font-bold text-lg focus:border-primary/50 focus:outline-none placeholder:tracking-normal placeholder:font-normal placeholder:text-sm placeholder:text-white/20"
+                                    className="w-full bg-black/20 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-3 text-gray-900 dark:text-white text-center tracking-[0.5em] font-bold text-lg focus:border-primary/50 focus:outline-none placeholder:tracking-normal placeholder:font-normal placeholder:text-sm placeholder:text-white/20"
                                     required
                                 />
                                 <div className="flex gap-2">
                                     <button
                                         type="button"
                                         onClick={() => setIsSettingUp2FA(false)}
-                                        className="flex-1 bg-white/5 text-white/60 py-3 rounded-lg text-sm font-bold"
+                                        className="flex-1 bg-gray-900/5 dark:bg-white/5 text-gray-900/60 dark:text-white/60 py-3 rounded-lg text-sm font-bold"
                                     >
                                         Cancel
                                     </button>
@@ -221,7 +221,7 @@ const SecuritySettings = () => {
 
                     {user?.twoFactorEnabled && (
                         <div className="space-y-3">
-                            <p className="text-white/40 text-xs leading-relaxed flex items-center gap-2">
+                            <p className="text-gray-900/40 dark:text-white/40 text-xs leading-relaxed flex items-center gap-2">
                                 <CheckCircle2 size={14} className="text-green-500" />
                                 Your account is protected with Google Authenticator.
                             </p>
@@ -238,7 +238,7 @@ const SecuritySettings = () => {
 
                 {/* Password Section */}
                 <div className="glass-card p-5">
-                    <h2 className="text-white font-bold text-sm mb-4 flex items-center gap-2">
+                    <h2 className="text-gray-900 dark:text-white font-bold text-sm mb-4 flex items-center gap-2">
                         <Lock size={16} className="text-primary" />
                         Change Password
                     </h2>
@@ -250,7 +250,7 @@ const SecuritySettings = () => {
                             onChange={handlePwdChange}
                             placeholder="New Password (min 6 chars)"
                             required
-                            className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:border-primary/50 focus:outline-none placeholder:text-white/20"
+                            className="w-full bg-black/20 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-3 text-gray-900 dark:text-white text-sm focus:border-primary/50 focus:outline-none placeholder:text-white/20"
                         />
                         <input
                             type="password"
@@ -259,12 +259,12 @@ const SecuritySettings = () => {
                             onChange={handlePwdChange}
                             placeholder="Confirm New Password"
                             required
-                            className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:border-primary/50 focus:outline-none placeholder:text-white/20"
+                            className="w-full bg-black/20 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-3 text-gray-900 dark:text-white text-sm focus:border-primary/50 focus:outline-none placeholder:text-white/20"
                         />
                         <button
                             type="submit"
                             disabled={loadingPwd}
-                            className="w-full bg-white/5 hover:bg-white/10 text-white font-bold py-3 rounded-lg transition-all border border-white/10 flex justify-center hover:border-white/20"
+                            className="w-full bg-gray-900/5 dark:bg-white/5 hover:bg-white/10 text-gray-900 dark:text-white font-bold py-3 rounded-lg transition-all border border-slate-200 dark:border-white/10 flex justify-center hover:border-white/20"
                         >
                             {loadingPwd ? <Loader2 size={18} className="animate-spin" /> : 'Update Password'}
                         </button>
@@ -273,7 +273,7 @@ const SecuritySettings = () => {
 
                 {/* PIN Section */}
                 <div className="glass-card p-5">
-                    <h2 className="text-white font-bold text-sm mb-4 flex items-center gap-2">
+                    <h2 className="text-gray-900 dark:text-white font-bold text-sm mb-4 flex items-center gap-2">
                         <Shield size={16} className="text-primary" />
                         Transaction PIN
                     </h2>
@@ -286,7 +286,7 @@ const SecuritySettings = () => {
                             maxLength={6}
                             required
                             placeholder="New 6-Digit PIN"
-                            className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:border-primary/50 focus:outline-none placeholder:text-white/20"
+                            className="w-full bg-black/20 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-3 text-gray-900 dark:text-white text-sm focus:border-primary/50 focus:outline-none placeholder:text-white/20"
                         />
                         <input
                             type="text"
@@ -296,12 +296,12 @@ const SecuritySettings = () => {
                             maxLength={6}
                             required
                             placeholder="Confirm New PIN"
-                            className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-white text-sm focus:border-primary/50 focus:outline-none placeholder:text-white/20"
+                            className="w-full bg-black/20 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-3 text-gray-900 dark:text-white text-sm focus:border-primary/50 focus:outline-none placeholder:text-white/20"
                         />
                         <button
                             type="submit"
                             disabled={loadingPin}
-                            className="w-full bg-white/5 hover:bg-white/10 text-white font-bold py-3 rounded-lg transition-all border border-white/10 flex justify-center hover:border-white/20"
+                            className="w-full bg-gray-900/5 dark:bg-white/5 hover:bg-white/10 text-gray-900 dark:text-white font-bold py-3 rounded-lg transition-all border border-slate-200 dark:border-white/10 flex justify-center hover:border-white/20"
                         >
                             {loadingPin ? <Loader2 size={18} className="animate-spin" /> : 'Update PIN'}
                         </button>

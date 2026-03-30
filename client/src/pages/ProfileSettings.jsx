@@ -46,20 +46,20 @@ const ProfileSettings = () => {
     };
 
     return (
-        <div className="min-h-screen bg-dark-300 max-w-md mx-auto relative shadow-2xl overflow-hidden">
+        <div className="min-h-screen bg-gray-50 dark:bg-dark-300 max-w-md mx-auto relative shadow-2xl overflow-hidden">
             {/* Header */}
-            <div className="bg-dark-200 p-4 flex items-center gap-3 sticky top-0 z-20 border-b border-white/5">
-                <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-white/60 hover:text-white">
+            <div className="bg-white dark:bg-dark-200 p-4 flex items-center gap-3 sticky top-0 z-20 border-b border-slate-200 dark:border-white/5">
+                <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-gray-900/60 dark:text-white/60 hover:text-white">
                     <ArrowLeft size={20} />
                 </button>
-                <h1 className="text-white font-bold text-lg">Edit Profile</h1>
+                <h1 className="text-gray-900 dark:text-white font-bold text-lg">Edit Profile</h1>
             </div>
 
             <form onSubmit={handleSubmit} className="p-4 space-y-4 max-w-md mx-auto">
                 <div className="space-y-1">
-                    <label className="text-white/60 text-xs font-medium pl-1">Full Name</label>
+                    <label className="text-gray-900/60 dark:text-white/60 text-xs font-medium pl-1">Full Name</label>
                     <div className="relative">
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40">
+                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-900/40 dark:text-white/40">
                             <User size={18} />
                         </div>
                         <input
@@ -67,16 +67,16 @@ const ProfileSettings = () => {
                             name="fullName"
                             value={formData.fullName}
                             onChange={handleChange}
-                            className="w-full bg-dark-200 border border-white/10 rounded-xl px-10 py-3 text-white text-sm focus:border-primary/50 focus:outline-none placeholder:text-white/20"
+                            className="w-full bg-white dark:bg-dark-200 border border-slate-200 dark:border-white/10 rounded-xl px-10 py-3 text-gray-900 dark:text-white text-sm focus:border-primary/50 focus:outline-none placeholder:text-white/20"
                             placeholder="Enter full name"
                         />
                     </div>
                 </div>
 
                 <div className="space-y-1">
-                    <label className="text-white/60 text-xs font-medium pl-1">Phone Number / Email</label>
+                    <label className="text-gray-900/60 dark:text-white/60 text-xs font-medium pl-1">Phone Number / Email</label>
                     <div className="relative">
-                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40">
+                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-900/40 dark:text-white/40">
                             {formData.phone.includes('@') ? <Mail size={18} /> : <Phone size={18} />}
                         </div>
                         <input
@@ -84,11 +84,11 @@ const ProfileSettings = () => {
                             name="phone"
                             value={formData.phone}
                             onChange={handleChange}
-                            className="w-full bg-dark-200 border border-white/10 rounded-xl px-10 py-3 text-white text-sm focus:border-primary/50 focus:outline-none placeholder:text-white/20"
+                            className="w-full bg-white dark:bg-dark-200 border border-slate-200 dark:border-white/10 rounded-xl px-10 py-3 text-gray-900 dark:text-white text-sm focus:border-primary/50 focus:outline-none placeholder:text-white/20"
                             placeholder="Phone number or Email"
                         />
                     </div>
-                    <p className="text-white/30 text-[10px] pl-1">
+                    <p className="text-gray-900/30 dark:text-white/30 text-[10px] pl-1">
                         This will be used for your login.
                     </p>
                 </div>

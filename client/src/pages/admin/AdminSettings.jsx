@@ -52,11 +52,11 @@ const AdminSettings = () => {
         }
     };
 
-    if (loading) return <div className="p-6 text-white">Loading settings...</div>;
+    if (loading) return <div className="p-6 text-gray-900 dark:text-white">Loading settings...</div>;
 
     return (
         <div className="p-6 max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
                 <Settings className="text-blue-500" />
                 System Settings
             </h2>
@@ -64,42 +64,42 @@ const AdminSettings = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Company Info */}
                 <div className="glass-card p-6">
-                    <h3 className="text-lg font-semibold text-white mb-4 border-b border-white/10 pb-2">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 border-b border-slate-200 dark:border-white/10 pb-2">
                         Company Information
                     </h3>
                     <div className="grid gap-4">
                         <div>
-                            <label className="text-white/60 text-sm mb-1 block">Company Name</label>
+                            <label className="text-gray-900/60 dark:text-white/60 text-sm mb-1 block">Company Name</label>
                             <input
                                 type="text"
-                                className="w-full bg-dark-300 border border-white/10 rounded-lg p-2 text-white focus:outline-none focus:border-blue-500"
+                                className="w-full bg-gray-50 dark:bg-dark-300 border border-slate-200 dark:border-white/10 rounded-lg p-2 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500"
                                 value={settings.companyName}
                                 onChange={(e) => setSettings({ ...settings, companyName: e.target.value })}
                             />
                         </div>
                         <div>
-                            <label className="text-white/60 text-sm mb-1 block">Description</label>
+                            <label className="text-gray-900/60 dark:text-white/60 text-sm mb-1 block">Description</label>
                             <textarea
-                                className="w-full bg-dark-300 border border-white/10 rounded-lg p-2 text-white focus:outline-none focus:border-blue-500 h-24"
+                                className="w-full bg-gray-50 dark:bg-dark-300 border border-slate-200 dark:border-white/10 rounded-lg p-2 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 h-24"
                                 value={settings.companyDescription}
                                 onChange={(e) => setSettings({ ...settings, companyDescription: e.target.value })}
                             />
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="text-white/60 text-sm mb-1 block">Support Email</label>
+                                <label className="text-gray-900/60 dark:text-white/60 text-sm mb-1 block">Support Email</label>
                                 <input
                                     type="email"
-                                    className="w-full bg-dark-300 border border-white/10 rounded-lg p-2 text-white focus:outline-none focus:border-blue-500"
+                                    className="w-full bg-gray-50 dark:bg-dark-300 border border-slate-200 dark:border-white/10 rounded-lg p-2 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500"
                                     value={settings.companyEmail}
                                     onChange={(e) => setSettings({ ...settings, companyEmail: e.target.value })}
                                 />
                             </div>
                             <div>
-                                <label className="text-white/60 text-sm mb-1 block">Support Phone</label>
+                                <label className="text-gray-900/60 dark:text-white/60 text-sm mb-1 block">Support Phone</label>
                                 <input
                                     type="text"
-                                    className="w-full bg-dark-300 border border-white/10 rounded-lg p-2 text-white focus:outline-none focus:border-blue-500"
+                                    className="w-full bg-gray-50 dark:bg-dark-300 border border-slate-200 dark:border-white/10 rounded-lg p-2 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500"
                                     value={settings.companyPhone}
                                     onChange={(e) => setSettings({ ...settings, companyPhone: e.target.value })}
                                 />
@@ -110,25 +110,25 @@ const AdminSettings = () => {
 
                 {/* Wallet Management */}
                 <div className="glass-card p-6">
-                    <h3 className="text-lg font-semibold text-white mb-4 border-b border-white/10 pb-2">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 border-b border-slate-200 dark:border-white/10 pb-2">
                         Wallet Addresses (Deposit)
                     </h3>
                     <div className="grid gap-4">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="text-white/60 text-sm mb-1 block">USDT (TRC20)</label>
+                                <label className="text-gray-900/60 dark:text-white/60 text-sm mb-1 block">USDT (TRC20)</label>
                                 <input
                                     type="text"
-                                    className="w-full bg-dark-300 border border-white/10 rounded-lg p-2 text-white focus:outline-none focus:border-blue-500 font-mono text-sm"
+                                    className="w-full bg-gray-50 dark:bg-dark-300 border border-slate-200 dark:border-white/10 rounded-lg p-2 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 font-mono text-sm"
                                     value={settings.walletTRC20}
                                     onChange={(e) => setSettings({ ...settings, walletTRC20: e.target.value })}
                                 />
                             </div>
                             <div>
-                                <label className="text-white/60 text-sm mb-1 block">Bitcoin (BTC)</label>
+                                <label className="text-gray-900/60 dark:text-white/60 text-sm mb-1 block">Bitcoin (BTC)</label>
                                 <input
                                     type="text"
-                                    className="w-full bg-dark-300 border border-white/10 rounded-lg p-2 text-white focus:outline-none focus:border-blue-500 font-mono text-sm"
+                                    className="w-full bg-gray-50 dark:bg-dark-300 border border-slate-200 dark:border-white/10 rounded-lg p-2 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 font-mono text-sm"
                                     value={settings.walletBTC}
                                     onChange={(e) => setSettings({ ...settings, walletBTC: e.target.value })}
                                 />
@@ -136,30 +136,30 @@ const AdminSettings = () => {
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="text-white/60 text-sm mb-1 block">Ethereum (ETH)</label>
+                                <label className="text-gray-900/60 dark:text-white/60 text-sm mb-1 block">Ethereum (ETH)</label>
                                 <input
                                     type="text"
-                                    className="w-full bg-dark-300 border border-white/10 rounded-lg p-2 text-white focus:outline-none focus:border-blue-500 font-mono text-sm"
+                                    className="w-full bg-gray-50 dark:bg-dark-300 border border-slate-200 dark:border-white/10 rounded-lg p-2 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 font-mono text-sm"
                                     value={settings.walletETH}
                                     onChange={(e) => setSettings({ ...settings, walletETH: e.target.value })}
                                 />
                             </div>
                             <div>
-                                <label className="text-white/60 text-sm mb-1 block">BSC (BNB/USDT)</label>
+                                <label className="text-gray-900/60 dark:text-white/60 text-sm mb-1 block">BSC (BNB/USDT)</label>
                                 <input
                                     type="text"
-                                    className="w-full bg-dark-300 border border-white/10 rounded-lg p-2 text-white focus:outline-none focus:border-blue-500 font-mono text-sm"
+                                    className="w-full bg-gray-50 dark:bg-dark-300 border border-slate-200 dark:border-white/10 rounded-lg p-2 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 font-mono text-sm"
                                     value={settings.walletBSC}
                                     onChange={(e) => setSettings({ ...settings, walletBSC: e.target.value })}
                                 />
                             </div>
                         </div>
-                        <div className="mt-4 pt-4 border-t border-white/10">
+                        <div className="mt-4 pt-4 border-t border-slate-200 dark:border-white/10">
                             <div>
-                                <label className="text-white/60 text-sm mb-1 block">App Download URL (APK Link)</label>
+                                <label className="text-gray-900/60 dark:text-white/60 text-sm mb-1 block">App Download URL (APK Link)</label>
                                 <input
                                     type="text"
-                                    className="w-full bg-dark-300 border border-white/10 rounded-lg p-2 text-white focus:outline-none focus:border-blue-500 font-mono text-sm"
+                                    className="w-full bg-gray-50 dark:bg-dark-300 border border-slate-200 dark:border-white/10 rounded-lg p-2 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500 font-mono text-sm"
                                     value={settings.appDownloadUrl}
                                     onChange={(e) => setSettings({ ...settings, appDownloadUrl: e.target.value })}
                                     placeholder="https://example.com/app.apk"
@@ -171,25 +171,25 @@ const AdminSettings = () => {
 
                 {/* Platform Config */}
                 <div className="glass-card p-6">
-                    <h3 className="text-lg font-semibold text-white mb-4 border-b border-white/10 pb-2">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 border-b border-slate-200 dark:border-white/10 pb-2">
                         Platform Configuration
                     </h3>
                     <div className="grid gap-4">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="text-white/60 text-sm mb-1 block">Min Withdrawal Amount (USDT)</label>
+                                <label className="text-gray-900/60 dark:text-white/60 text-sm mb-1 block">Min Withdrawal Amount (USDT)</label>
                                 <input
                                     type="number"
-                                    className="w-full bg-dark-300 border border-white/10 rounded-lg p-2 text-white focus:outline-none focus:border-blue-500"
+                                    className="w-full bg-gray-50 dark:bg-dark-300 border border-slate-200 dark:border-white/10 rounded-lg p-2 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500"
                                     value={settings.minWithdrawalAmount}
                                     onChange={(e) => setSettings({ ...settings, minWithdrawalAmount: e.target.value })}
                                 />
                             </div>
                             <div>
-                                <label className="text-white/60 text-sm mb-1 block">Min Deposit Amount (USDT)</label>
+                                <label className="text-gray-900/60 dark:text-white/60 text-sm mb-1 block">Min Deposit Amount (USDT)</label>
                                 <input
                                     type="number"
-                                    className="w-full bg-dark-300 border border-white/10 rounded-lg p-2 text-white focus:outline-none focus:border-blue-500"
+                                    className="w-full bg-gray-50 dark:bg-dark-300 border border-slate-200 dark:border-white/10 rounded-lg p-2 text-gray-900 dark:text-white focus:outline-none focus:border-blue-500"
                                     value={settings.minDepositAmount}
                                     onChange={(e) => setSettings({ ...settings, minDepositAmount: e.target.value })}
                                 />
@@ -209,7 +209,7 @@ const AdminSettings = () => {
                                     checked={settings.maintenanceMode}
                                     onChange={(e) => setSettings({ ...settings, maintenanceMode: e.target.checked })}
                                 />
-                                <div className="w-11 h-6 bg-dark-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
+                                <div className="w-11 h-6 bg-gray-50 dark:bg-dark-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
                             </label>
                         </div>
                     </div>
@@ -218,7 +218,7 @@ const AdminSettings = () => {
                 <div className="flex justify-end">
                     <button
                         type="submit"
-                        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg transition-all font-bold text-lg shadow-lg hover:shadow-blue-500/20"
+                        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-gray-900 dark:text-white px-8 py-3 rounded-lg transition-all font-bold text-lg shadow-lg hover:shadow-blue-500/20"
                     >
                         <Save size={20} />
                         Save All Changes

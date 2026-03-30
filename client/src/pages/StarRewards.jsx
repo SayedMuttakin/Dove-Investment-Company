@@ -83,24 +83,24 @@ const StarRewards = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-dark-300 flex items-center justify-center">
+            <div className="min-h-screen bg-gray-50 dark:bg-dark-300 flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-dark-300 pb-24">
+        <div className="min-h-screen bg-gray-50 dark:bg-dark-300 pb-24">
             {/* Header */}
-            <div className="bg-dark-200/50 backdrop-blur-md sticky top-0 z-[100] px-4 py-4 border-b border-white/5">
+            <div className="bg-dark-200/50 backdrop-blur-md sticky top-0 z-[100] px-4 py-4 border-b border-slate-200 dark:border-white/5">
                 <div className="max-w-md mx-auto flex items-center gap-4">
                     <button
                         onClick={() => navigate('/me')}
-                        className="p-2 hover:bg-white/5 rounded-full transition-colors text-white/60 active:scale-95 z-[110]"
+                        className="p-2 hover:bg-white/5 rounded-full transition-colors text-gray-900/60 dark:text-white/60 active:scale-95 z-[110]"
                     >
                         <ChevronLeft size={24} />
                     </button>
-                    <h1 className="text-xl font-black text-white italic uppercase tracking-tighter">Star Rewards</h1>
+                    <h1 className="text-xl font-black text-gray-900 dark:text-white italic uppercase tracking-tighter">Star Rewards</h1>
                 </div>
             </div>
 
@@ -115,12 +115,12 @@ const StarRewards = () => {
                             </div>
                             <div>
                                 <p className="text-[10px] font-black text-primary uppercase tracking-widest">Mission Ends In</p>
-                                <p className="text-lg font-black text-white italic">{timeLeft}</p>
+                                <p className="text-lg font-black text-gray-900 dark:text-white italic">{timeLeft}</p>
                             </div>
                         </div>
                         <div className="text-right">
-                            <p className="text-[9px] font-bold text-white/30 uppercase tracking-tighter">Cycle Started</p>
-                            <p className="text-[10px] font-black text-white/60">{new Date(status.missionStart).toLocaleDateString()}</p>
+                            <p className="text-[9px] font-bold text-gray-900/30 dark:text-white/30 uppercase tracking-tighter">Cycle Started</p>
+                            <p className="text-[10px] font-black text-gray-900/60 dark:text-white/60">{new Date(status.missionStart).toLocaleDateString()}</p>
                         </div>
                     </div>
                 ) : (
@@ -130,7 +130,7 @@ const StarRewards = () => {
                         </div>
                         <div>
                             <p className="text-[10px] font-black text-yellow-500 uppercase tracking-widest">No Active Mission</p>
-                            <p className="text-[10px] font-medium text-white/60">Refer your first friend to start your 10-day mission!</p>
+                            <p className="text-[10px] font-medium text-gray-900/60 dark:text-white/60">Refer your first friend to start your 10-day mission!</p>
                         </div>
                     </div>
                 )}
@@ -147,34 +147,34 @@ const StarRewards = () => {
                             <span className="text-primary text-[10px] font-black uppercase tracking-[0.2em]">Active Points</span>
                         </div>
                         <div className="flex items-end gap-2 mb-6 text-center">
-                            <span className="text-7xl font-black text-white tracking-tighter leading-none italic drop-shadow-[0_0_20px_rgba(164,241,58,0.3)]">{status?.points || 0}</span>
-                            <span className="text-white/40 font-bold mb-2 uppercase text-xs tracking-widest">Points</span>
+                            <span className="text-7xl font-black text-gray-900 dark:text-white tracking-tighter leading-none italic drop-shadow-[0_0_20px_rgba(164,241,58,0.3)]">{status?.points || 0}</span>
+                            <span className="text-gray-900/40 dark:text-white/40 font-bold mb-2 uppercase text-xs tracking-widest">Points</span>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4 w-full mb-6">
-                            <div className="bg-white/5 rounded-2xl p-4 border border-white/10 text-center">
-                                <div className="flex items-center justify-center gap-2 text-white/40 text-[9px] font-bold uppercase mb-1">
+                            <div className="bg-gray-900/5 dark:bg-white/5 rounded-2xl p-4 border border-slate-200 dark:border-white/10 text-center">
+                                <div className="flex items-center justify-center gap-2 text-gray-900/40 dark:text-white/40 text-[9px] font-bold uppercase mb-1">
                                     <Users size={12} />
                                     Gen 1 (A)
                                 </div>
-                                <div className="text-xl font-black text-white leading-none">{status?.aCount || 0}</div>
+                                <div className="text-xl font-black text-gray-900 dark:text-white leading-none">{status?.aCount || 0}</div>
                             </div>
-                            <div className="bg-white/5 rounded-2xl p-4 border border-white/10 text-center">
-                                <div className="flex items-center justify-center gap-2 text-white/40 text-[9px] font-bold uppercase mb-1">
+                            <div className="bg-gray-900/5 dark:bg-white/5 rounded-2xl p-4 border border-slate-200 dark:border-white/10 text-center">
+                                <div className="flex items-center justify-center gap-2 text-gray-900/40 dark:text-white/40 text-[9px] font-bold uppercase mb-1">
                                     <Users size={12} />
                                     Gen 2 (B)
                                 </div>
-                                <div className="text-xl font-black text-white leading-none">{status?.bCount || 0}</div>
+                                <div className="text-xl font-black text-gray-900 dark:text-white leading-none">{status?.bCount || 0}</div>
                             </div>
                         </div>
 
-                        <div className="w-full flex items-start gap-2 bg-black/40 p-3 rounded-xl border border-white/5">
+                        <div className="w-full flex items-start gap-2 bg-black/40 p-3 rounded-xl border border-slate-200 dark:border-white/5">
                             <Info size={14} className="text-primary shrink-0 mt-0.5" />
                             <div className="flex flex-col gap-1">
-                                <p className="text-[10px] text-white/60 leading-relaxed font-medium">
+                                <p className="text-[10px] text-gray-900/60 dark:text-white/60 leading-relaxed font-medium">
                                     * Points = (Gen 1 Active × 100) + (Gen 2 Active × 50).
                                 </p>
-                                <p className="text-[10px] text-white/40 leading-relaxed font-medium">
+                                <p className="text-[10px] text-gray-900/40 dark:text-white/40 leading-relaxed font-medium">
                                     A mission starts on your first referral and lasts exactly 10 days. After that, it resets.
                                 </p>
                             </div>
@@ -185,8 +185,8 @@ const StarRewards = () => {
                 {/* Reward Tiers */}
                 <div className="space-y-4">
                     <div className="flex items-center justify-between px-2 mb-2">
-                        <h2 className="text-white/40 text-[10px] font-black uppercase tracking-[0.25em]">Available Missions</h2>
-                        <div className="h-[1px] flex-1 bg-white/5 ml-4"></div>
+                        <h2 className="text-gray-900/40 dark:text-white/40 text-[10px] font-black uppercase tracking-[0.25em]">Available Missions</h2>
+                        <div className="h-[1px] flex-1 bg-gray-900/5 dark:bg-white/5 ml-4"></div>
                     </div>
 
                     {status?.tiers.map((tier, idx) => {
@@ -206,16 +206,16 @@ const StarRewards = () => {
                                                         <Star
                                                             key={i}
                                                             size={22}
-                                                            className={`transition-all duration-700 ${progress >= 100 ? 'text-yellow-400 drop-shadow-[0_0_12px_rgba(250,204,21,0.6)] scale-110' : 'text-white/10'}`}
+                                                            className={`transition-all duration-700 ${progress >= 100 ? 'text-yellow-400 drop-shadow-[0_0_12px_rgba(250,204,21,0.6)] scale-110' : 'text-gray-900/10 dark:text-white/10'}`}
                                                             fill={progress >= 100 ? "currentColor" : "none"}
                                                         />
                                                     ))}
                                                 </div>
-                                                <h3 className="text-white font-black text-lg tracking-tight uppercase italic underline decoration-primary/30 underline-offset-4">
+                                                <h3 className="text-gray-900 dark:text-white font-black text-lg tracking-tight uppercase italic underline decoration-primary/30 underline-offset-4">
                                                     Tier {idx + 1} Mission
                                                 </h3>
                                             </div>
-                                            <p className="text-white/40 text-[10px] font-bold uppercase tracking-wider">
+                                            <p className="text-gray-900/40 dark:text-white/40 text-[10px] font-bold uppercase tracking-wider">
                                                 Reward: <span className="text-primary font-black ml-1">${tier.amount}</span>
                                             </p>
                                         </div>
@@ -231,7 +231,7 @@ const StarRewards = () => {
                                                 onClick={() => handleClaim(tier.id)}
                                                 className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${isEligible
                                                         ? 'bg-primary text-black hover:shadow-[0_0_20px_rgba(164,241,58,0.4)] active:scale-95 shadow-lg'
-                                                        : 'bg-white/5 text-white/20 border border-white/10 cursor-not-allowed opacity-50'
+                                                        : 'bg-gray-900/5 dark:bg-white/5 text-gray-900/20 dark:text-white/20 border border-slate-200 dark:border-white/10 cursor-not-allowed opacity-50'
                                                     }`}
                                             >
                                                 {claiming === tier.id ? 'Claiming...' : 'Collect'}
@@ -242,13 +242,13 @@ const StarRewards = () => {
                                     {/* Progress Bar Container */}
                                     <div className="relative">
                                         <div className="flex justify-between items-end mb-2">
-                                            <span className="text-[10px] text-white/40 font-bold uppercase tracking-widest">Progress</span>
+                                            <span className="text-[10px] text-gray-900/40 dark:text-white/40 font-bold uppercase tracking-widest">Progress</span>
                                             <div className="flex items-baseline gap-1">
-                                                <span className="text-base font-black text-white">{status?.points}</span>
-                                                <span className="text-[10px] text-white/30 font-bold">/ {tier.points}</span>
+                                                <span className="text-base font-black text-gray-900 dark:text-white">{status?.points}</span>
+                                                <span className="text-[10px] text-gray-900/30 dark:text-white/30 font-bold">/ {tier.points}</span>
                                             </div>
                                         </div>
-                                        <div className="h-2.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                                        <div className="h-2.5 w-full bg-gray-900/5 dark:bg-white/5 rounded-full overflow-hidden border border-slate-200 dark:border-white/5">
                                             <div
                                                 className={`h-full rounded-full transition-all duration-[1500ms] ease-out shadow-[0_0_15px_rgba(164,241,58,0.4)] ${progress >= 100 ? 'bg-primary' : 'bg-gradient-to-r from-primary/40 to-primary'
                                                     }`}

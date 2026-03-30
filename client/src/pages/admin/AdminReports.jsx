@@ -25,7 +25,7 @@ const AdminReports = () => {
         }
     };
 
-    if (loading) return <div className="p-6 text-white text-center">Loading reports...</div>;
+    if (loading) return <div className="p-6 text-gray-900 dark:text-white text-center">Loading reports...</div>;
 
     // Dummy data for charts (Backend expansion needed for real time-series data)
     const growthData = [
@@ -50,7 +50,7 @@ const AdminReports = () => {
 
     return (
         <div className="p-6 space-y-6">
-            <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
                 <TrendingUp className="text-blue-500" />
                 Analytics & Reports
             </h2>
@@ -60,33 +60,33 @@ const AdminReports = () => {
                 <div className="glass-card p-6">
                     <div className="flex items-center gap-3 mb-2">
                         <DollarSign className="text-green-400" />
-                        <h3 className="text-white/60">Net Revenue</h3>
+                        <h3 className="text-gray-900/60 dark:text-white/60">Net Revenue</h3>
                     </div>
-                    <p className="text-3xl font-bold text-white">${stats.netRevenue?.toLocaleString()}</p>
+                    <p className="text-3xl font-bold text-gray-900 dark:text-white">${stats.netRevenue?.toLocaleString()}</p>
                     <p className="text-green-400 text-sm flex items-center gap-1 mt-2">
                         <span>+12.5%</span>
-                        <span className="text-white/40">from last week</span>
+                        <span className="text-gray-900/40 dark:text-white/40">from last week</span>
                     </p>
                 </div>
 
                 <div className="glass-card p-6">
                     <div className="flex items-center gap-3 mb-2">
                         <Users className="text-blue-400" />
-                        <h3 className="text-white/60">Total Users</h3>
+                        <h3 className="text-gray-900/60 dark:text-white/60">Total Users</h3>
                     </div>
-                    <p className="text-3xl font-bold text-white">{stats.totalUsers}</p>
+                    <p className="text-3xl font-bold text-gray-900 dark:text-white">{stats.totalUsers}</p>
                     <p className="text-blue-400 text-sm flex items-center gap-1 mt-2">
                         <span>+5</span>
-                        <span className="text-white/40">new today</span>
+                        <span className="text-gray-900/40 dark:text-white/40">new today</span>
                     </p>
                 </div>
 
                 <div className="glass-card p-6">
                     <div className="flex items-center gap-3 mb-2">
                         <TrendingUp className="text-purple-400" />
-                        <h3 className="text-white/60">Total User Balance</h3>
+                        <h3 className="text-gray-900/60 dark:text-white/60">Total User Balance</h3>
                     </div>
-                    <p className="text-3xl font-bold text-white">${stats.totalUserBalance?.toLocaleString()}</p>
+                    <p className="text-3xl font-bold text-gray-900 dark:text-white">${stats.totalUserBalance?.toLocaleString()}</p>
                 </div>
             </div>
 
@@ -94,7 +94,7 @@ const AdminReports = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* User Growth */}
                 <div className="glass-card p-6">
-                    <h3 className="text-white font-bold mb-6">User Growth (Last 7 Days)</h3>
+                    <h3 className="text-gray-900 dark:text-white font-bold mb-6">User Growth (Last 7 Days)</h3>
                     <div className="h-64">
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={growthData}>
@@ -112,7 +112,7 @@ const AdminReports = () => {
 
                 {/* Revenue Trend */}
                 <div className="glass-card p-6">
-                    <h3 className="text-white font-bold mb-6">Revenue Trend (Last 7 Days)</h3>
+                    <h3 className="text-gray-900 dark:text-white font-bold mb-6">Revenue Trend (Last 7 Days)</h3>
                     <div className="h-64">
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={revenueData}>

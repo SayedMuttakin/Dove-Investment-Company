@@ -32,7 +32,7 @@ const MyTeam = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-dark-300 flex items-center justify-center">
+            <div className="min-h-screen bg-gray-50 dark:bg-dark-300 flex items-center justify-center">
                 <div className="w-8 h-8 border-4 border-primary border-t-transparent animate-spin rounded-full"></div>
             </div>
         );
@@ -47,18 +47,18 @@ const MyTeam = () => {
     const currentTab = tabs.find(t => t.id === activeTab);
 
     return (
-        <div className="min-h-screen bg-dark-300 pb-24 font-sans text-gray-100">
+        <div className="min-h-screen bg-gray-50 dark:bg-dark-300 pb-24 font-sans text-gray-100">
             {/* Header */}
-            <div className="bg-dark-200 border-b border-white/5 shadow-lg">
+            <div className="bg-white dark:bg-dark-200 border-b border-slate-200 dark:border-white/5 shadow-lg">
                 <div className="max-w-md mx-auto px-4 h-12 flex items-center justify-between relative">
                     <button
                         onClick={() => navigate(-1)}
-                        className="p-1.5 hover:bg-white/5 rounded-lg transition-colors text-white/60 hover:text-white relative z-10"
+                        className="p-1.5 hover:bg-white/5 rounded-lg transition-colors text-gray-900/60 dark:text-white/60 hover:text-white relative z-10"
                     >
                         <ArrowLeft size={24} />
                     </button>
                     <div className="absolute inset-0 flex items-center justify-center">
-                        <h1 className="text-lg font-bold text-white tracking-tight uppercase">My Team</h1>
+                        <h1 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight uppercase">My Team</h1>
                     </div>
                 </div>
             </div>
@@ -70,12 +70,12 @@ const MyTeam = () => {
                         <Users size={120} className="text-primary" />
                     </div>
                     <div className="relative z-10 text-center">
-                        <p className="text-white/60 text-xs font-black uppercase tracking-[0.2em] mb-2">Total Team Size</p>
+                        <p className="text-gray-900/60 dark:text-white/60 text-xs font-black uppercase tracking-[0.2em] mb-2">Total Team Size</p>
                         <div className="flex items-center justify-center gap-3">
                             <div className="p-3 bg-primary/20 rounded-2xl">
                                 <Users size={32} className="text-primary" />
                             </div>
-                            <h2 className="text-4xl font-black text-white tracking-tighter">
+                            <h2 className="text-4xl font-black text-gray-900 dark:text-white tracking-tighter">
                                 {teamListData?.total > 0 ? teamListData.total : '0'}
                             </h2>
                         </div>
@@ -90,14 +90,14 @@ const MyTeam = () => {
                 </div>
 
                 {/* Tabs selection */}
-                <div className="flex p-1.5 bg-dark-200 border border-white/5 rounded-2xl shadow-inner">
+                <div className="flex p-1.5 bg-white dark:bg-dark-200 border border-slate-200 dark:border-white/5 rounded-2xl shadow-inner">
                     {tabs.map((tab) => (
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
                             className={`flex-1 py-3 text-[10px] font-black uppercase tracking-widest rounded-xl transition-all duration-300 ${activeTab === tab.id
                                     ? 'bg-primary text-black shadow-lg shadow-primary/20 scale-[1.02]'
-                                    : 'text-white/40 hover:text-white'
+                                    : 'text-gray-900/40 dark:text-white/40 hover:text-white'
                                 }`}
                         >
                             {tab.label} ({tab.data.length})
@@ -109,14 +109,14 @@ const MyTeam = () => {
                 <div className="space-y-3">
                     {currentTab.data.length > 0 ? (
                         currentTab.data.map((member, idx) => (
-                            <div key={idx} className="bg-dark-200 border border-white/5 p-4 rounded-3xl flex items-center justify-between group hover:border-primary/30 transition-all duration-300">
+                            <div key={idx} className="bg-white dark:bg-dark-200 border border-slate-200 dark:border-white/5 p-4 rounded-3xl flex items-center justify-between group hover:border-primary/30 transition-all duration-300">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary font-black text-lg border border-primary/20">
                                         {member.fullName?.charAt(0).toUpperCase() || <Users size={20} />}
                                     </div>
                                     <div>
-                                        <h4 className="text-white font-black text-sm tracking-tight">{member.fullName || 'Anonymous User'}</h4>
-                                        <p className="text-white/30 text-[10px] uppercase font-bold tracking-wider mt-0.5">+{member.phone}</p>
+                                        <h4 className="text-gray-900 dark:text-white font-black text-sm tracking-tight">{member.fullName || 'Anonymous User'}</h4>
+                                        <p className="text-gray-900/30 dark:text-white/30 text-[10px] uppercase font-bold tracking-wider mt-0.5">+{member.phone}</p>
                                     </div>
                                 </div>
                                 <div className="flex flex-col items-end gap-1.5">
@@ -131,7 +131,7 @@ const MyTeam = () => {
                                             <span className="text-[9px] font-black text-red-400 uppercase tracking-tighter">Pending</span>
                                         </div>
                                     )}
-                                    <p className="text-white/20 text-[8px] font-bold uppercase tracking-widest">
+                                    <p className="text-gray-900/20 dark:text-white/20 text-[8px] font-bold uppercase tracking-widest">
                                         Joined {new Date(member.createdAt).toLocaleDateString()}
                                     </p>
                                 </div>

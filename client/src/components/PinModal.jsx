@@ -79,7 +79,7 @@ const PinModal = ({ isOpen, onClose, onSuccess, mode = 'verify' }) => {
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             {/* White blur backdrop */}
-            <div className="absolute inset-0 bg-white/30 backdrop-blur-md" onClick={onClose}></div>
+            <div className="absolute inset-0 bg-gray-900/30 dark:bg-white/30 backdrop-blur-md" onClick={onClose}></div>
 
             {/* White card */}
             <div className="relative w-full max-w-sm bg-white rounded-3xl shadow-2xl p-7 scale-animation">
@@ -135,7 +135,7 @@ const PinModal = ({ isOpen, onClose, onSuccess, mode = 'verify' }) => {
                 <button
                     onClick={handleSubmit}
                     disabled={loading || pin.some(d => !d)}
-                    className="w-full py-3.5 bg-gradient-primary rounded-xl text-white font-bold text-sm disabled:opacity-40 hover:shadow-glow transition-all tracking-wide"
+                    className="w-full py-3.5 bg-gradient-primary rounded-xl text-gray-900 dark:text-white font-bold text-sm disabled:opacity-40 hover:shadow-glow transition-all tracking-wide"
                 >
                     {loading ? 'Processing...' : (mode === 'setup' ? 'Set PIN' : 'Verify PIN')}
                 </button>

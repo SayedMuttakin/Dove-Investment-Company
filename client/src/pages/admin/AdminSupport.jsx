@@ -101,17 +101,17 @@ const AdminSupport = () => {
     return (
         <div className="h-[calc(100vh-160px)] flex flex-col md:flex-row gap-6">
             {/* Conversations List */}
-            <div className={`w-full md:w-80 flex flex-col bg-dark-200 rounded-3xl border border-white/5 overflow-hidden ${selectedUser ? 'hidden md:flex' : 'flex'}`}>
-                <div className="p-4 border-b border-white/5">
-                    <h2 className="text-lg font-bold text-white mb-4">Support Chats</h2>
+            <div className={`w-full md:w-80 flex flex-col bg-white dark:bg-dark-200 rounded-3xl border border-slate-200 dark:border-white/5 overflow-hidden ${selectedUser ? 'hidden md:flex' : 'flex'}`}>
+                <div className="p-4 border-b border-slate-200 dark:border-white/5">
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Support Chats</h2>
                     <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/20" size={16} />
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-900/20 dark:text-white/20" size={16} />
                         <input
                             type="text"
                             placeholder="Search user..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full bg-dark-300 border border-white/5 rounded-xl py-2 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-primary/50"
+                            className="w-full bg-gray-50 dark:bg-dark-300 border border-slate-200 dark:border-white/5 rounded-xl py-2 pl-10 pr-4 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-primary/50"
                         />
                     </div>
                 </div>
@@ -127,7 +127,7 @@ const AdminSupport = () => {
                             <button
                                 key={conv._id}
                                 onClick={() => handleSelectUser(conv)}
-                                className={`w-full p-4 flex gap-3 text-left transition-all hover:bg-white/5 border-b border-white/5 ${selectedUser?._id === conv._id ? 'bg-white/5' : ''}`}
+                                className={`w-full p-4 flex gap-3 text-left transition-all hover:bg-white/5 border-b border-slate-200 dark:border-white/5 ${selectedUser?._id === conv._id ? 'bg-gray-900/5 dark:bg-white/5' : ''}`}
                             >
                                 <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary shrink-0 relative overflow-hidden">
                                     {conv.userInfo.profileImage ? (
@@ -138,13 +138,13 @@ const AdminSupport = () => {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="flex justify-between items-start mb-0.5">
-                                        <p className="text-sm font-black text-white truncate">{conv.userInfo.fullName}</p>
-                                        <span className="text-[10px] text-white/40 whitespace-nowrap">
+                                        <p className="text-sm font-black text-gray-900 dark:text-white truncate">{conv.userInfo.fullName}</p>
+                                        <span className="text-[10px] text-gray-900/40 dark:text-white/40 whitespace-nowrap">
                                             {formatDistanceToNow(new Date(conv.lastMessageAt), { addSuffix: true })}
                                         </span>
                                     </div>
                                     <p className="text-[10px] text-primary mb-1 font-bold">{conv.userInfo.phone}</p>
-                                    <p className="text-[11px] text-white/60 truncate italic">"{conv.lastMessage}"</p>
+                                    <p className="text-[11px] text-gray-900/60 dark:text-white/60 truncate italic">"{conv.lastMessage}"</p>
                                 </div>
                             </button>
                         ))
@@ -153,15 +153,15 @@ const AdminSupport = () => {
             </div>
 
             {/* Chat Window */}
-            <div className={`flex-1 flex flex-col bg-dark-200 rounded-3xl border border-white/5 overflow-hidden ${selectedUser ? 'flex' : 'hidden md:flex'}`}>
+            <div className={`flex-1 flex flex-col bg-white dark:bg-dark-200 rounded-3xl border border-slate-200 dark:border-white/5 overflow-hidden ${selectedUser ? 'flex' : 'hidden md:flex'}`}>
                 {selectedUser ? (
                     <>
                         {/* Chat Header */}
-                        <div className="p-4 border-b border-white/5 bg-white/5 flex items-center justify-between">
+                        <div className="p-4 border-b border-slate-200 dark:border-white/5 bg-gray-900/5 dark:bg-white/5 flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <button
                                     onClick={() => setSelectedUser(null)}
-                                    className="md:hidden p-2 -ml-2 text-white/60 hover:text-white"
+                                    className="md:hidden p-2 -ml-2 text-gray-900/60 dark:text-white/60 hover:text-white"
                                 >
                                     <ArrowLeft size={20} />
                                 </button>
@@ -173,8 +173,8 @@ const AdminSupport = () => {
                                     )}
                                 </div>
                                 <div>
-                                    <h3 className="text-sm font-bold text-white">{selectedUser.fullName}</h3>
-                                    <p className="text-[10px] text-white/40">{selectedUser.phone}</p>
+                                    <h3 className="text-sm font-bold text-gray-900 dark:text-white">{selectedUser.fullName}</h3>
+                                    <p className="text-[10px] text-gray-900/40 dark:text-white/40">{selectedUser.phone}</p>
                                 </div>
                             </div>
                         </div>
@@ -185,10 +185,10 @@ const AdminSupport = () => {
                                 <div key={i} className={`flex ${msg.isAdmin ? 'justify-end' : 'justify-start'}`}>
                                     <div className={`max-w-[70%] rounded-2xl px-4 py-2.5 text-sm ${msg.isAdmin
                                         ? 'bg-primary text-black font-medium rounded-tr-none'
-                                        : 'bg-dark-300 text-white rounded-tl-none border border-white/5'
+                                        : 'bg-gray-50 dark:bg-dark-300 text-gray-900 dark:text-white rounded-tl-none border border-slate-200 dark:border-white/5'
                                         }`}>
                                         <p className="leading-relaxed">{msg.message}</p>
-                                        <div className={`text-[9px] mt-1 opacity-50 flex items-center gap-1 ${msg.isAdmin ? 'text-black/60' : 'text-white/60'}`}>
+                                        <div className={`text-[9px] mt-1 opacity-50 flex items-center gap-1 ${msg.isAdmin ? 'text-black/60' : 'text-gray-900/60 dark:text-white/60'}`}>
                                             <Clock size={8} />
                                             {formatDistanceToNow(new Date(msg.createdAt), { addSuffix: true })}
                                         </div>
@@ -199,19 +199,19 @@ const AdminSupport = () => {
                         </div>
 
                         {/* Chat Input */}
-                        <form onSubmit={handleSendMessage} className="p-4 border-t border-white/5">
+                        <form onSubmit={handleSendMessage} className="p-4 border-t border-slate-200 dark:border-white/5">
                             <div className="relative flex items-center gap-3">
                                 <input
                                     type="text"
                                     value={newMessage}
                                     onChange={(e) => setNewMessage(e.target.value)}
                                     placeholder="Type your reply..."
-                                    className="flex-1 bg-dark-300 border border-white/10 rounded-2xl py-3 px-5 text-sm text-white focus:outline-none focus:border-primary/50"
+                                    className="flex-1 bg-gray-50 dark:bg-dark-300 border border-slate-200 dark:border-white/10 rounded-2xl py-3 px-5 text-sm text-gray-900 dark:text-white focus:outline-none focus:border-primary/50"
                                 />
                                 <button
                                     type="submit"
                                     disabled={loading || !newMessage.trim()}
-                                    className={`p-3 rounded-2xl transition-all ${newMessage.trim() ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'bg-white/5 text-white/20'
+                                    className={`p-3 rounded-2xl transition-all ${newMessage.trim() ? 'bg-primary text-black shadow-lg shadow-primary/20' : 'bg-gray-900/5 dark:bg-white/5 text-gray-900/20 dark:text-white/20'
                                         }`}
                                 >
                                     <Send size={20} />
@@ -222,7 +222,7 @@ const AdminSupport = () => {
                 ) : (
                     <div className="flex-1 flex flex-col items-center justify-center text-center opacity-30">
                         <MessageCircle size={64} className="mb-4" />
-                        <h2 className="text-xl font-bold text-white">Select a conversation</h2>
+                        <h2 className="text-xl font-bold text-gray-900 dark:text-white">Select a conversation</h2>
                         <p className="text-sm">Click on a user from the list to start chatting</p>
                     </div>
                 )}

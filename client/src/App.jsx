@@ -39,9 +39,9 @@ import MyTeam from './pages/MyTeam';
 import axios from 'axios';
 
 // Restoring Placeholder components
-const Market = () => <div className="min-h-screen bg-dark-300 text-white flex items-center justify-center"><h1 className="text-2xl">Market Page - Coming Soon</h1></div>;
-const Community = () => <div className="min-h-screen bg-dark-300 text-white flex items-center justify-center"><h1 className="text-2xl">Community Page - Coming Soon</h1></div>;
-const Mine = () => <div className="min-h-screen bg-dark-300 text-white flex items-center justify-center"><h1 className="text-2xl">Mine Page - Coming Soon</h1></div>;
+const Market = () => <div className="min-h-screen bg-gray-50 dark:bg-dark-300 text-gray-900 dark:text-white flex items-center justify-center"><h1 className="text-2xl">Market Page - Coming Soon</h1></div>;
+const Community = () => <div className="min-h-screen bg-gray-50 dark:bg-dark-300 text-gray-900 dark:text-white flex items-center justify-center"><h1 className="text-2xl">Community Page - Coming Soon</h1></div>;
+const Mine = () => <div className="min-h-screen bg-gray-50 dark:bg-dark-300 text-gray-900 dark:text-white flex items-center justify-center"><h1 className="text-2xl">Mine Page - Coming Soon</h1></div>;
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -49,7 +49,7 @@ const ProtectedRoute = ({ children }) => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-dark-300 flex items-center justify-center">
+            <div className="min-h-screen bg-gray-50 dark:bg-dark-300 flex items-center justify-center">
                 <div className="text-primary text-xl">Loading...</div>
             </div>
         );
@@ -64,7 +64,7 @@ const AdminRoute = ({ children }) => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-dark-300 flex items-center justify-center">
+            <div className="min-h-screen bg-gray-50 dark:bg-dark-300 flex items-center justify-center">
                 <div className="text-primary text-xl">Loading...</div>
             </div>
         );
@@ -105,7 +105,7 @@ function App() {
 
     if (isChecking) {
         return (
-            <div className="min-h-screen bg-dark-300 flex items-center justify-center">
+            <div className="min-h-screen bg-gray-50 dark:bg-dark-300 flex items-center justify-center">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
             </div>
         );

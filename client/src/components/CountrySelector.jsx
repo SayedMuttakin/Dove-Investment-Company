@@ -76,7 +76,7 @@ const CountrySelector = ({ value, onChange, name = "countryCode" }) => {
             <button
                 type="button"
                 onClick={() => setIsOpen(true)}
-                className="bg-glass-light backdrop-blur-md border border-white/10 rounded-2xl w-[90px] flex items-center justify-between text-sm px-3 py-3 text-white hover:bg-glass-medium transition-colors"
+                className="bg-glass-light backdrop-blur-md border border-slate-200 dark:border-white/10 rounded-2xl w-[90px] flex items-center justify-between text-sm px-3 py-3 text-gray-900 dark:text-white hover:bg-glass-medium transition-colors"
             >
                 <span className="flex items-center gap-2">
                     <img
@@ -88,7 +88,7 @@ const CountrySelector = ({ value, onChange, name = "countryCode" }) => {
                     />
                     <span>{selectedCountry.code}</span>
                 </span>
-                <ChevronDown size={14} className="text-white/60" />
+                <ChevronDown size={14} className="text-gray-900/60 dark:text-white/60" />
             </button>
 
             {/* Modal Overlay */}
@@ -99,28 +99,28 @@ const CountrySelector = ({ value, onChange, name = "countryCode" }) => {
                         onClick={() => setIsOpen(false)}
                     ></div>
 
-                    <div className="bg-dark-200 border border-white/10 rounded-2xl w-full max-w-sm max-h-[80vh] flex flex-col relative z-10 animate-float shadow-glow-lg overflow-hidden">
+                    <div className="bg-white dark:bg-dark-200 border border-slate-200 dark:border-white/10 rounded-2xl w-full max-w-sm max-h-[80vh] flex flex-col relative z-10 animate-float shadow-glow-lg overflow-hidden">
                         {/* Header */}
-                        <div className="p-4 border-b border-white/10 flex items-center justify-between bg-dark-200 sticky top-0 z-20">
-                            <h3 className="text-white font-semibold">Choose Country Code</h3>
+                        <div className="p-4 border-b border-slate-200 dark:border-white/10 flex items-center justify-between bg-white dark:bg-dark-200 sticky top-0 z-20">
+                            <h3 className="text-gray-900 dark:text-white font-semibold">Choose Country Code</h3>
                             <button
                                 onClick={() => setIsOpen(false)}
-                                className="text-white/60 hover:text-white transition-colors"
+                                className="text-gray-900/60 dark:text-white/60 hover:text-white transition-colors"
                             >
                                 <X size={20} />
                             </button>
                         </div>
 
                         {/* Search */}
-                        <div className="p-4 bg-dark-200 sticky top-[60px] z-20">
+                        <div className="p-4 bg-white dark:bg-dark-200 sticky top-[60px] z-20">
                             <div className="relative">
-                                <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
+                                <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-900/40 dark:text-white/40" />
                                 <input
                                     type="text"
                                     placeholder="Search country or code..."
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="w-full bg-dark-300 border border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-white text-sm focus:outline-none focus:border-primary/50 transition-colors"
+                                    className="w-full bg-gray-50 dark:bg-dark-300 border border-slate-200 dark:border-white/10 rounded-xl py-2.5 pl-10 pr-4 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary/50 transition-colors"
                                 />
                             </div>
                         </div>
@@ -143,8 +143,8 @@ const CountrySelector = ({ value, onChange, name = "countryCode" }) => {
                                         className="rounded-md object-cover"
                                     />
                                     <div className="flex-1 text-left">
-                                        <div className="text-white text-sm font-medium">{country.name}</div>
-                                        <div className="text-white/50 text-xs">{country.code}</div>
+                                        <div className="text-gray-900 dark:text-white text-sm font-medium">{country.name}</div>
+                                        <div className="text-gray-900/50 dark:text-white/50 text-xs">{country.code}</div>
                                     </div>
                                     {value === country.code && (
                                         <div className="w-2 h-2 rounded-full bg-primary shadow-glow"></div>
@@ -153,7 +153,7 @@ const CountrySelector = ({ value, onChange, name = "countryCode" }) => {
                             ))}
 
                             {filteredCountries.length === 0 && (
-                                <div className="text-center py-8 text-white/40 text-sm">
+                                <div className="text-center py-8 text-gray-900/40 dark:text-white/40 text-sm">
                                     No countries found
                                 </div>
                             )}

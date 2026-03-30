@@ -43,17 +43,17 @@ const LendFunding = () => {
     };
 
     return (
-        <div className="min-h-screen bg-dark-300 pb-6">
+        <div className="min-h-screen bg-gray-50 dark:bg-dark-300 pb-6">
             {/* Header */}
-            <div className="bg-dark-200 border-b border-white/10 sticky top-0 z-10 shadow-lg">
+            <div className="bg-white dark:bg-dark-200 border-b border-slate-200 dark:border-white/10 sticky top-0 z-10 shadow-lg">
                 <div className="max-w-md mx-auto px-4 py-2 relative flex items-center justify-center">
                     <button
                         onClick={() => navigate(-1)}
-                        className="absolute left-4 p-2 text-white/60 hover:text-white hover:bg-white/5 rounded-full transition-colors"
+                        className="absolute left-4 p-2 text-gray-900/60 dark:text-white/60 hover:text-white hover:bg-white/5 rounded-full transition-colors"
                     >
                         <ArrowLeft size={20} />
                     </button>
-                    <h1 className="text-white font-bold text-lg">My Investments</h1>
+                    <h1 className="text-gray-900 dark:text-white font-bold text-lg">My Investments</h1>
                 </div>
             </div>
 
@@ -64,7 +64,7 @@ const LendFunding = () => {
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
                     </div>
                 ) : investments.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-16 text-white/40 glass-card">
+                    <div className="flex flex-col items-center justify-center py-16 text-gray-900/40 dark:text-white/40 glass-card">
                         <PiggyBank size={48} className="mb-3 opacity-50" />
                         <p className="text-sm">No active investments found</p>
                         <button
@@ -83,7 +83,7 @@ const LendFunding = () => {
                         return (
                             <div key={index} className={`glass-card p-4 relative overflow-hidden ${isCompleted ? 'opacity-80' : ''}`}>
                                 {/* Status Badge */}
-                                <div className={`absolute top-0 right-0 px-3 py-1 text-[10px] font-bold rounded-bl-xl border-l border-b border-white/10 ${isCompleted
+                                <div className={`absolute top-0 right-0 px-3 py-1 text-[10px] font-bold rounded-bl-xl border-l border-b border-slate-200 dark:border-white/10 ${isCompleted
                                     ? 'bg-green-500/20 text-green-400'
                                     : 'bg-primary/20 text-primary'
                                     }`}>
@@ -96,8 +96,8 @@ const LendFunding = () => {
                                         <PiggyBank size={20} />
                                     </div>
                                     <div>
-                                        <h3 className="text-white font-bold text-base">{inv.package.name}</h3>
-                                        <p className="text-white/40 text-xs mt-0.5 flex items-center gap-1">
+                                        <h3 className="text-gray-900 dark:text-white font-bold text-base">{inv.package.name}</h3>
+                                        <p className="text-gray-900/40 dark:text-white/40 text-xs mt-0.5 flex items-center gap-1">
                                             <Activity size={10} />
                                             Daily Return: ${(inv.package.dailyEarning || 0).toFixed(2)}
                                         </p>
@@ -106,19 +106,19 @@ const LendFunding = () => {
 
                                 {/* Financials */}
                                 <div className="grid grid-cols-2 gap-3 mb-4">
-                                    <div className="bg-black/20 rounded-lg p-2.5 border border-white/5">
-                                        <div className="text-white/40 text-[10px] uppercase mb-1">Invested</div>
-                                        <div className="text-white font-bold">${inv.package.investmentAmount}</div>
+                                    <div className="bg-black/20 rounded-lg p-2.5 border border-slate-200 dark:border-white/5">
+                                        <div className="text-gray-900/40 dark:text-white/40 text-[10px] uppercase mb-1">Invested</div>
+                                        <div className="text-gray-900 dark:text-white font-bold">${inv.package.investmentAmount}</div>
                                     </div>
-                                    <div className="bg-black/20 rounded-lg p-2.5 border border-white/5">
-                                        <div className="text-white/40 text-[10px] uppercase mb-1">Total Earned</div>
+                                    <div className="bg-black/20 rounded-lg p-2.5 border border-slate-200 dark:border-white/5">
+                                        <div className="text-gray-900/40 dark:text-white/40 text-[10px] uppercase mb-1">Total Earned</div>
                                         <div className="text-[#a4f13a] font-bold">+${inv.totalEarned.toFixed(2)}</div>
                                     </div>
                                 </div>
 
                                 {/* Timeline */}
                                 <div className="space-y-3">
-                                    <div className="flex items-center justify-between text-xs text-white/60">
+                                    <div className="flex items-center justify-between text-xs text-gray-900/60 dark:text-white/60">
                                         <span className="flex items-center gap-1.5">
                                             <Calendar size={12} />
                                             {formatDate(inv.startDate)}
@@ -134,7 +134,7 @@ const LendFunding = () => {
                                     </div>
 
                                     {/* Progress Bar */}
-                                    <div className="relative h-1.5 bg-white/5 rounded-full overflow-hidden">
+                                    <div className="relative h-1.5 bg-gray-900/5 dark:bg-white/5 rounded-full overflow-hidden">
                                         <div
                                             className={`absolute left-0 top-0 h-full rounded-full transition-all duration-500 ${isCompleted ? 'bg-green-500' : 'bg-gradient-to-r from-primary to-cyan-400'
                                                 }`}
@@ -144,7 +144,7 @@ const LendFunding = () => {
                                 </div>
 
                                 {!isCompleted && (
-                                    <div className="mt-3 flex items-center gap-2 text-[10px] text-white/40 bg-white/5 p-2 rounded-lg">
+                                    <div className="mt-3 flex items-center gap-2 text-[10px] text-gray-900/40 dark:text-white/40 bg-gray-900/5 dark:bg-white/5 p-2 rounded-lg">
                                         <AlertCircle size={12} className="text-primary shrink-0" />
                                         <p>Profit distributions occur daily. Collect earnings from Income page.</p>
                                     </div>

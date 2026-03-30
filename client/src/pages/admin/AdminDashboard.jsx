@@ -26,7 +26,7 @@ const AdminDashboard = () => {
         fetchStats();
     }, []);
 
-    if (loading) return <div className="text-white/60 p-5">Loading stats...</div>;
+    if (loading) return <div className="text-gray-900/60 dark:text-white/60 p-5">Loading stats...</div>;
 
     const cards = [
         {
@@ -64,17 +64,17 @@ const AdminDashboard = () => {
     return (
         <div className="space-y-8 p-4">
             <div>
-                <h2 className="text-2xl font-bold text-white mb-6">Dashboard Overview</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Dashboard Overview</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {cards.map((card, index) => (
                         <div key={index} className="glass-card p-5 relative overflow-hidden group hover:scale-[1.02] transition-transform">
                             <div className={`absolute top-0 right-0 w-24 h-24 rounded-full blur-2xl -mr-8 -mt-8 ${card.bg}`}></div>
                             <div className="relative z-10">
                                 <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${card.color} flex items-center justify-center mb-4 shadow-lg`}>
-                                    <card.icon className="text-white" size={20} />
+                                    <card.icon className="text-gray-900 dark:text-white" size={20} />
                                 </div>
-                                <div className="text-white/60 text-sm font-medium mb-1">{card.title}</div>
-                                <div className="text-white font-bold text-2xl">{card.value}</div>
+                                <div className="text-gray-900/60 dark:text-white/60 text-sm font-medium mb-1">{card.title}</div>
+                                <div className="text-gray-900 dark:text-white font-bold text-2xl">{card.value}</div>
                             </div>
                         </div>
                     ))}
@@ -82,7 +82,7 @@ const AdminDashboard = () => {
             </div>
 
             <div>
-                <h3 className="text-xl font-bold text-white mb-4">Quick Actions</h3>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">Quick Actions</h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                     {menuItems.map((item, index) => (
                         <button
@@ -90,10 +90,10 @@ const AdminDashboard = () => {
                             onClick={() => navigate(item.path)}
                             className="glass-card p-6 flex flex-col items-center justify-center gap-3 hover:bg-white/5 transition-colors group"
                         >
-                            <div className={`p-3 rounded-xl ${item.color} text-white shadow-lg group-hover:scale-110 transition-transform`}>
+                            <div className={`p-3 rounded-xl ${item.color} text-gray-900 dark:text-white shadow-lg group-hover:scale-110 transition-transform`}>
                                 <item.icon size={24} />
                             </div>
-                            <span className="text-white font-medium text-sm">{item.title}</span>
+                            <span className="text-gray-900 dark:text-white font-medium text-sm">{item.title}</span>
                         </button>
                     ))}
                 </div>

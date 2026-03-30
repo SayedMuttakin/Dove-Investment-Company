@@ -6,7 +6,7 @@
 
 @layer base {
     body {
-        @apply bg-dark-300 text-white;
+        @apply bg-gray-50 text-gray-900 dark:bg-dark-300 dark:text-white transition-colors duration-300;
         font-family: 'Plus Jakarta Sans', sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
@@ -19,11 +19,11 @@
 
 @layer components {
     .glass-card {
-        @apply bg-glass-light backdrop-blur-md border border-white/10 rounded-2xl;
+        @apply bg-white/80 dark:bg-glass-light backdrop-blur-md border border-gray-200 dark:border-white/10 rounded-2xl shadow-sm dark:shadow-none;
     }
 
     .glass-card-hover {
-        @apply glass-card transition-all duration-300 hover:bg-glass-medium hover:border-primary/30 hover:shadow-glow;
+        @apply glass-card transition-all duration-300 hover:bg-gray-50 dark:hover:bg-glass-medium hover:border-primary/50 dark:hover:border-primary/30 hover:shadow-glow;
     }
 
     .btn-primary {
@@ -31,11 +31,11 @@
     }
 
     .btn-glass {
-        @apply glass-card text-white font-semibold py-3 px-6 rounded-full transition-all duration-300 hover:bg-glass-medium hover:border-primary/50;
+        @apply glass-card text-gray-900 dark:text-white font-semibold py-3 px-6 rounded-full transition-all duration-300 hover:bg-gray-100 dark:hover:bg-glass-medium hover:border-primary/80 dark:hover:border-primary/50;
     }
 
     .input-glass {
-        @apply glass-card w-full px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all;
+        @apply bg-white dark:bg-dark-200 w-full px-4 py-3 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 border border-gray-200 dark:border-white/10 rounded-xl focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all;
     }
 }
 

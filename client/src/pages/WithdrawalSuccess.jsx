@@ -47,7 +47,7 @@ const WithdrawalSuccess = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-dark-300 flex items-center justify-center">
+            <div className="min-h-screen bg-gray-50 dark:bg-dark-300 flex items-center justify-center">
                 <div className="text-primary text-xl">Loading...</div>
             </div>
         );
@@ -55,14 +55,14 @@ const WithdrawalSuccess = () => {
 
     if (error || !withdrawal) {
         return (
-            <div className="min-h-screen bg-dark-300 flex items-center justify-center p-4">
+            <div className="min-h-screen bg-gray-50 dark:bg-dark-300 flex items-center justify-center p-4">
                 <div className="glass-card p-6 max-w-md text-center">
                     <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-                    <h2 className="text-xl font-bold text-white mb-2">Error</h2>
-                    <p className="text-white/60 mb-6">{error || 'Withdrawal not found'}</p>
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Error</h2>
+                    <p className="text-gray-900/60 dark:text-white/60 mb-6">{error || 'Withdrawal not found'}</p>
                     <button
                         onClick={() => navigate('/home')}
-                        className="px-6 py-3 bg-gradient-primary rounded-xl text-white font-bold"
+                        className="px-6 py-3 bg-gradient-primary rounded-xl text-gray-900 dark:text-white font-bold"
                     >
                         Go Home
                     </button>
@@ -77,17 +77,17 @@ const WithdrawalSuccess = () => {
     const feePercentage = netAmount > 0 ? ((feeAmount / netAmount) * 100).toFixed(0) : 5;
 
     return (
-        <div className="min-h-screen bg-dark-300 pb-20">
+        <div className="min-h-screen bg-gray-50 dark:bg-dark-300 pb-20">
             {/* Header */}
-            <div className="sticky top-0 z-50 bg-dark-200/80 backdrop-blur-md border-b border-white/5 py-4 px-4 shadow-lg">
+            <div className="sticky top-0 z-50 bg-dark-200/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5 py-4 px-4 shadow-lg">
                 <div className="max-w-md mx-auto flex items-center justify-between">
                     <button
                         onClick={() => navigate('/home')}
-                        className="p-2 -ml-2 text-white/60 hover:text-white transition-colors"
+                        className="p-2 -ml-2 text-gray-900/60 dark:text-white/60 hover:text-white transition-colors"
                     >
                         <ArrowLeft size={20} />
                     </button>
-                    <h1 className="text-lg font-bold text-white">Transaction Details</h1>
+                    <h1 className="text-lg font-bold text-gray-900 dark:text-white">Transaction Details</h1>
                     <div className="w-10"></div>
                 </div>
             </div>
@@ -98,11 +98,11 @@ const WithdrawalSuccess = () => {
                     <div className="relative mb-6">
                         <div className="absolute inset-0 bg-green-500/20 rounded-full blur-xl animate-pulse"></div>
                         <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg shadow-green-500/50 animate-scale-in">
-                            <CheckCircle2 className="text-white" size={48} strokeWidth={3} />
+                            <CheckCircle2 className="text-gray-900 dark:text-white" size={48} strokeWidth={3} />
                         </div>
                     </div>
-                    <h2 className="text-2xl font-bold text-white mb-2">Withdrawal Successful!</h2>
-                    <p className="text-white/60 text-center">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Withdrawal Successful!</h2>
+                    <p className="text-gray-900/60 dark:text-white/60 text-center">
                         Your withdrawal has been processed and sent to your account
                     </p>
                 </div>
@@ -110,13 +110,13 @@ const WithdrawalSuccess = () => {
                 {/* Main Details Card */}
                 <div className="glass-card p-6 mb-4">
                     {/* Transaction Hash */}
-                    <div className="mb-6 pb-6 border-b border-white/10">
-                        <div className="flex items-center gap-2 text-white/60 text-sm mb-2">
+                    <div className="mb-6 pb-6 border-b border-slate-200 dark:border-white/10">
+                        <div className="flex items-center gap-2 text-gray-900/60 dark:text-white/60 text-sm mb-2">
                             <Hash size={16} />
                             <span>Transaction ID</span>
                         </div>
                         <div className="flex items-center justify-between gap-3">
-                            <code className="text-white font-mono text-sm break-all">
+                            <code className="text-gray-900 dark:text-white font-mono text-sm break-all">
                                 {withdrawal.transactionId || 'N/A'}
                             </code>
                             {withdrawal.transactionId && (
@@ -133,25 +133,25 @@ const WithdrawalSuccess = () => {
                     {/* Amount Breakdown */}
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
-                            <span className="text-white/60 text-sm">Withdrawal Amount</span>
-                            <span className="text-white font-bold text-lg">${netAmount.toFixed(2)}</span>
+                            <span className="text-gray-900/60 dark:text-white/60 text-sm">Withdrawal Amount</span>
+                            <span className="text-gray-900 dark:text-white font-bold text-lg">${netAmount.toFixed(2)}</span>
                         </div>
 
                         <div className="flex justify-between items-center">
-                            <span className="text-white/60 text-sm flex items-center gap-1">
+                            <span className="text-gray-900/60 dark:text-white/60 text-sm flex items-center gap-1">
                                 Processing Fee ({feePercentage}%)
                             </span>
                             <span className="text-red-400 font-semibold">-${feeAmount.toFixed(2)}</span>
                         </div>
 
-                        <div className="pt-4 border-t border-white/10">
+                        <div className="pt-4 border-t border-slate-200 dark:border-white/10">
                             <div className="flex justify-between items-center">
-                                <span className="text-white/80 font-medium">Total Deducted</span>
-                                <span className="text-white font-bold text-xl">${totalDeducted.toFixed(2)}</span>
+                                <span className="text-gray-900/80 dark:text-white/80 font-medium">Total Deducted</span>
+                                <span className="text-gray-900 dark:text-white font-bold text-xl">${totalDeducted.toFixed(2)}</span>
                             </div>
                         </div>
 
-                        <div className="pt-4 border-t border-white/10">
+                        <div className="pt-4 border-t border-slate-200 dark:border-white/10">
                             <div className="flex justify-between items-center">
                                 <span className="text-green-400 font-medium">Amount Sent to You</span>
                                 <span className="text-green-400 font-bold text-xl">${netAmount.toFixed(2)}</span>
@@ -162,28 +162,28 @@ const WithdrawalSuccess = () => {
 
                 {/* Payment Details Card */}
                 <div className="glass-card p-5 mb-4">
-                    <h3 className="text-white font-bold mb-4 flex items-center gap-2">
+                    <h3 className="text-gray-900 dark:text-white font-bold mb-4 flex items-center gap-2">
                         <CreditCard size={18} className="text-primary" />
                         Payment Details
                     </h3>
                     <div className="space-y-3 text-sm">
                         <div className="flex justify-between">
-                            <span className="text-white/60">Method</span>
-                            <span className="text-white font-medium uppercase">{withdrawal.paymentMethod}</span>
+                            <span className="text-gray-900/60 dark:text-white/60">Method</span>
+                            <span className="text-gray-900 dark:text-white font-medium uppercase">{withdrawal.paymentMethod}</span>
                         </div>
                         {withdrawal.bankDetails && (
                             <>
                                 <div className="flex justify-between">
-                                    <span className="text-white/60">Bank</span>
-                                    <span className="text-white font-medium">{withdrawal.bankDetails.bankName}</span>
+                                    <span className="text-gray-900/60 dark:text-white/60">Bank</span>
+                                    <span className="text-gray-900 dark:text-white font-medium">{withdrawal.bankDetails.bankName}</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-white/60">Account</span>
-                                    <span className="text-white font-medium font-mono">{withdrawal.bankDetails.accountNumber}</span>
+                                    <span className="text-gray-900/60 dark:text-white/60">Account</span>
+                                    <span className="text-gray-900 dark:text-white font-medium font-mono">{withdrawal.bankDetails.accountNumber}</span>
                                 </div>
                                 <div className="flex justify-between">
-                                    <span className="text-white/60">Account Name</span>
-                                    <span className="text-white font-medium">{withdrawal.bankDetails.accountName}</span>
+                                    <span className="text-gray-900/60 dark:text-white/60">Account Name</span>
+                                    <span className="text-gray-900 dark:text-white font-medium">{withdrawal.bankDetails.accountName}</span>
                                 </div>
                             </>
                         )}
@@ -195,8 +195,8 @@ const WithdrawalSuccess = () => {
                     <div className="flex items-center gap-3 text-sm">
                         <Clock size={16} className="text-primary" />
                         <div className="flex-1">
-                            <div className="text-white/60 mb-1">Processed At</div>
-                            <div className="text-white font-medium">
+                            <div className="text-gray-900/60 dark:text-white/60 mb-1">Processed At</div>
+                            <div className="text-gray-900 dark:text-white font-medium">
                                 {formatDate(withdrawal.processedAt || withdrawal.createdAt)}
                             </div>
                         </div>
@@ -206,7 +206,7 @@ const WithdrawalSuccess = () => {
                 {/* Actions */}
                 <button
                     onClick={() => navigate('/home')}
-                    className="w-full py-4 bg-gradient-primary rounded-2xl text-white font-bold shadow-glow hover:shadow-glow-lg transition-all active:scale-[0.98]"
+                    className="w-full py-4 bg-gradient-primary rounded-2xl text-gray-900 dark:text-white font-bold shadow-glow hover:shadow-glow-lg transition-all active:scale-[0.98]"
                 >
                     Back to Home
                 </button>

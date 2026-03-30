@@ -2,7 +2,7 @@ import React from 'react';
 
 const AuthLayout = ({ children }) => {
     return (
-        <div className="min-h-screen relative bg-dark-300">
+        <div className="min-h-screen relative bg-gray-50 dark:bg-dark-300">
             {/* Background Image - Fixed positioned container covering viewport */}
             <div
                 className="fixed inset-0 z-0"
@@ -15,7 +15,7 @@ const AuthLayout = ({ children }) => {
             ></div>
 
             {/* Background gradient overlay */}
-            <div className="fixed inset-0 bg-gradient-to-b from-dark-300/80 via-dark-300/70 to-dark-300/90 z-0 pointer-events-none"></div>
+            <div className="fixed inset-0 bg-gradient-to-b from-gray-50/80 via-gray-100/70 to-gray-200/90 dark:from-dark-300/80 dark:via-dark-300/70 dark:to-dark-300/90 z-0 pointer-events-none transition-colors duration-300"></div>
 
             {/* Animated background circles */}
             <div className="fixed top-20 left-10 w-64 h-64 bg-primary/5 rounded-full blur-3xl animate-pulse-slow z-0 pointer-events-none"></div>

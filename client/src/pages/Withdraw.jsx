@@ -138,21 +138,21 @@ const Withdraw = () => {
     };
 
     return (
-        <div className="min-h-screen bg-dark-300 pb-20">
+        <div className="min-h-screen bg-gray-50 dark:bg-dark-300 pb-20">
             {/* Header - Matching Home.jsx */}
-            <div className="bg-dark-200 border-b border-white/10">
+            <div className="bg-white dark:bg-dark-200 border-b border-slate-200 dark:border-white/10">
                 <div className="max-w-md mx-auto px-4 py-1.5 flex items-center justify-between relative">
-                    <button onClick={() => navigate(-1)} className="text-white/60 hover:text-white relative z-10">
+                    <button onClick={() => navigate(-1)} className="text-gray-900/60 dark:text-white/60 hover:text-white relative z-10">
                         <ArrowLeft size={22} />
                     </button>
                     <div className="absolute left-1/2 -translate-x-1/2">
-                        <h1 className="text-white font-bold text-lg">Withdraw</h1>
+                        <h1 className="text-gray-900 dark:text-white font-bold text-lg">Withdraw</h1>
                     </div>
                     <div className="flex items-center gap-3 relative z-10">
-                        <button className="relative p-2 text-white/60 hover:text-white transition-colors">
+                        <button className="relative p-2 text-gray-900/60 dark:text-white/60 hover:text-white transition-colors">
                             <Bell size={20} />
                         </button>
-                        <button className="relative p-2 text-white/60 hover:text-white transition-colors">
+                        <button className="relative p-2 text-gray-900/60 dark:text-white/60 hover:text-white transition-colors">
                             <HelpCircle size={20} />
                         </button>
                     </div>
@@ -165,8 +165,8 @@ const Withdraw = () => {
                 <div className="glass-card p-6 bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
                     <div className="relative z-10 flex flex-col items-center">
-                        <span className="text-white/60 text-sm font-medium mb-1">Available Balance</span>
-                        <h2 className="text-4xl font-bold text-white tracking-tight">${user?.balance?.toFixed(2) || '0.00'}</h2>
+                        <span className="text-gray-900/60 dark:text-white/60 text-sm font-medium mb-1">Available Balance</span>
+                        <h2 className="text-4xl font-bold text-gray-900 dark:text-white tracking-tight">${user?.balance?.toFixed(2) || '0.00'}</h2>
                     </div>
                 </div>
 
@@ -180,7 +180,7 @@ const Withdraw = () => {
                             </div>
                             <div className="space-y-1 my-0.5">
                                 <h3 className="text-red-400 font-bold text-sm">Withdrawals Temporarily Blocked</h3>
-                                <p className="text-white/80 text-sm leading-relaxed">
+                                <p className="text-gray-900/80 dark:text-white/80 text-sm leading-relaxed">
                                     {blockMessage}
                                 </p>
                             </div>
@@ -193,7 +193,7 @@ const Withdraw = () => {
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Amount */}
                     <div className="space-y-2">
-                        <label className="text-white/80 text-sm font-semibold ml-1">Withdrawal Amount</label>
+                        <label className="text-gray-900/80 dark:text-white/80 text-sm font-semibold ml-1">Withdrawal Amount</label>
                         <div className="relative group">
                             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-primary font-bold text-lg">$</span>
                             <input
@@ -201,13 +201,13 @@ const Withdraw = () => {
                                 required
                                 min="50"
                                 placeholder="0.00"
-                                className="w-full bg-dark-200 border border-white/10 rounded-2xl py-4 pl-10 pr-4 text-white text-xl font-bold focus:outline-none focus:border-primary focus:bg-dark-100 transition-all"
+                                className="w-full bg-white dark:bg-dark-200 border border-slate-200 dark:border-white/10 rounded-2xl py-4 pl-10 pr-4 text-gray-900 dark:text-white text-xl font-bold focus:outline-none focus:border-primary focus:bg-dark-100 transition-all"
                                 value={amount}
                                 onChange={(e) => setAmount(e.target.value)}
                             />
                         </div>
                         <div className="flex justify-between px-1">
-                            <p className="text-white/40 text-xs text-secondary">Minimum withdrawal: $50</p>
+                            <p className="text-gray-900/40 dark:text-white/40 text-xs text-secondary">Minimum withdrawal: $50</p>
                             <button
                                 type="button"
                                 onClick={() => setAmount(user?.balance?.toFixed(0))}
@@ -220,7 +220,7 @@ const Withdraw = () => {
 
                     {/* Payment Method - New Grid Layout */}
                     <div className="space-y-3">
-                        <label className="text-white/80 text-sm font-semibold ml-1">Select Method</label>
+                        <label className="text-gray-900/80 dark:text-white/80 text-sm font-semibold ml-1">Select Method</label>
                         <div className="grid grid-cols-4 gap-2">
                             {methods.map(method => (
                                 <button
@@ -229,13 +229,13 @@ const Withdraw = () => {
                                     onClick={() => handleMethodChange(method.id)}
                                     className={`p-2 rounded-xl border flex flex-col items-center justify-center gap-2 transition-all aspect-square ${paymentMethod === method.id
                                         ? 'bg-primary border-primary shadow-glow shadow-primary/20'
-                                        : 'bg-dark-200 border-white/5 hover:border-white/20'
+                                        : 'bg-white dark:bg-dark-200 border-slate-200 dark:border-white/5 hover:border-white/20'
                                         }`}
                                 >
-                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden ${paymentMethod === method.id ? 'bg-white' : 'bg-white/10'}`}>
+                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center overflow-hidden ${paymentMethod === method.id ? 'bg-white' : 'bg-gray-900/10 dark:bg-white/10'}`}>
                                         <span style={{ color: method.color, fontSize: '18px', fontWeight: 900, lineHeight: 1 }}>{method.symbol}</span>
                                     </div>
-                                    <span className={`text-[10px] font-bold truncate w-full text-center ${paymentMethod === method.id ? 'text-white' : 'text-white/60'}`}>
+                                    <span className={`text-[10px] font-bold truncate w-full text-center ${paymentMethod === method.id ? 'text-gray-900 dark:text-white' : 'text-gray-900/60 dark:text-white/60'}`}>
                                         {method.name}
                                     </span>
                                 </button>
@@ -244,19 +244,19 @@ const Withdraw = () => {
                     </div>
 
                     {/* Dynamic Account/Wallet Details */}
-                    <div className="glass-card p-5 space-y-4 border border-white/5">
-                        <h3 className="text-white font-bold text-sm tracking-wide flex items-center gap-2">
+                    <div className="glass-card p-5 space-y-4 border border-slate-200 dark:border-white/5">
+                        <h3 className="text-gray-900 dark:text-white font-bold text-sm tracking-wide flex items-center gap-2">
                             <Lock size={16} className="text-primary" />
                             {isCrypto ? 'CRYPTO WALLET DETAILS' : 'ACCOUNT INFORMATION'}
                         </h3>
 
                         <div className="animate-fade-in">
-                            <label className="text-white/50 text-[11px] font-bold uppercase tracking-wider mb-1.5 block">Recipient Wallet Address ({paymentMethod.toUpperCase()})</label>
+                            <label className="text-gray-900/50 dark:text-white/50 text-[11px] font-bold uppercase tracking-wider mb-1.5 block">Recipient Wallet Address ({paymentMethod.toUpperCase()})</label>
                             <input
                                 type="text"
                                 required
                                 placeholder="Paste your wallet address here"
-                                className="w-full bg-dark-300 border border-white/10 rounded-xl p-3 text-white text-sm focus:outline-none focus:border-primary font-mono"
+                                className="w-full bg-gray-50 dark:bg-dark-300 border border-slate-200 dark:border-white/10 rounded-xl p-3 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary font-mono"
                                 value={details.address}
                                 onChange={(e) => setDetails({ ...details, address: e.target.value })}
                             />
@@ -271,12 +271,12 @@ const Withdraw = () => {
                     {amount && Number(amount) >= 10 && (
                         <div className="glass-card p-4 space-y-2 border border-primary/10 bg-primary/5">
                             <div className="flex justify-between items-center text-sm">
-                                <span className="text-white/60">Processing Fee (5%)</span>
+                                <span className="text-gray-900/60 dark:text-white/60">Processing Fee (5%)</span>
                                 <span className="text-red-400 font-semibold">${(Number(amount) * 0.05).toFixed(2)}</span>
                             </div>
-                            <div className="h-px bg-white/10 my-1"></div>
+                            <div className="h-px bg-gray-900/10 dark:bg-white/10 my-1"></div>
                             <div className="flex justify-between items-center">
-                                <span className="text-white font-bold">Total Deduction</span>
+                                <span className="text-gray-900 dark:text-white font-bold">Total Deduction</span>
                                 <span className="text-primary font-bold text-lg">${(Number(amount) * 1.05).toFixed(2)}</span>
                             </div>
                         </div>
@@ -285,7 +285,7 @@ const Withdraw = () => {
                     {/* Email Verification - Hidden as per request */}
                     {/*
                     <div className="space-y-2">
-                        <label className="flex items-center gap-2 text-white text-xs font-medium">
+                        <label className="flex items-center gap-2 text-gray-900 dark:text-white text-xs font-medium">
                             <Lock size={14} className="text-primary" />
                             Email Verification Code
                         </label>
@@ -295,7 +295,7 @@ const Withdraw = () => {
                                 value={emailOtp}
                                 onChange={(e) => setEmailOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
                                 placeholder="Enter 6-digit code"
-                                className="w-full bg-dark-200 border border-white/10 rounded-xl px-4 py-3 pr-28 text-white text-sm focus:outline-none focus:border-primary transition-all"
+                                className="w-full bg-white dark:bg-dark-200 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 pr-28 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary transition-all"
                                 required
                             />
                             <button
@@ -307,7 +307,7 @@ const Withdraw = () => {
                                 {otpSending ? 'Sending...' : countdown > 0 ? `${countdown}s` : 'Send Code'}
                             </button>
                         </div>
-                        <p className="text-[10px] text-white/40 italic">
+                        <p className="text-[10px] text-gray-900/40 dark:text-white/40 italic">
                             Click 'Send Code' to receive a verification code in your email.
                         </p>
                     </div>
@@ -316,7 +316,7 @@ const Withdraw = () => {
                     {/* 2FA Verification */}
                     {user?.twoFactorEnabled ? (
                         <div className="space-y-2">
-                            <label className="flex items-center gap-2 text-white text-xs font-medium">
+                            <label className="flex items-center gap-2 text-gray-900 dark:text-white text-xs font-medium">
                                 <Shield size={14} className="text-primary" />
                                 Google Authenticator Code
                             </label>
@@ -325,10 +325,10 @@ const Withdraw = () => {
                                 value={twoFactorToken}
                                 onChange={(e) => setTwoFactorToken(e.target.value.replace(/\D/g, '').slice(0, 6))}
                                 placeholder="Enter 6-digit 2FA code"
-                                className="w-full bg-dark-200 border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-primary transition-all"
+                                className="w-full bg-white dark:bg-dark-200 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary transition-all"
                                 required
                             />
-                            <p className="text-[10px] text-white/40 italic">
+                            <p className="text-[10px] text-gray-900/40 dark:text-white/40 italic">
                                 Enter the code from your Google Authenticator app (Dove Investment Gold Mine).
                             </p>
                         </div>
@@ -339,8 +339,8 @@ const Withdraw = () => {
                                     <Shield size={18} className="text-primary" />
                                 </div>
                                 <div>
-                                    <h4 className="text-sm font-bold text-white tracking-tight">Security Verification Required</h4>
-                                    <p className="text-xs text-white/50 mt-1 leading-relaxed">
+                                    <h4 className="text-sm font-bold text-gray-900 dark:text-white tracking-tight">Security Verification Required</h4>
+                                    <p className="text-xs text-gray-900/50 dark:text-white/50 mt-1 leading-relaxed">
                                         For your security, withdrawals require Google Authenticator (2FA). Please connect your account to proceed.
                                     </p>
                                 </div>
@@ -359,24 +359,24 @@ const Withdraw = () => {
                         <button
                             type="submit"
                             disabled={loading || !!blockMessage}
-                            className="w-full bg-gradient-primary text-white font-bold py-4 rounded-2xl shadow-glow-lg hover:shadow-glow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] flex items-center justify-center gap-2"
+                            className="w-full bg-gradient-primary text-gray-900 dark:text-white font-bold py-4 rounded-2xl shadow-glow-lg hover:shadow-glow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98] flex items-center justify-center gap-2"
                         >
                             {loading ? (
-                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                <div className="w-5 h-5 border-2 border-slate-200 dark:border-white/30 border-t-white rounded-full animate-spin"></div>
                             ) : (
                                 <>Confirm Withdrawal</>
                             )}
                         </button>
                     )}
 
-                    <p className="text-center text-white/30 text-[11px] px-6 leading-relaxed">
+                    <p className="text-center text-gray-900/30 dark:text-white/30 text-[11px] px-6 leading-relaxed">
                         Processing time: 72-96 hours depending on network traffic and bank hours. 5% processing fee applies.
                     </p>
                 </form>
 
                 {/* Withdrawal History Section */}
                 <div className="space-y-4">
-                    <h3 className="text-white font-bold text-sm ml-1">Withdrawal Records</h3>
+                    <h3 className="text-gray-900 dark:text-white font-bold text-sm ml-1">Withdrawal Records</h3>
                     <div className="space-y-3">
                         {loadingHistory ? (
                             <div className="flex justify-center py-8">
@@ -384,35 +384,35 @@ const Withdraw = () => {
                             </div>
                         ) : withdrawals.length > 0 ? (
                             withdrawals.map((item) => (
-                                <div key={item._id} className="glass-card p-4 border border-white/5 space-y-3">
+                                <div key={item._id} className="glass-card p-4 border border-slate-200 dark:border-white/5 space-y-3">
                                     <div className="flex justify-between items-start">
                                         <div className="flex gap-3">
-                                            <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center">
+                                            <div className="w-10 h-10 bg-gray-900/5 dark:bg-white/5 rounded-xl flex items-center justify-center">
                                                 <Wallet className="text-primary" size={20} />
                                             </div>
                                             <div>
-                                                <p className="text-white font-bold text-sm">${item.amount}</p>
-                                                <p className="text-white/40 text-[10px]">{new Date(item.createdAt).toLocaleString()}</p>
+                                                <p className="text-gray-900 dark:text-white font-bold text-sm">${item.amount}</p>
+                                                <p className="text-gray-900/40 dark:text-white/40 text-[10px]">{new Date(item.createdAt).toLocaleString()}</p>
                                             </div>
                                         </div>
                                         <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${getStatusColor(item.status)}`}>
                                             {item.status === 'approved' ? 'Success' : item.status}
                                         </span>
                                     </div>
-                                    <div className="h-px bg-white/5"></div>
+                                    <div className="h-px bg-gray-900/5 dark:bg-white/5"></div>
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
-                                            <p className="text-white/40 text-[9px] uppercase font-bold tracking-widest">Network</p>
-                                            <p className="text-white/80 text-[11px] font-medium">{item.paymentMethod?.toUpperCase()}</p>
+                                            <p className="text-gray-900/40 dark:text-white/40 text-[9px] uppercase font-bold tracking-widest">Network</p>
+                                            <p className="text-gray-900/80 dark:text-white/80 text-[11px] font-medium">{item.paymentMethod?.toUpperCase()}</p>
                                         </div>
                                         <div>
-                                            <p className="text-white/40 text-[9px] uppercase font-bold tracking-widest">Fee</p>
-                                            <p className="text-white/80 text-[11px] font-medium">${item.fee?.toFixed(2)}</p>
+                                            <p className="text-gray-900/40 dark:text-white/40 text-[9px] uppercase font-bold tracking-widest">Fee</p>
+                                            <p className="text-gray-900/80 dark:text-white/80 text-[11px] font-medium">${item.fee?.toFixed(2)}</p>
                                         </div>
                                     </div>
                                     {item.transactionId && (
-                                        <div className="bg-dark-300/50 p-2 rounded-lg border border-white/5">
-                                            <p className="text-white/40 text-[9px] uppercase font-bold tracking-widest mb-1">Transaction ID</p>
+                                        <div className="bg-gray-100 dark:bg-dark-300/50 p-2 rounded-lg border border-slate-200 dark:border-white/5 transition-colors">
+                                            <p className="text-gray-900/40 dark:text-white/40 text-[9px] uppercase font-bold tracking-widest mb-1">Transaction ID</p>
                                             <p className="text-primary text-[10px] font-mono break-all">{item.transactionId}</p>
                                         </div>
                                     )}
@@ -424,8 +424,8 @@ const Withdraw = () => {
                                 </div>
                             ))
                         ) : (
-                            <div className="text-center py-10 glass-card border border-dashed border-white/10">
-                                <p className="text-white/40 text-xs">No withdrawal records found</p>
+                            <div className="text-center py-10 glass-card border border-dashed border-slate-200 dark:border-white/10">
+                                <p className="text-gray-900/40 dark:text-white/40 text-xs">No withdrawal records found</p>
                             </div>
                         )}
                     </div>

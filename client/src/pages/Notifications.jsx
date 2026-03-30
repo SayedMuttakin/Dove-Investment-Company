@@ -89,26 +89,26 @@ const Notifications = () => {
             case 'withdrawal': return <DollarSign className="text-red-400" size={20} />;
             case 'investment': return <CheckCircle2 className="text-cyan-400" size={20} />;
             case 'commission': return <Users className="text-yellow-400" size={20} />;
-            default: return <Info className="text-white/60" size={20} />;
+            default: return <Info className="text-gray-900/60 dark:text-white/60" size={20} />;
         }
     };
 
     return (
-        <div className="min-h-screen bg-dark-300 pb-20">
+        <div className="min-h-screen bg-gray-50 dark:bg-dark-300 pb-20">
             {/* Header */}
-            <div className="sticky top-0 z-50 bg-dark-200/80 backdrop-blur-md border-b border-white/5 py-1.5 px-4 shadow-lg">
+            <div className="sticky top-0 z-50 bg-dark-200/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5 py-1.5 px-4 shadow-lg">
                 <div className="max-w-md mx-auto flex items-center justify-between relative h-10">
                     <div className="flex items-center gap-3 relative z-10 w-24">
                         <button
                             onClick={() => navigate(-1)}
-                            className="p-2 -ml-2 text-white/60 hover:text-white transition-colors"
+                            className="p-2 -ml-2 text-gray-900/60 dark:text-white/60 hover:text-white transition-colors"
                         >
                             <ArrowLeft size={20} />
                         </button>
                     </div>
 
                     <div className="absolute left-1/2 -translate-x-1/2 text-center">
-                        <h1 className="text-sm font-bold text-white leading-none">Notifications</h1>
+                        <h1 className="text-sm font-bold text-gray-900 dark:text-white leading-none">Notifications</h1>
                         {unreadCount > 0 && (
                             <span className="text-[9px] text-primary font-medium block mt-1">{unreadCount} unread</span>
                         )}
@@ -134,10 +134,10 @@ const Notifications = () => {
                         {[1, 2, 3].map(i => (
                             <div key={i} className="glass-card p-4 animate-pulse">
                                 <div className="flex gap-4">
-                                    <div className="w-10 h-10 bg-white/5 rounded-xl shrink-0"></div>
+                                    <div className="w-10 h-10 bg-gray-900/5 dark:bg-white/5 rounded-xl shrink-0"></div>
                                     <div className="flex-1 space-y-2">
-                                        <div className="h-4 bg-white/10 rounded w-1/3"></div>
-                                        <div className="h-3 bg-white/5 rounded w-full"></div>
+                                        <div className="h-4 bg-gray-900/10 dark:bg-white/10 rounded w-1/3"></div>
+                                        <div className="h-3 bg-gray-900/5 dark:bg-white/5 rounded w-full"></div>
                                     </div>
                                 </div>
                             </div>
@@ -145,10 +145,10 @@ const Notifications = () => {
                     </div>
                 ) : notifications.length === 0 ? (
                     <div className="flex flex-col items-center justify-center pt-20 text-center opacity-60">
-                        <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center mb-4">
+                        <div className="w-20 h-20 rounded-full bg-gray-900/5 dark:bg-white/5 flex items-center justify-center mb-4">
                             <Bell size={40} />
                         </div>
-                        <h2 className="text-lg font-bold text-white mb-2">No notifications yet</h2>
+                        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No notifications yet</h2>
                         <p className="text-sm">We'll notify you when something important happens.</p>
                     </div>
                 ) : (
@@ -182,21 +182,21 @@ const Notifications = () => {
                                     }`}
                             >
                                 <div className="flex gap-4">
-                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-lg ${notif.status === 'unread' ? 'bg-primary/20 bg-glow-primary' : 'bg-white/5'
+                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-lg ${notif.status === 'unread' ? 'bg-primary/20 bg-glow-primary' : 'bg-gray-900/5 dark:bg-white/5'
                                         }`}>
                                         {getIcon(notif.type)}
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <div className="flex justify-between items-start mb-1">
-                                            <h3 className={`text-sm font-bold truncate pr-2 ${notif.status === 'unread' ? 'text-white' : 'text-white/60'
+                                            <h3 className={`text-sm font-bold truncate pr-2 ${notif.status === 'unread' ? 'text-gray-900 dark:text-white' : 'text-gray-900/60 dark:text-white/60'
                                                 }`}>
                                                 {notif.title}
                                             </h3>
-                                            <span className="text-[10px] text-white/40 whitespace-nowrap pt-0.5">
+                                            <span className="text-[10px] text-gray-900/40 dark:text-white/40 whitespace-nowrap pt-0.5">
                                                 {formatDistanceToNow(new Date(notif.createdAt), { addSuffix: true })}
                                             </span>
                                         </div>
-                                        <p className="text-xs text-white/60 leading-relaxed mb-3">
+                                        <p className="text-xs text-gray-900/60 dark:text-white/60 leading-relaxed mb-3">
                                             {notif.message}
                                         </p>
                                         <div className="flex justify-between items-end">
@@ -207,7 +207,7 @@ const Notifications = () => {
                                             )}
                                             <button
                                                 onClick={(e) => deleteNotification(notif._id, e)}
-                                                className="p-1 -mr-1 text-white/20 hover:text-red-400 transition-colors"
+                                                className="p-1 -mr-1 text-gray-900/20 dark:text-white/20 hover:text-red-400 transition-colors"
                                             >
                                                 <Trash2 size={14} />
                                             </button>

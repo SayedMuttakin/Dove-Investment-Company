@@ -78,7 +78,7 @@ const WalletPage = () => {
     }, []);
 
     return (
-        <div className="min-h-screen bg-dark-300 pb-24 text-white">
+        <div className="min-h-screen bg-gray-50 dark:bg-dark-300 pb-24 text-gray-900 dark:text-white">
             <PinModal
                 isOpen={showPinModal}
                 onClose={() => setShowModal(false)}
@@ -87,26 +87,26 @@ const WalletPage = () => {
             />
 
             {/* Header */}
-            <div className="bg-dark-200 border-b border-white/10">
+            <div className="bg-white dark:bg-dark-200 border-b border-slate-200 dark:border-white/10">
                 <div className="max-w-md mx-auto px-4 py-1.5 flex items-center justify-between relative">
                     <div className="w-10"></div>
                     {/* Page Name - Center */}
                     <div className="absolute left-1/2 -translate-x-1/2">
-                        <h1 className="text-white font-bold text-lg">Assets</h1>
+                        <h1 className="text-gray-900 dark:text-white font-bold text-lg">Assets</h1>
                     </div>
 
                     {/* Icons - Right Side */}
                     <div className="flex items-center gap-3 relative z-10">
                         <button
                             onClick={() => navigate('/notifications')}
-                            className="relative p-2 text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full"
+                            className="relative p-2 text-gray-900/60 dark:text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full"
                         >
                             <Bell size={20} />
                             {/* Unread count dot could be dynamic later */}
                         </button>
                         <button
                             onClick={() => navigate('/help')}
-                            className="relative p-2 text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full"
+                            className="relative p-2 text-gray-900/60 dark:text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full"
                         >
                             <HelpCircle size={20} />
                         </button>
@@ -116,7 +116,7 @@ const WalletPage = () => {
 
             <div className="max-w-md mx-auto px-4 space-y-6 mt-4">
                 {/* Main Asset Card */}
-                <div className="bg-gradient-to-br from-black to-gray-900 border border-white/10 rounded-3xl p-5 relative overflow-hidden shadow-lg">
+                <div className="bg-gradient-to-br from-black to-gray-900 border border-slate-200 dark:border-white/10 rounded-3xl p-5 relative overflow-hidden shadow-lg">
                     {/* Top Section */}
                     <div className="mb-4 relative z-10">
                         <p className="text-gray-400 text-sm mb-1">Total assets (Converted)</p>
@@ -127,9 +127,9 @@ const WalletPage = () => {
                     <div className="absolute -top-2 -right-2 z-0">
                         <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-700 flex items-center justify-center shadow-[0_4px_20px_rgba(16,185,129,0.6)] border-2 border-emerald-300/50 relative overflow-hidden">
                             {/* Coin Shine Effect */}
-                            <div className="absolute top-0 left-0 w-full h-1/2 bg-white/20 rounded-t-full blur-sm"></div>
+                            <div className="absolute top-0 left-0 w-full h-1/2 bg-gray-900/20 dark:bg-white/20 rounded-t-full blur-sm"></div>
                             {/* Coin Inner Detail */}
-                            <div className="w-12 h-12 rounded-full border border-emerald-800/30 flex items-center justify-center bg-gradient-to-br from-emerald-500 to-emerald-800 shadow-inner">
+                            <div className="w-12 h-12 rounded-full border border-emerald-800/30 flex items-center justify-center bg-gradient-to-br from-emerald-500 to-emerald-800 shadow-inner transition-colors">
                                 <span className="text-white font-bold text-2xl drop-shadow-md">T</span>
                             </div>
                         </div>
@@ -167,7 +167,7 @@ const WalletPage = () => {
                     {assetsData.redeemable > 0 && (
                         <button
                             onClick={handleRedeem}
-                            className="w-full mt-4 py-3 bg-white/5 border border-white/20 rounded-xl text-[#b4f000] font-bold text-sm hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+                            className="w-full mt-4 py-3 bg-gray-900/5 dark:bg-white/5 border border-slate-200 dark:border-white/20 rounded-xl text-[#b4f000] font-bold text-sm hover:bg-white/10 transition-all flex items-center justify-center gap-2"
                         >
                             <span>Redeem Matured Assets</span>
                             <ArrowUpRight size={16} />
@@ -179,14 +179,14 @@ const WalletPage = () => {
                 <div className="grid grid-cols-2 gap-4">
                     <button
                         onClick={() => handleActionClick('deposit')}
-                        className="flex items-center justify-center gap-2 glass-card py-3 rounded-xl font-medium hover:bg-glass-medium transition-all text-white"
+                        className="flex items-center justify-center gap-2 glass-card py-3 rounded-xl font-medium hover:bg-gray-100 dark:hover:bg-white/10 transition-all text-gray-900 dark:text-white"
                     >
                         <ArrowDownLeft className="text-[#b4f000]" size={20} />
                         <span>Deposit</span>
                     </button>
                     <button
                         onClick={() => handleActionClick('withdraw')}
-                        className="flex items-center justify-center gap-2 glass-card py-3 rounded-xl font-medium hover:bg-glass-medium transition-all text-white"
+                        className="flex items-center justify-center gap-2 glass-card py-3 rounded-xl font-medium hover:bg-gray-100 dark:hover:bg-white/10 transition-all text-gray-900 dark:text-white"
                     >
                         <ArrowUpRight className="text-red-500" size={20} />
                         <span>Withdraw</span>
@@ -196,31 +196,31 @@ const WalletPage = () => {
                 {/* Asset List */}
                 <div className="glass-card rounded-xl p-4">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center text-white font-bold shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center text-gray-900 dark:text-white font-bold shrink-0">
                             T
                         </div>
                         <div className="flex-1">
                             <div className="flex justify-between items-center mb-1">
-                                <h3 className="font-bold text-lg text-white">USDT</h3>
+                                <h3 className="font-bold text-lg text-gray-900 dark:text-white">USDT</h3>
                                 <div className="text-right">
                                     <span className="text-xs text-gray-400 block">Redeemable</span>
-                                    <span className="font-medium text-white">{loading ? '...' : assetsData.redeemable.toFixed(0)}</span>
+                                    <span className="font-medium text-gray-900 dark:text-white">{loading ? '...' : assetsData.redeemable.toFixed(0)}</span>
                                 </div>
                             </div>
 
                             <div className="flex items-start justify-between gap-2 text-sm">
                                 <div className="flex-1 min-w-0">
                                     <span className="text-gray-400 text-[10px] uppercase tracking-wider block mb-0.5">Available</span>
-                                    <span className="font-bold text-white text-sm">{loading ? '...' : assetsData.availableIncome.toFixed(2)}</span>
+                                    <span className="font-bold text-gray-900 dark:text-white text-sm">{loading ? '...' : assetsData.availableIncome.toFixed(2)}</span>
                                 </div>
-                                <div className="flex-1 min-w-0 px-2 border-l border-white/5">
+                                <div className="flex-1 min-w-0 px-2 border-l border-slate-200 dark:border-white/5">
                                     <span className="text-gray-400 text-[10px] uppercase tracking-wider block mb-0.5 whitespace-nowrap">Investment</span>
-                                    <span className="font-bold text-white text-sm">{loading ? '...' : assetsData.lendingInvestments.toFixed(0)}</span>
+                                    <span className="font-bold text-gray-900 dark:text-white text-sm">{loading ? '...' : assetsData.lendingInvestments.toFixed(0)}</span>
                                 </div>
                                 <div className="text-right flex-1">
                                     <span className="text-gray-400 text-[10px] text-transparent select-none block mb-0.5">.</span>
                                     <div className="flex flex-col items-end">
-                                        <span className="font-black text-white text-sm leading-none">{loading ? '...' : `${assetsData.totalAssets.toFixed(2)}`}</span>
+                                        <span className="font-black text-gray-900 dark:text-white text-sm leading-none">{loading ? '...' : `${assetsData.totalAssets.toFixed(2)}`}</span>
                                         <span className="text-[10px] text-gray-400 mt-1 uppercase font-medium tracking-tighter">≈ {assetsData.totalAssets.toFixed(2)} USDT</span>
                                     </div>
                                 </div>

@@ -110,30 +110,30 @@ const Income = () => {
     };
 
     return (
-        <div className="min-h-screen bg-dark-300 pb-24 font-sans text-gray-100">
+        <div className="min-h-screen bg-gray-50 dark:bg-dark-300 pb-24 font-sans text-gray-900 dark:text-gray-100 transition-colors">
             {/* Top Header */}
-            <div className="bg-dark-200 border-b border-white/10">
+            <div className="bg-white dark:bg-dark-200 border-b border-slate-200 dark:border-white/10">
                 <div className="max-w-md mx-auto px-4 py-2.5 flex items-center justify-between relative">
                     {/* Placeholder for left to balance flex if needed, but absolute is better */}
                     <div className="w-10"></div>
 
                     {/* Page Name - Perfect Center */}
                     <div className="absolute left-1/2 -translate-x-1/2">
-                        <h1 className="text-white font-bold text-lg">Income</h1>
+                        <h1 className="text-gray-900 dark:text-white font-bold text-lg">Income</h1>
                     </div>
 
                     {/* Icons - Right Side */}
                     <div className="flex items-center gap-3 relative z-10">
                         <button
                             onClick={() => navigate('/notifications')}
-                            className="relative p-2 text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full"
+                            className="relative p-2 text-gray-900/60 dark:text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full"
                         >
                             <Bell size={20} />
                             {/* Unread count dot could be dynamic later */}
                         </button>
                         <button
                             onClick={() => navigate('/help')}
-                            className="relative p-2 text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full"
+                            className="relative p-2 text-gray-900/60 dark:text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full"
                         >
                             <HelpCircle size={20} />
                         </button>
@@ -143,7 +143,7 @@ const Income = () => {
 
             <div className="max-w-md mx-auto p-4 space-y-4">
                 {/* Total Income Card */}
-                <div className="bg-gradient-to-br from-black to-gray-900 text-white rounded-3xl p-6 relative overflow-hidden shadow-lg border border-white/5">
+                <div className="bg-gradient-to-br from-black to-gray-900 text-gray-900 dark:text-white rounded-3xl p-6 relative overflow-hidden shadow-lg border border-slate-200 dark:border-white/5">
                     {/* Background decoration - faint Tether logo vibe */}
                     <div className="absolute right-[-20px] top-[10px] opacity-10 pointer-events-none">
                         <svg width="150" height="150" viewBox="0 0 24 24" fill="currentColor">
@@ -161,32 +161,32 @@ const Income = () => {
 
                 {/* Stats Grid - Row 1 */}
                 <div className="grid grid-cols-3 gap-3">
-                    <div className="bg-dark-200 rounded-2xl p-3 shadow-lg flex flex-col justify-between h-24 relative overflow-hidden border border-white/5">
+                    <div className="bg-white dark:bg-dark-200 rounded-2xl p-3 shadow-lg flex flex-col justify-between h-24 relative overflow-hidden border border-slate-200 dark:border-white/5">
                         <div className="absolute top-2 right-2 text-gray-500">
                             <ChevronRight size={14} />
                         </div>
                         <div className="text-xs text-gray-400 font-medium leading-tight">Interest<br />Income</div>
-                        <div className="font-bold text-sm text-white">
+                        <div className="font-bold text-sm text-gray-900 dark:text-white">
                             {incomeData.stats.interestIncome.toFixed(2)} USDT
                         </div>
                     </div>
 
-                    <div className="bg-dark-200 rounded-2xl p-3 shadow-lg flex flex-col justify-between h-24 relative overflow-hidden border border-white/5">
+                    <div className="bg-white dark:bg-dark-200 rounded-2xl p-3 shadow-lg flex flex-col justify-between h-24 relative overflow-hidden border border-slate-200 dark:border-white/5">
                         <div className="absolute top-2 right-2 text-gray-500">
                             <ChevronRight size={14} />
                         </div>
                         <div className="text-xs text-gray-400 font-medium leading-tight">Team Income</div>
-                        <div className="font-bold text-sm text-white">
+                        <div className="font-bold text-sm text-gray-900 dark:text-white">
                             {incomeData.stats.teamIncome.toFixed(2)} USDT
                         </div>
                     </div>
 
-                    <div className="bg-dark-200 rounded-2xl p-3 shadow-lg flex flex-col justify-between h-24 relative overflow-hidden border border-white/5">
+                    <div className="bg-white dark:bg-dark-200 rounded-2xl p-3 shadow-lg flex flex-col justify-between h-24 relative overflow-hidden border border-slate-200 dark:border-white/5">
                         <div className="absolute top-2 right-2 text-gray-500">
                             <ChevronRight size={14} />
                         </div>
                         <div className="text-xs text-gray-400 font-medium leading-tight">Bonus</div>
-                        <div className="font-bold text-sm text-white">
+                        <div className="font-bold text-sm text-gray-900 dark:text-white">
                             {incomeData.stats.bonusIncome.toFixed(2)} USDT
                         </div>
                     </div>
@@ -194,19 +194,19 @@ const Income = () => {
 
                 {/* Stats Grid - Row 2 */}
                 <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-dark-200 rounded-2xl p-4 shadow-lg relative border border-white/5">
+                    <div className="bg-white dark:bg-dark-200 rounded-2xl p-4 shadow-lg relative border border-slate-200 dark:border-white/5">
                         <div className="absolute top-4 right-2 text-gray-500">
                             <ChevronRight size={16} />
                         </div>
                         <div className="flex items-start gap-2 mb-4">
-                            <div className="w-10 h-8 bg-black/40 rounded-lg flex items-center justify-center relative border border-white/5">
+                            <div className="w-10 h-8 bg-gray-100 dark:bg-black/40 rounded-lg flex items-center justify-center relative border border-slate-200 dark:border-white/5 transition-colors">
                                 <span className="text-[#a4f13a] font-bold text-lg">$</span>
                                 {/* Icon decoration */}
                                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-[#a4f13a] rounded-full"></div>
                             </div>
                             <div className="mt-1">
                                 <span className="text-xs text-gray-400 block">Loan Income</span>
-                                <span className="text-sm font-bold text-white block">
+                                <span className="text-sm font-bold text-gray-900 dark:text-white block">
                                     {incomeData.claimableCount} items
                                     {incomeData.totalClaimable > 0 && <span className="text-[#a4f13a] ml-1">(${incomeData.totalClaimable.toFixed(2)})</span>}
                                 </span>
@@ -217,7 +217,7 @@ const Income = () => {
                             disabled={incomeData.claimableCount === 0 || collecting}
                             className={`w-full py-1.5 rounded-full text-xs font-medium transition-all ${incomeData.claimableCount > 0
                                 ? 'bg-[#a4f13a] text-black hover:bg-[#93d934] shadow-lg shadow-[#a4f13a]/20'
-                                : 'bg-white/5 text-white/20 cursor-not-allowed'
+                                : 'bg-gray-900/5 dark:bg-white/5 text-gray-900/20 dark:text-white/20 cursor-not-allowed'
                                 }`}
                         >
                             {collecting ? 'Collecting...' : incomeData.claimableCount > 0 ? 'Received' : 'Received'}
@@ -225,18 +225,18 @@ const Income = () => {
                     </div>
 
                     {/* Team Benefits Section */}
-                    <div className="bg-dark-200 rounded-2xl p-4 shadow-lg relative border border-white/5">
+                    <div className="bg-white dark:bg-dark-200 rounded-2xl p-4 shadow-lg relative border border-slate-200 dark:border-white/5">
                         <div className="absolute top-4 right-2 text-gray-500">
                             <ChevronRight size={16} />
                         </div>
                         <div className="flex items-start gap-2 mb-4">
-                            <div className="w-10 h-8 bg-black/40 rounded-lg flex items-center justify-center relative border border-white/5">
+                            <div className="w-10 h-8 bg-gray-100 dark:bg-black/40 rounded-lg flex items-center justify-center relative border border-slate-200 dark:border-white/5 transition-colors">
                                 <span className="text-[#a4f13a] font-bold text-lg">$</span>
                                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-[#a4f13a] rounded-full"></div>
                             </div>
                             <div className="mt-1">
                                 <span className="text-xs text-gray-400 block">Team Benefits</span>
-                                <span className="text-sm font-bold text-white block">
+                                <span className="text-sm font-bold text-gray-900 dark:text-white block">
                                     {teamBenefits.count} items
                                     {teamBenefits.totalAmount > 0 && <span className="text-[#a4f13a] ml-1">(${teamBenefits.totalAmount.toFixed(2)})</span>}
                                 </span>
@@ -262,7 +262,7 @@ const Income = () => {
                             disabled={teamBenefits.count === 0}
                             className={`w-full py-1.5 rounded-full text-xs font-medium transition-all ${teamBenefits.count > 0
                                 ? 'bg-[#a4f13a] text-black hover:bg-[#93d934] shadow-lg shadow-[#a4f13a]/20'
-                                : 'bg-white/5 text-white/20 cursor-not-allowed'
+                                : 'bg-gray-900/5 dark:bg-white/5 text-gray-900/20 dark:text-white/20 cursor-not-allowed'
                                 }`}
                         >
                             {teamBenefits.count > 0 ? 'Received' : 'Received'}
@@ -271,10 +271,10 @@ const Income = () => {
                 </div>
 
                 {/* Daily Income Chart */}
-                <div className="bg-dark-200 rounded-[2rem] p-6 shadow-lg mt-4 border border-white/5">
+                <div className="bg-white dark:bg-dark-200 rounded-[2rem] p-6 shadow-lg mt-4 border border-slate-200 dark:border-white/5">
                     <div className="flex items-center justify-between mb-6">
-                        <h3 className="font-bold text-white text-lg">Daily Income</h3>
-                        <div className="flex items-center gap-1 bg-white/5 rounded-full px-3 py-1 text-xs font-medium text-white/60 cursor-pointer hover:bg-white/10 transition-colors">
+                        <h3 className="font-bold text-gray-900 dark:text-white text-lg">Daily Income</h3>
+                        <div className="flex items-center gap-1 bg-gray-900/5 dark:bg-white/5 rounded-full px-3 py-1 text-xs font-medium text-gray-900/60 dark:text-white/60 cursor-pointer hover:bg-white/10 transition-colors">
                             {timeRange}
                             <ChevronDown size={14} />
                         </div>
@@ -297,7 +297,7 @@ const Income = () => {
                             {/* Grid lines */}
                             <div className="w-full h-full flex flex-col justify-between">
                                 {[...Array(7)].map((_, i) => (
-                                    <div key={i} className="w-full h-[1px] bg-white/5"></div>
+                                    <div key={i} className="w-full h-[1px] bg-gray-900/5 dark:bg-white/5"></div>
                                 ))}
                             </div>
 

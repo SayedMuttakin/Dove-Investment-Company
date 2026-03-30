@@ -12,7 +12,7 @@ const SuccessModal = ({ isOpen, onClose, title, message }) => {
 
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 p-1 text-white/40 hover:text-white transition-colors"
+                    className="absolute top-4 right-4 p-1 text-gray-900/40 dark:text-white/40 hover:text-white transition-colors"
                 >
                     <X size={20} />
                 </button>
@@ -35,14 +35,14 @@ const SuccessModal = ({ isOpen, onClose, title, message }) => {
                     </svg>
                 </div>
 
-                <h2 className="text-2xl font-bold text-white mb-2">{title || 'Successful!'}</h2>
-                <p className="text-white/60 mb-8 leading-relaxed max-w-[240px]">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{title || 'Successful!'}</h2>
+                <p className="text-gray-900/60 dark:text-white/60 mb-8 leading-relaxed max-w-[240px]">
                     {message || 'Your request has been submitted and is pending approval.'}
                 </p>
 
                 <button
                     onClick={onClose}
-                    className="w-full py-4 bg-gradient-primary rounded-2xl text-white font-bold shadow-glow hover:shadow-glow-lg transition-all active:scale-[0.98]"
+                    className="w-full py-4 bg-gradient-primary rounded-2xl text-gray-900 dark:text-white font-bold shadow-glow hover:shadow-glow-lg transition-all active:scale-[0.98]"
                 >
                     Great!
                 </button>

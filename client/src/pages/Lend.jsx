@@ -127,25 +127,25 @@ const Lend = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-dark-300 pb-20">
+        <div className="min-h-screen bg-gray-50 dark:bg-dark-300 pb-20">
             {/* Header - Matching Home.jsx but simplified */}
-            <div className="bg-dark-200 border-b border-white/10 sticky top-0 z-20">
+            <div className="bg-white dark:bg-dark-200 border-b border-slate-200 dark:border-white/10 sticky top-0 z-20">
                 <div className="max-w-md mx-auto px-4 py-1.5 flex items-center justify-between relative">
                     <div className="w-10"></div>
                     <div className="absolute left-1/2 -translate-x-1/2">
-                        <h1 className="text-white font-bold text-lg">Lend</h1>
+                        <h1 className="text-gray-900 dark:text-white font-bold text-lg">Lend</h1>
                     </div>
                     <div className="flex items-center gap-3 relative z-10">
                         <button
                             onClick={() => navigate('/notifications')}
-                            className="relative p-2 text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full"
+                            className="relative p-2 text-gray-900/60 dark:text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full"
                         >
                             <Bell size={20} />
                             {/* Unread count dot could be dynamic later */}
                         </button>
                         <button
                             onClick={() => navigate('/help')}
-                            className="relative p-2 text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full"
+                            className="relative p-2 text-gray-900/60 dark:text-white/60 hover:text-primary transition-colors hover:bg-white/5 rounded-full"
                         >
                             <HelpCircle size={20} />
                         </button>
@@ -170,7 +170,7 @@ const Lend = () => {
                 )}
 
                 {loading ? (
-                    <div className="text-white/60 text-center py-20 animate-pulse">
+                    <div className="text-gray-900/60 dark:text-white/60 text-center py-20 animate-pulse">
                         <div className="w-12 h-12 border-2 border-primary/30 border-t-primary rounded-full animate-spin mx-auto mb-4"></div>
                         <p className="text-sm">Loading your exclusive plans...</p>
                     </div>
@@ -195,7 +195,7 @@ const Lend = () => {
                             return (
                                 <div
                                     key={pkg._id}
-                                    className={`bg-dark-200 rounded-3xl p-5 shadow-xl border relative overflow-hidden group ${activeCount > 0 ? 'border-primary/50' : 'border-white/5'}`}
+                                    className={`bg-white dark:bg-dark-200 rounded-3xl p-5 shadow-xl border relative overflow-hidden group ${activeCount > 0 ? 'border-primary/50' : 'border-slate-200 dark:border-white/5'}`}
                                 >
                                     {/* Active Badge if applicable */}
                                     {activeCount > 0 && (
@@ -213,19 +213,19 @@ const Lend = () => {
                                     {/* Level Header */}
                                     <div className="relative z-10 flex justify-between items-center mb-4">
                                         <div className="flex flex-col">
-                                            <span className="text-white/40 text-[10px] uppercase tracking-wider font-bold mb-0.5">Current Level</span>
+                                            <span className="text-gray-900/40 dark:text-white/40 text-[10px] uppercase tracking-wider font-bold mb-0.5">Current Level</span>
                                             <div className="flex items-center gap-1.5">
-                                                <span className="text-lg font-bold text-white tracking-tight">Level {currentLevel + 1}</span>
+                                                <span className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">Level {currentLevel + 1}</span>
                                             </div>
                                         </div>
-                                        <div className="px-3 py-1 bg-white/5 backdrop-blur-md border border-white/10 rounded-full text-[10px] font-bold text-white/80">
+                                        <div className="px-3 py-1 bg-gray-900/5 dark:bg-white/5 backdrop-blur-md border border-slate-200 dark:border-white/10 rounded-full text-[10px] font-bold text-gray-900/80 dark:text-white/80">
                                             {pkg.duration} Days Cycle
                                         </div>
                                     </div>
 
                                     {/* Hero Image - Full Width Banner Style */}
                                     <div className="relative z-10 w-[calc(100%+2.5rem)] mb-6 -mx-5 mt-4">
-                                        <div className="w-full relative h-80 bg-white/5 flex items-center justify-center overflow-hidden">
+                                        <div className="w-full relative h-80 bg-gray-900/5 dark:bg-white/5 flex items-center justify-center overflow-hidden">
                                             {(() => {
                                                 const duration = pkg.duration;
                                                 const isShort = duration <= 15;
@@ -270,21 +270,21 @@ const Lend = () => {
                                                 );
                                             })()}
                                             {/* Gradient overlay to help blend */}
-                                            <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-dark-200 to-transparent"></div>
+                                            <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-gray-50 dark:from-dark-200 to-transparent"></div>
                                         </div>
                                     </div>
 
                                     {/* Package Name */}
                                     <div className="relative z-10 text-center mb-6">
-                                        <h2 className="text-xl font-bold text-white mb-1.5">{dispayName}</h2>
+                                        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1.5">{dispayName}</h2>
                                         <div className="h-1 w-8 bg-gradient-primary rounded-full mx-auto"></div>
                                     </div>
 
                                     {/* Stats Grid */}
                                     <div className="relative z-10 grid gap-3 mb-6">
                                         {/* Amount */}
-                                        <div className="bg-dark-300/50 rounded-xl p-3 border border-white/5 flex items-center justify-between">
-                                            <span className="text-white/60 font-medium text-xs">Limit</span>
+                                        <div className="bg-gray-50 dark:bg-dark-300/50 rounded-xl p-3 border border-slate-200 dark:border-white/5 flex items-center justify-between transition-colors">
+                                            <span className="text-gray-900/60 dark:text-white/60 font-medium text-xs">Limit</span>
                                             <div className="flex items-center gap-1 text-primary text-base font-bold">
                                                 <div className="w-4 h-4 rounded-full bg-primary text-black flex items-center justify-center text-[8px] shadow-glow">T</div>
                                                 {pkg.minAmount} - {pkg.maxAmount.toLocaleString()} USDT
@@ -293,13 +293,13 @@ const Lend = () => {
 
                                         {/* Returns */}
                                         <div className="grid grid-cols-2 gap-3">
-                                            <div className="bg-dark-300/50 rounded-xl p-3 border border-white/5">
-                                                <div className="text-white/40 text-[10px] mb-0.5">Daily Income</div>
+                                            <div className="bg-gray-50 dark:bg-dark-300/50 rounded-xl p-3 border border-slate-200 dark:border-white/5 transition-colors">
+                                                <div className="text-gray-900/40 dark:text-white/40 text-[10px] mb-0.5">Daily Income</div>
                                                 <div className="text-green-400 font-bold text-base">+{pkg.dailyRate}%</div>
                                             </div>
-                                            <div className="bg-dark-300/50 rounded-xl p-3 border border-white/5">
-                                                <div className="text-white/40 text-[10px] mb-0.5">Service Fee</div>
-                                                <div className="text-white font-bold text-base">0%</div>
+                                            <div className="bg-gray-50 dark:bg-dark-300/50 rounded-xl p-3 border border-slate-200 dark:border-white/5 transition-colors">
+                                                <div className="text-gray-900/40 dark:text-white/40 text-[10px] mb-0.5">Service Fee</div>
+                                                <div className="text-gray-900 dark:text-white font-bold text-base">0%</div>
                                             </div>
                                         </div>
                                     </div>
@@ -308,7 +308,7 @@ const Lend = () => {
                                     <div className="space-y-3">
                                         {activeCount > 0 && (
                                             <div className="bg-green-500/5 border border-green-500/10 rounded-xl p-2.5 flex items-center justify-between text-[11px]">
-                                                <span className="text-white/40">Next Maturity</span>
+                                                <span className="text-gray-900/40 dark:text-white/40">Next Maturity</span>
                                                 <div className="text-green-400 font-mono">
                                                     <PackageTimer endDate={earliestEnding.endDate} />
                                                 </div>
@@ -322,7 +322,7 @@ const Lend = () => {
                                             }}
                                             disabled={activeCount > 0}
                                             className={`relative z-10 w-full py-3 rounded-lg font-bold text-sm transition-all active:scale-[0.98] ${activeCount > 0
-                                                ? 'bg-white/5 text-white/20 cursor-not-allowed border border-white/5'
+                                                ? 'bg-gray-900/5 dark:bg-white/5 text-gray-900/20 dark:text-white/20 cursor-not-allowed border border-slate-200 dark:border-white/5'
                                                 : 'text-black bg-gradient-to-r from-primary to-secondary hover:shadow-glow-lg'
                                                 }`}
                                         >
@@ -335,7 +335,7 @@ const Lend = () => {
                         {/* Empty State if no package for level */}
                         {packages.length === 0 && (
                             <div className="text-center py-10">
-                                <p className="text-white/40">No investment plans available for your current level.</p>
+                                <p className="text-gray-900/40 dark:text-white/40">No investment plans available for your current level.</p>
                             </div>
                         )}
                     </div>
@@ -346,35 +346,35 @@ const Lend = () => {
             {showInvestModal && (
                 <div className="fixed inset-0 z-50 flex items-end justify-center px-4 pb-10 sm:items-center sm:p-0">
                     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setShowInvestModal(null)}></div>
-                    <div className="relative bg-dark-200 border border-white/10 w-full max-w-md rounded-3xl overflow-hidden shadow-2xl transform transition-all animate-slide-up">
+                    <div className="relative bg-white dark:bg-dark-200 border border-slate-200 dark:border-white/10 w-full max-w-md rounded-3xl overflow-hidden shadow-2xl transform transition-all animate-slide-up">
                         <div className="p-6">
                             <div className="flex items-center justify-between mb-6">
-                                <h3 className="text-xl font-bold text-white">Select Investment</h3>
-                                <button onClick={() => setShowInvestModal(null)} className="text-white/40 hover:text-white">
+                                <h3 className="text-xl font-bold text-gray-900 dark:text-white">Select Investment</h3>
+                                <button onClick={() => setShowInvestModal(null)} className="text-gray-900/40 dark:text-white/40 hover:text-white">
                                     <ChevronLeft className="rotate-[-90deg]" size={24} />
                                 </button>
                             </div>
 
                             <div className="space-y-4">
-                                <div className="bg-dark-300 rounded-2xl p-4 border border-white/5">
+                                <div className="bg-gray-50 dark:bg-dark-300 rounded-2xl p-4 border border-slate-200 dark:border-white/5">
                                     <div className="flex justify-between items-center mb-2">
-                                        <span className="text-white/40 text-xs">Available Balance</span>
+                                        <span className="text-gray-900/40 dark:text-white/40 text-xs">Available Balance</span>
                                         <span className="text-primary font-bold">{user?.balance?.toFixed(2)} USDT</span>
                                     </div>
                                     <div className="flex justify-between items-center">
-                                        <span className="text-white/40 text-xs">Plan Range</span>
-                                        <span className="text-white font-medium text-xs">{showInvestModal.minAmount} - {showInvestModal.maxAmount} USDT</span>
+                                        <span className="text-gray-900/40 dark:text-white/40 text-xs">Plan Range</span>
+                                        <span className="text-gray-900 dark:text-white font-medium text-xs">{showInvestModal.minAmount} - {showInvestModal.maxAmount} USDT</span>
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className="block text-white/60 text-xs font-medium mb-2 ml-1">Investment Amount (USDT)</label>
+                                    <label className="block text-gray-900/60 dark:text-white/60 text-xs font-medium mb-2 ml-1">Investment Amount (USDT)</label>
                                     <div className="relative">
                                         <input
                                             type="number"
                                             value={investAmount}
                                             onChange={(e) => setInvestAmount(e.target.value)}
-                                            className="w-full bg-dark-300 border border-white/10 rounded-xl py-4 px-4 text-white font-bold focus:border-primary outline-none transition-all"
+                                            className="w-full bg-gray-50 dark:bg-dark-300 border border-slate-200 dark:border-white/10 rounded-xl py-4 px-4 text-gray-900 dark:text-white font-bold focus:border-primary outline-none transition-all"
                                             placeholder="Enter amount"
                                         />
                                         <button

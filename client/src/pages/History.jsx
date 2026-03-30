@@ -22,25 +22,25 @@ const TeamDetailsModal = ({ isOpen, onClose, teamData }) => {
     return (
         <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
             <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
-            <div className="relative w-full max-w-md bg-dark-200 border border-white/10 rounded-3xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300">
+            <div className="relative w-full max-w-md bg-white dark:bg-dark-200 border border-slate-200 dark:border-white/10 rounded-3xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300">
                 {/* Modal Header */}
-                <div className="p-6 border-b border-white/5 flex items-center justify-between">
+                <div className="p-6 border-b border-slate-200 dark:border-white/5 flex items-center justify-between">
                     <div>
-                        <h3 className="text-xl font-black text-white tracking-tight">Team Details</h3>
-                        <p className="text-white/40 text-xs font-medium uppercase tracking-widest mt-1">Hierarchical Members</p>
+                        <h3 className="text-xl font-black text-gray-900 dark:text-white tracking-tight">Team Details</h3>
+                        <p className="text-gray-900/40 dark:text-white/40 text-xs font-medium uppercase tracking-widest mt-1">Hierarchical Members</p>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-xl transition-colors text-white/40 hover:text-white">
+                    <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-xl transition-colors text-gray-900/40 dark:text-white/40 hover:text-white">
                         <X size={24} />
                     </button>
                 </div>
 
                 {/* Tabs */}
-                <div className="flex p-2 bg-white/5 mx-6 mt-4 rounded-2xl">
+                <div className="flex p-2 bg-gray-900/5 dark:bg-white/5 mx-6 mt-4 rounded-2xl">
                     {tabs.map((tab) => (
                         <button
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id)}
-                            className={`flex-1 py-2.5 text-xs font-black uppercase tracking-wider rounded-xl transition-all ${activeTab === tab.id ? 'bg-primary text-black shadow-lg shadow-primary/20 scale-[1.02]' : 'text-white/40 hover:text-white'}`}
+                            className={`flex-1 py-2.5 text-xs font-black uppercase tracking-wider rounded-xl transition-all ${activeTab === tab.id ? 'bg-primary text-black shadow-lg shadow-primary/20 scale-[1.02]' : 'text-gray-900/40 dark:text-white/40 hover:text-white'}`}
                         >
                             {tab.label} ({tab.data.length})
                         </button>
@@ -52,14 +52,14 @@ const TeamDetailsModal = ({ isOpen, onClose, teamData }) => {
                     <div className="space-y-3">
                         {tabs.find(t => t.id === activeTab).data.length > 0 ? (
                             tabs.find(t => t.id === activeTab).data.map((member, idx) => (
-                                <div key={idx} className="bg-white/[0.03] border border-white/5 p-4 rounded-2xl flex items-center justify-between group hover:bg-white/[0.05] transition-all">
+                                <div key={idx} className="bg-white/[0.03] border border-slate-200 dark:border-white/5 p-4 rounded-2xl flex items-center justify-between group hover:bg-white/[0.05] transition-all">
                                     <div className="flex items-center gap-4">
                                         <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
                                             {member.fullName?.charAt(0) || <Users size={18} />}
                                         </div>
                                         <div>
-                                            <h4 className="text-white font-bold text-sm">{member.fullName || 'Anonymous'}</h4>
-                                            <p className="text-white/30 text-[10px] uppercase font-bold tracking-tighter mt-0.5">+{member.phone}</p>
+                                            <h4 className="text-gray-900 dark:text-white font-bold text-sm">{member.fullName || 'Anonymous'}</h4>
+                                            <p className="text-gray-900/30 dark:text-white/30 text-[10px] uppercase font-bold tracking-tighter mt-0.5">+{member.phone}</p>
                                         </div>
                                     </div>
                                     <div className="flex flex-col items-end gap-1">
@@ -74,7 +74,7 @@ const TeamDetailsModal = ({ isOpen, onClose, teamData }) => {
                                                 <span className="text-[10px] font-black text-red-400 uppercase">No Deposit</span>
                                             </div>
                                         )}
-                                        <p className="text-white/20 text-[8px] font-medium font-mono uppercase">
+                                        <p className="text-gray-900/20 dark:text-white/20 text-[8px] font-medium font-mono uppercase">
                                             Joined {new Date(member.createdAt).toLocaleDateString()}
                                         </p>
                                     </div>
@@ -175,27 +175,27 @@ const History = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-dark-300 flex items-center justify-center">
+            <div className="min-h-screen bg-gray-50 dark:bg-dark-300 flex items-center justify-center">
                 <div className="w-8 h-8 border-4 border-primary border-t-transparent animate-spin rounded-full"></div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-dark-300 pb-24">
+        <div className="min-h-screen bg-gray-50 dark:bg-dark-300 pb-24">
             {/* Header */}
-            <div className="bg-dark-200 border-b border-white/5 shadow-lg">
+            <div className="bg-white dark:bg-dark-200 border-b border-slate-200 dark:border-white/5 shadow-lg">
                 <div className="max-w-md mx-auto px-4 h-10 flex items-center justify-between relative">
                     <div className="flex items-center gap-3 relative z-10 w-10">
                         <button
                             onClick={() => navigate(-1)}
-                            className="p-1.5 hover:bg-white/5 rounded-lg transition-colors text-white/60 hover:text-white"
+                            className="p-1.5 hover:bg-white/5 rounded-lg transition-colors text-gray-900/60 dark:text-white/60 hover:text-white"
                         >
                             <ArrowLeft size={20} />
                         </button>
                     </div>
                     <div className="absolute left-1/2 -translate-x-1/2">
-                        <h1 className="text-lg font-bold text-white tracking-tight">Financial History</h1>
+                        <h1 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">Financial History</h1>
                     </div>
                     <div className="w-10"></div>
                 </div>
@@ -217,34 +217,34 @@ const History = () => {
                 </div>
 
                 {/* Detailed Income List */}
-                <div className="glass-card p-0 overflow-hidden border-white/10">
+                <div className="glass-card p-0 overflow-hidden border-slate-200 dark:border-white/10">
                     <div className="divide-y divide-white/5">
                         <div className="flex justify-between items-center p-4 hover:bg-white/5 transition-colors bg-white/[0.02]">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-blue-500/10 text-blue-400 rounded-lg">
                                     <TrendingUp size={16} />
                                 </div>
-                                <span className="text-white/60 text-sm font-medium">Lending Income</span>
+                                <span className="text-gray-900/60 dark:text-white/60 text-sm font-medium">Lending Income</span>
                             </div>
-                            <span className="text-white font-black text-sm">{data?.interestIncome?.toFixed(1) || '0.0'}</span>
+                            <span className="text-gray-900 dark:text-white font-black text-sm">{data?.interestIncome?.toFixed(1) || '0.0'}</span>
                         </div>
                         <div className="flex justify-between items-center p-4 hover:bg-white/5 transition-colors bg-white/[0.02]">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-yellow-500/10 text-yellow-400 rounded-lg">
                                     <TrendingUp size={16} />
                                 </div>
-                                <span className="text-white/60 text-sm font-medium">Team Benefits</span>
+                                <span className="text-gray-900/60 dark:text-white/60 text-sm font-medium">Team Benefits</span>
                             </div>
-                            <span className="text-white font-black text-sm">{data?.teamIncome?.toFixed(2) || '0.00'}</span>
+                            <span className="text-gray-900 dark:text-white font-black text-sm">{data?.teamIncome?.toFixed(2) || '0.00'}</span>
                         </div>
                         <div className="flex justify-between items-center p-4 hover:bg-white/5 transition-colors">
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-purple-500/10 text-purple-400 rounded-lg">
                                     <Gift size={16} />
                                 </div>
-                                <span className="text-white/60 text-sm font-medium">Bonus</span>
+                                <span className="text-gray-900/60 dark:text-white/60 text-sm font-medium">Bonus</span>
                             </div>
-                            <span className="text-white font-black text-sm">{data?.bonusIncome?.toFixed(0) || '0'}</span>
+                            <span className="text-gray-900 dark:text-white font-black text-sm">{data?.bonusIncome?.toFixed(0) || '0'}</span>
                         </div>
                         <div className="flex justify-between items-center p-5 bg-gradient-to-r from-primary/10 to-transparent border-t border-primary/20">
                             <span className="text-primary font-black text-sm uppercase tracking-widest">Total Income</span>
@@ -257,7 +257,7 @@ const History = () => {
                 <div className="space-y-4">
                     <div className="flex items-center gap-2 px-1">
                         <HistoryIcon size={16} className="text-primary" />
-                        <h2 className="text-white font-bold text-sm uppercase tracking-wider">Recent Transactions</h2>
+                        <h2 className="text-gray-900 dark:text-white font-bold text-sm uppercase tracking-wider">Recent Transactions</h2>
                     </div>
 
                     <div className="space-y-3">
@@ -269,21 +269,21 @@ const History = () => {
                                             {getTransactionIcon(item.type)}
                                         </div>
                                         <div>
-                                            <h4 className="text-white font-bold text-xs tracking-tight">{item.message}</h4>
-                                            <p className="text-white/30 text-[10px] mt-0.5">{new Date(item.createdAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</p>
+                                            <h4 className="text-gray-900 dark:text-white font-bold text-xs tracking-tight">{item.message}</h4>
+                                            <p className="text-gray-900/30 dark:text-white/30 text-[10px] mt-0.5">{new Date(item.createdAt).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</p>
                                         </div>
                                     </div>
                                     <div className="text-right">
                                         <div className={`font-black text-sm ${['deposit', 'commission', 'bonus', 'investment'].includes(item.type) ? 'text-[#a4f13a]' : 'text-red-400'}`}>
                                             {['deposit', 'commission', 'bonus', 'investment'].includes(item.type) ? '+' : '-'}${item.amount?.toFixed(2)}
                                         </div>
-                                        <p className="text-white/20 text-[9px] uppercase font-medium mt-0.5 tracking-tighter">USDT CONVERTED</p>
+                                        <p className="text-gray-900/20 dark:text-white/20 text-[9px] uppercase font-medium mt-0.5 tracking-tighter">USDT CONVERTED</p>
                                     </div>
                                 </div>
                             ))
                         ) : (
                             <div className="glass-card p-8 text-center">
-                                <p className="text-white/20 text-xs italic">No recent transactions recorded yet.</p>
+                                <p className="text-gray-900/20 dark:text-white/20 text-xs italic">No recent transactions recorded yet.</p>
                             </div>
                         )}
                     </div>

@@ -4,17 +4,20 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { AuthProvider } from './context/AuthContext';
 import { PWAProvider } from './context/PWAContext';
+import { ThemeProvider } from './context/ThemeContext';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
-        <BrowserRouter>
-            <AuthProvider>
-                <PWAProvider>
-                    <App />
-                </PWAProvider>
-            </AuthProvider>
-        </BrowserRouter>
+        <ThemeProvider>
+            <BrowserRouter>
+                <AuthProvider>
+                    <PWAProvider>
+                        <App />
+                    </PWAProvider>
+                </AuthProvider>
+            </BrowserRouter>
+        </ThemeProvider>
     </React.StrictMode>
 );
 

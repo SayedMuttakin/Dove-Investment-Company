@@ -34,18 +34,18 @@ const AdminLayout = () => {
     };
 
     return (
-        <div className="min-h-screen bg-dark-300 flex flex-col md:flex-row">
+        <div className="min-h-screen bg-gray-50 dark:bg-dark-300 flex flex-col md:flex-row">
             {/* Mobile Header */}
-            <div className="md:hidden bg-dark-200 border-b border-white/5 p-4 flex items-center justify-between sticky top-0 z-[60]">
+            <div className="md:hidden bg-white dark:bg-dark-200 border-b border-slate-200 dark:border-white/5 p-4 flex items-center justify-between sticky top-0 z-[60]">
                 <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shadow-lg">
-                        <ShieldCheck className="text-white" size={18} />
+                        <ShieldCheck className="text-gray-900 dark:text-white" size={18} />
                     </div>
-                    <span className="text-white font-bold">Admin Panel</span>
+                    <span className="text-gray-900 dark:text-white font-bold">Admin Panel</span>
                 </div>
                 <button
                     onClick={toggleSidebar}
-                    className="p-2 text-white/60 hover:text-white bg-white/5 rounded-lg transition-colors"
+                    className="p-2 text-gray-900/60 dark:text-white/60 hover:text-white bg-gray-900/5 dark:bg-white/5 rounded-lg transition-colors"
                 >
                     {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
@@ -61,17 +61,17 @@ const AdminLayout = () => {
 
             {/* Sidebar */}
             <div className={`
-                fixed inset-y-0 left-0 w-64 bg-dark-200 border-r border-white/5 flex flex-col z-[55] transition-transform duration-300 ease-in-out
+                fixed inset-y-0 left-0 w-64 bg-white dark:bg-dark-200 border-r border-slate-200 dark:border-white/5 flex flex-col z-[55] transition-transform duration-300 ease-in-out
                 md:relative md:translate-x-0
                 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
             `}>
-                <div className="hidden md:flex p-5 border-b border-white/5 items-center gap-3">
+                <div className="hidden md:flex p-5 border-b border-slate-200 dark:border-white/5 items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shadow-lg">
-                        <ShieldCheck className="text-white" size={24} />
+                        <ShieldCheck className="text-gray-900 dark:text-white" size={24} />
                     </div>
                     <div>
-                        <h1 className="text-white font-bold text-lg">Admin Panel</h1>
-                        <p className="text-white/40 text-xs">Dove Investment</p>
+                        <h1 className="text-gray-900 dark:text-white font-bold text-lg">Admin Panel</h1>
+                        <p className="text-gray-900/40 dark:text-white/40 text-xs">Dove Investment</p>
                     </div>
                 </div>
 
@@ -81,8 +81,8 @@ const AdminLayout = () => {
                             key={item.path}
                             onClick={() => handleNavigate(item.path)}
                             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${location.pathname === item.path
-                                ? 'bg-primary text-white shadow-lg shadow-primary/25'
-                                : 'text-white/60 hover:bg-white/5 hover:text-white'
+                                ? 'bg-primary text-gray-900 dark:text-white shadow-lg shadow-primary/25'
+                                : 'text-gray-900/60 dark:text-white/60 hover:bg-white/5 hover:text-white'
                                 }`}
                         >
                             <item.icon size={20} />
@@ -91,7 +91,7 @@ const AdminLayout = () => {
                     ))}
                 </nav>
 
-                <div className="p-4 border-t border-white/5">
+                <div className="p-4 border-t border-slate-200 dark:border-white/5">
                     <button
                         onClick={handleLogout}
                         className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-colors"

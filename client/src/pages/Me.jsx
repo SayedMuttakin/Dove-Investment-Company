@@ -92,11 +92,11 @@ const Me = () => {
         const levelNum = currentLevel + 1;
 
         return (
-            <div className="relative w-full aspect-[1.8/1] sm:aspect-[2.2/1] bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] rounded-[2.5rem] overflow-hidden border border-white/5 mb-6 group shadow-2xl">
+            <div className="relative w-full aspect-[1.8/1] sm:aspect-[2.2/1] bg-[#0d0d0d] rounded-[2.5rem] overflow-hidden border border-white/5 mb-6 group shadow-2xl">
                 {/* 3D Animated Grid Background */}
-                <div className="absolute inset-0 opacity-20">
+                <div className="absolute inset-0 opacity-10 dark:opacity-20">
                     <div className="absolute inset-0" style={{
-                        backgroundImage: `radial-gradient(circle at 2px 2px, #333 1px, transparent 0)`,
+                        backgroundImage: `radial-gradient(circle at 2px 2px, #444 1px, transparent 0)`,
                         backgroundSize: '24px 24px',
                     }}></div>
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent"></div>
@@ -109,14 +109,23 @@ const Me = () => {
                 <div className="relative h-full px-4 sm:px-8 flex items-center justify-between">
                     {/* Level Identity Section */}
                     <div className="flex flex-col items-center">
-                        <div className="relative w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center">
+                        <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center">
                             <div className="absolute inset-0 bg-primary/10 blur-3xl rounded-full scale-150"></div>
                             <img
                                 src={`/images/levels/level_${levelNum}.png`}
                                 alt={`Level ${levelNum}`}
-                                className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_30px_rgba(164,241,58,0.3)] transition-all duration-700 group-hover:scale-110 group-hover:rotate-6 mix-blend-lighten"
-                                onError={(e) => { e.target.src = `/images/vip/vip_level_${levelNum}.png` }}
+                                className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_20px_rgba(164,241,58,0.4)] transition-all duration-700 group-hover:scale-110 group-hover:rotate-6"
+                                onError={(e) => { 
+                                    e.target.src = `/images/vip/vip_level_${levelNum}.png`;
+                                    e.target.onerror = () => {
+                                        e.target.style.display = 'none';
+                                        e.target.nextSibling.style.display = 'flex';
+                                    }
+                                }}
                             />
+                            <div className="hidden absolute inset-0 items-center justify-center text-primary/40">
+                                <Shield size={40} />
+                            </div>
                         </div>
                         <div className="mt-0 flex sm:mt-1 flex-col items-center text-center">
                             <span className="text-white/40 text-[7px] sm:text-[9px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] mb-0.5 sm:mb-1">Current Status</span>
@@ -139,7 +148,7 @@ const Me = () => {
                             onClick={() => navigate('/level-requirements')}
                             className="group/btn relative overflow-hidden bg-primary text-black font-black text-[9px] sm:text-[10px] px-5 sm:px-7 py-2.5 sm:py-3.5 rounded-2xl hover:shadow-[0_0_30px_rgba(164,241,58,0.6)] active:scale-95 transition-all uppercase tracking-widest"
                         >
-                            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300"></div>
+                            <div className="absolute inset-0 bg-gray-900/20 dark:bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300"></div>
                             <span className="relative z-10 flex items-center gap-2">
                                 <Star size={12} className="sm:size-14" fill="black" />
                                 Upgrade credit
@@ -152,9 +161,9 @@ const Me = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-100 to-slate-200 pb-20">
+        <div className="min-h-screen bg-gray-50 dark:bg-dark-300 transition-colors duration-300 pb-20">
             {/* Compact Header */}
-            <div className="bg-white/60 backdrop-blur-xl pt-3 pb-4 border-b border-white shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+            <div className="bg-white/80 dark:bg-dark-200 backdrop-blur-xl pt-3 pb-4 border-b border-gray-200 dark:border-white/5 shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-colors">
                 <div className="max-w-md mx-auto px-4">
                     {/* Profile Info Row */}
                     <div className="flex items-center justify-between mb-3 relative">
@@ -171,11 +180,11 @@ const Me = () => {
                                             className="w-full h-full object-cover"
                                             onError={(e) => {
                                                 e.target.src = '';
-                                                e.target.parentElement.innerHTML = '<User class="text-white" size={24} />';
+                                                e.target.parentElement.innerHTML = '<User class="text-gray-900 dark:text-white" size={24} />';
                                             }}
                                         />
                                     ) : (
-                                        <User className="text-white" size={24} />
+                                        <User className="text-gray-900 dark:text-white" size={24} />
                                     )}
                                 </div>
                                 <div className="absolute -bottom-1 -right-1 bg-primary p-1 rounded-full border-2 border-white shadow-sm">
@@ -207,13 +216,13 @@ const Me = () => {
 
                         {/* Action Buttons & Invite */}
                         <div className="flex items-center gap-1 relative z-10 justify-end">
-                            <button onClick={() => navigate('/notifications')} className="p-2 text-gray-500 hover:text-gray-900 transition-colors hover:bg-white rounded-full shadow-sm bg-white/50">
+                            <button onClick={() => navigate('/notifications')} className="p-2 text-gray-500 dark:text-white/60 hover:text-gray-900 dark:hover:text-white transition-colors hover:bg-gray-100 dark:hover:bg-white/10 rounded-full shadow-sm bg-gray-50 dark:bg-dark-100">
                                 <Bell size={18} />
                             </button>
-                            <button onClick={() => navigate('/help')} className="p-2 text-gray-500 hover:text-gray-900 transition-colors hover:bg-white rounded-full shadow-sm bg-white/50">
+                            <button onClick={() => navigate('/help')} className="p-2 text-gray-500 dark:text-white/60 hover:text-gray-900 dark:hover:text-white transition-colors hover:bg-gray-100 dark:hover:bg-white/10 rounded-full shadow-sm bg-gray-50 dark:bg-dark-100">
                                 <HelpCircle size={18} />
                             </button>
-                            <button onClick={() => navigate('/settings')} className="p-2 text-gray-500 hover:text-gray-900 transition-colors hover:bg-white rounded-full shadow-sm bg-white/50">
+                            <button onClick={() => navigate('/settings')} className="p-2 text-gray-500 dark:text-white/60 hover:text-gray-900 dark:hover:text-white transition-colors hover:bg-gray-100 dark:hover:bg-white/10 rounded-full shadow-sm bg-gray-50 dark:bg-dark-100">
                                 <Settings size={18} />
                             </button>
 
@@ -225,36 +234,36 @@ const Me = () => {
                                 <div className="w-9 h-9 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary transition-all group-active:scale-90 group-hover:bg-primary/30 shadow-md">
                                     <UserPlus size={18} />
                                 </div>
-                                <span className="text-gray-700 text-[7px] font-black uppercase tracking-tighter">Invite</span>
+                                <span className="text-gray-700 dark:text-white/60 text-[7px] font-black uppercase tracking-tighter">Invite</span>
                             </button>
                         </div>
                     </div>
 
                     {/* Stats Grid */}
                     <div className="grid grid-cols-3 gap-1.5">
-                        <div className="glass-card p-2 bg-white/80 backdrop-blur-md border border-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-                            <div className="text-gray-500 text-[7px] uppercase mb-0.5">Balance</div>
+                        <div className="glass-card p-2 bg-white dark:bg-dark-100 backdrop-blur-md border border-gray-100 dark:border-white/5 rounded-xl shadow-sm">
+                            <div className="text-gray-500 dark:text-white/40 text-[7px] uppercase mb-0.5">Balance</div>
                             <div className="font-bold text-[10px] tracking-tight text-primary drop-shadow-sm">${user?.balance?.toFixed(2) || '0.00'}</div>
                         </div>
                         <div
                             onClick={() => navigate('/history')}
-                            className="glass-card p-2 bg-white/80 backdrop-blur-md cursor-pointer hover:bg-white transition-colors border border-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)]"
+                            className="glass-card p-2 bg-white dark:bg-dark-100 backdrop-blur-md cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition-colors border border-gray-100 dark:border-white/5 rounded-xl shadow-sm"
                         >
-                            <div className="text-gray-500 text-[7px] uppercase mb-0.5 flex items-center gap-1">
+                            <div className="text-gray-500 dark:text-white/40 text-[7px] uppercase mb-0.5 flex items-center gap-1">
                                 <History size={8} />
                                 History
                             </div>
-                            <div className="text-gray-800 font-bold text-[10px]">View Detail</div>
+                            <div className="text-gray-800 dark:text-white/80 font-bold text-[10px]">View Detail</div>
                         </div>
                         <div
                             onClick={() => navigate('/lend-funding')}
-                            className="glass-card p-2 bg-white/80 backdrop-blur-md cursor-pointer hover:bg-white transition-colors border border-white rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.02)]"
+                            className="glass-card p-2 bg-white dark:bg-dark-100 backdrop-blur-md cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition-colors border border-gray-100 dark:border-white/5 rounded-xl shadow-sm"
                         >
-                            <div className="text-gray-500 text-[7px] uppercase mb-0.5 flex items-center gap-1">
+                            <div className="text-gray-500 dark:text-white/40 text-[7px] uppercase mb-0.5 flex items-center gap-1">
                                 <Briefcase size={8} />
                                 Profits
                             </div>
-                            <div className="text-gray-800 font-bold text-[10px]">Record</div>
+                            <div className="text-gray-800 dark:text-white/80 font-bold text-[10px]">Record</div>
                         </div>
                     </div>
                 </div>
@@ -268,17 +277,17 @@ const Me = () => {
                 {/* Star Reward System Entry */}
                 <div
                     onClick={() => navigate('/star-rewards')}
-                    className="relative overflow-hidden bg-white/80 backdrop-blur-md rounded-3xl p-5 border border-white group cursor-pointer active:scale-[0.98] transition-all shadow-[0_8px_30px_rgba(234,179,8,0.15)]"
+                    className="relative overflow-hidden bg-white dark:bg-dark-100 backdrop-blur-md rounded-3xl p-5 border border-gray-100 dark:border-white/5 group cursor-pointer active:scale-[0.98] transition-all shadow-sm dark:shadow-none"
                 >
                     <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-700">
                         <Star size={60} className="text-yellow-500" fill="currentColor" />
                     </div>
                     <div className="flex items-center gap-4 relative z-10">
-                        <div className="w-12 h-12 rounded-2xl bg-yellow-100 shadow-inner flex items-center justify-center border border-yellow-200">
+                        <div className="w-12 h-12 rounded-2xl bg-yellow-100 dark:bg-yellow-500/10 shadow-inner flex items-center justify-center border border-yellow-200 dark:border-yellow-500/20">
                             <Sparkles size={24} className="text-yellow-500" />
                         </div>
                         <div className="flex-1">
-                            <h3 className="text-gray-900 font-black text-sm uppercase tracking-wider italic leading-none">Star Member Rewards</h3>
+                            <h3 className="text-gray-900 dark:text-white font-black text-sm uppercase tracking-wider italic leading-none">Star Member Rewards</h3>
                             <div className="flex items-center gap-1.5 mt-1.5">
                                 {[
                                     { id: 'tier1', pts: 7 },
@@ -290,7 +299,7 @@ const Me = () => {
                                         <div key={tier.id} className="relative">
                                             <Star
                                                 size={22}
-                                                className={`transition-all duration-500 ${isReached ? 'text-yellow-500 drop-shadow-[0_0_8px_rgba(234,179,8,0.5)]' : 'text-gray-200'}`}
+                                                className={`transition-all duration-500 ${isReached ? 'text-yellow-500 drop-shadow-[0_0_8px_rgba(234,179,8,0.5)]' : 'text-gray-200 dark:text-white/10'}`}
                                                 fill={isReached ? "currentColor" : "none"}
                                             />
                                             {isReached && (
@@ -299,44 +308,44 @@ const Me = () => {
                                         </div>
                                     );
                                 })}
-                                <span className="text-gray-500 text-[10px] font-bold uppercase tracking-tighter ml-1">
+                                <span className="text-gray-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-tighter ml-1">
                                     {(user?.starPoints || 0)} pts
                                 </span>
                             </div>
                         </div>
-                        <ChevronRight size={18} className="text-gray-400 group-hover:text-primary transition-colors" />
+                        <ChevronRight size={18} className="text-gray-400 dark:text-white/20 group-hover:text-primary transition-colors" />
                     </div>
                 </div>
 
                 {/* Utility Options */}
                 <div className="space-y-3 pb-6">
-                    <div className="bg-white/80 backdrop-blur-md overflow-hidden border border-white rounded-2xl shadow-[0_2px_15px_rgba(0,0,0,0.03)]">
+                    <div className="bg-white dark:bg-dark-100 backdrop-blur-md overflow-hidden border border-gray-100 dark:border-white/5 rounded-2xl shadow-sm">
                         <button
                             onClick={handleDownload}
-                            className="w-full flex items-center justify-between px-4 py-4 hover:bg-gray-50 transition-colors"
+                            className="w-full flex items-center justify-between px-4 py-4 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                         >
                             <div className="flex items-center gap-3">
                                 <div className="p-2 bg-primary/10 rounded-xl text-primary shadow-inner">
                                     <Download size={18} />
                                 </div>
-                                <span className="text-gray-800 text-sm font-bold uppercase tracking-tight">App Download</span>
+                                <span className="text-gray-800 dark:text-white text-sm font-bold uppercase tracking-tight">App Download</span>
                             </div>
-                            <ChevronRight size={16} className="text-gray-300" />
+                            <ChevronRight size={16} className="text-gray-300 dark:text-white/20" />
                         </button>
                     </div>
 
-                    <div className="bg-white/80 backdrop-blur-md overflow-hidden border border-white rounded-2xl shadow-[0_2px_15px_rgba(0,0,0,0.03)]">
+                    <div className="bg-white dark:bg-dark-100 backdrop-blur-md overflow-hidden border border-gray-100 dark:border-white/5 rounded-2xl shadow-sm">
                         <button
                             onClick={handleLogout}
-                            className="w-full flex items-center justify-between px-4 py-4 hover:bg-red-50/50 transition-colors"
+                            className="w-full flex items-center justify-between px-4 py-4 hover:bg-red-50 transition-colors"
                         >
                             <div className="flex items-center gap-3">
-                                <div className="p-2 bg-red-100 rounded-xl text-red-500 shadow-inner">
+                                <div className="p-2 bg-red-100 dark:bg-red-500/10 rounded-xl text-red-500 shadow-inner">
                                     <LogOut size={18} />
                                 </div>
                                 <span className="text-red-500 text-sm font-bold uppercase tracking-tight">Logout Session</span>
                             </div>
-                            <ChevronRight size={16} className="text-gray-300" />
+                            <ChevronRight size={16} className="text-gray-300 dark:text-white/20" />
                         </button>
                     </div>
                 </div>

@@ -41,7 +41,7 @@ const BonusSuccess = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-dark-300 flex items-center justify-center">
+            <div className="min-h-screen bg-gray-50 dark:bg-dark-300 flex items-center justify-center">
                 <div className="text-primary text-xl animate-pulse font-bold">Loading Bonus Info...</div>
             </div>
         );
@@ -49,14 +49,14 @@ const BonusSuccess = () => {
 
     if (error || !notification) {
         return (
-            <div className="min-h-screen bg-dark-300 flex items-center justify-center p-4 text-white">
+            <div className="min-h-screen bg-gray-50 dark:bg-dark-300 flex items-center justify-center p-4 text-gray-900 dark:text-white">
                 <div className="glass-card p-6 max-w-md text-center">
                     <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
                     <h2 className="text-xl font-bold mb-2">Error</h2>
-                    <p className="text-white/60 mb-6">{error || 'Notification not found'}</p>
+                    <p className="text-gray-900/60 dark:text-white/60 mb-6">{error || 'Notification not found'}</p>
                     <button
                         onClick={() => navigate('/home')}
-                        className="px-6 py-3 bg-gradient-primary rounded-xl text-white font-bold"
+                        className="px-6 py-3 bg-gradient-primary rounded-xl text-gray-900 dark:text-white font-bold"
                     >
                         Go Home
                     </button>
@@ -66,13 +66,13 @@ const BonusSuccess = () => {
     }
 
     return (
-        <div className="min-h-screen bg-dark-300 pb-20 text-white">
+        <div className="min-h-screen bg-gray-50 dark:bg-dark-300 pb-20 text-gray-900 dark:text-white">
             {/* Header */}
-            <div className="sticky top-0 z-50 bg-dark-200/80 backdrop-blur-md border-b border-white/5 py-4 px-4 shadow-lg">
+            <div className="sticky top-0 z-50 bg-dark-200/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5 py-4 px-4 shadow-lg">
                 <div className="max-w-md mx-auto flex items-center justify-between">
                     <button
                         onClick={() => navigate(-1)}
-                        className="p-2 -ml-2 text-white/60 hover:text-white transition-colors"
+                        className="p-2 -ml-2 text-gray-900/60 dark:text-white/60 hover:text-white transition-colors"
                     >
                         <ArrowLeft size={20} />
                     </button>
@@ -91,7 +91,7 @@ const BonusSuccess = () => {
                         </div>
                     </div>
                     <h2 className="text-2xl font-bold mb-2">Bonus Received!</h2>
-                    <p className="text-white/60 text-center">
+                    <p className="text-gray-900/60 dark:text-white/60 text-center">
                         An administrative bonus has been added to your account balance.
                     </p>
                 </div>
@@ -103,17 +103,17 @@ const BonusSuccess = () => {
                     </div>
 
                     <div className="flex flex-col items-center mb-6">
-                        <span className="text-white/60 text-sm mb-1 uppercase tracking-wider font-medium">Bonus Amount</span>
+                        <span className="text-gray-900/60 dark:text-white/60 text-sm mb-1 uppercase tracking-wider font-medium">Bonus Amount</span>
                         <div className="text-4xl font-black text-green-400 drop-shadow-glow">
                             ${notification.amount?.toFixed(2) || '0.00'}
                         </div>
                     </div>
 
-                    <div className="space-y-4 pt-6 border-t border-white/10">
+                    <div className="space-y-4 pt-6 border-t border-slate-200 dark:border-white/10">
                         <div className="flex justify-between items-start">
-                            <span className="text-white/60 text-sm italic">Message from Admin:</span>
+                            <span className="text-gray-900/60 dark:text-white/60 text-sm italic">Message from Admin:</span>
                         </div>
-                        <p className="text-white/90 text-sm leading-relaxed bg-white/5 p-4 rounded-xl border border-white/5">
+                        <p className="text-gray-900/90 dark:text-white/90 text-sm leading-relaxed bg-gray-900/5 dark:bg-white/5 p-4 rounded-xl border border-slate-200 dark:border-white/5">
                             "{notification.message}"
                         </p>
                     </div>
@@ -124,8 +124,8 @@ const BonusSuccess = () => {
                     <div className="flex items-center gap-3 text-sm">
                         <Clock size={18} className="text-primary" />
                         <div className="flex-1">
-                            <div className="text-white/60 text-xs">Received At</div>
-                            <div className="text-white font-medium">
+                            <div className="text-gray-900/60 dark:text-white/60 text-xs">Received At</div>
+                            <div className="text-gray-900 dark:text-white font-medium">
                                 {formatDate(notification.createdAt)}
                             </div>
                         </div>
@@ -134,8 +134,8 @@ const BonusSuccess = () => {
                     <div className="flex items-center gap-3 text-sm">
                         <DollarSign size={18} className="text-primary" />
                         <div className="flex-1">
-                            <div className="text-white/60 text-xs">Income Category</div>
-                            <div className="text-white font-medium uppercase tracking-tight">Administrative Bonus</div>
+                            <div className="text-gray-900/60 dark:text-white/60 text-xs">Income Category</div>
+                            <div className="text-gray-900 dark:text-white font-medium uppercase tracking-tight">Administrative Bonus</div>
                         </div>
                     </div>
                 </div>
@@ -144,13 +144,13 @@ const BonusSuccess = () => {
                 <div className="space-y-3">
                     <button
                         onClick={() => navigate('/income')}
-                        className="w-full py-4 bg-gradient-primary rounded-2xl text-white font-bold shadow-glow hover:shadow-glow-lg transition-all active:scale-[0.98]"
+                        className="w-full py-4 bg-gradient-primary rounded-2xl text-gray-900 dark:text-white font-bold shadow-glow hover:shadow-glow-lg transition-all active:scale-[0.98]"
                     >
                         View My Income
                     </button>
                     <button
                         onClick={() => navigate('/home')}
-                        className="w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-white/80 font-bold hover:bg-white/10 transition-all active:scale-[0.98]"
+                        className="w-full py-4 bg-gray-900/5 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl text-gray-900/80 dark:text-white/80 font-bold hover:bg-white/10 transition-all active:scale-[0.98]"
                     >
                         Back to Home
                     </button>

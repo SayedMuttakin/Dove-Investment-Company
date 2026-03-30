@@ -17,7 +17,7 @@ const BottomNav = () => {
     const isActive = (path) => location.pathname === path;
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-dark-200 border-t border-white/10 safe-area-pb shadow-[0_-4px_10px_rgba(0,0,0,0.3)]">
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-dark-200 border-t border-slate-200 dark:border-white/10 safe-area-pb shadow-[0_-4px_10px_rgba(0,0,0,0.3)]">
             <div className="flex items-center justify-around px-4 py-2.5 max-w-md mx-auto">
                 {navItems.map((item, index) => {
                     const Icon = item.icon;
@@ -33,10 +33,10 @@ const BottomNav = () => {
                                 }`}>
                                 <Icon
                                     size={20}
-                                    className={active ? 'text-primary' : 'text-white/60'}
+                                    className={active ? 'text-primary' : 'text-gray-900/60 dark:text-white/60'}
                                 />
                             </div>
-                            <span className={`text-[10px] ${active ? 'text-primary font-medium' : 'text-white/60'
+                            <span className={`text-[10px] ${active ? 'text-primary font-medium' : 'text-gray-900/60 dark:text-white/60'
                                 }`}>
                                 {item.label}
                             </span>
