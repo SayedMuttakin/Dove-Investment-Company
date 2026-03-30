@@ -461,21 +461,30 @@ router.get('/me', authMiddleware, async (req, res) => {
         const secondGenReferrals = await User.find({ referredBy: { $in: directCodes } });
         const teamCount = directCount + secondGenReferrals.length;
 
+        // Calculate user's total approved deposits
+        const approvedDeposits = await Deposit.aggregate([
+            { $match: { userId: user._id, status: 'approved' } },
+            { $group: { _id: null, total: { $sum: '$amount' } } }
+        ]);
+        const totalDeposited = approvedDeposits.length > 0 ? approvedDeposits[0].total : 0;
+
         // Auto-Upgrade Logic (Check from highest level down)
         // Level 1 (vipLevel 0) = no team needed (default)
-        // Level 2+ thresholds shifted: old L1(7)→L2, old L2(18)→L3, etc.
-        let newLevel = user.vipLevel;
+        // Level 2+ requires BOTH: team members + minimum deposit
+        const levelUpRequirements = [
+            { level: 5, members: 140, minDeposit: 3000 },
+            { level: 4, members: 80, minDeposit: 2000 },
+            { level: 3, members: 50, minDeposit: 1300 },
+            { level: 2, members: 18, minDeposit: 800 },
+            { level: 1, members: 7, minDeposit: 300 }
+        ];
 
-        if (directCount >= 140) {
-            newLevel = 5;
-        } else if (directCount >= 80) {
-            newLevel = 4;
-        } else if (directCount >= 50) {
-            newLevel = 3;
-        } else if (directCount >= 18) {
-            newLevel = 2;
-        } else if (directCount >= 7) {
-            newLevel = 1;
+        let newLevel = user.vipLevel;
+        for (const req of levelUpRequirements) {
+            if (teamCount >= req.members && totalDeposited >= req.minDeposit) {
+                newLevel = req.level;
+                break;
+            }
         }
 
         // Apply Upgrade if level increased
@@ -555,7 +564,8 @@ router.get('/me', authMiddleware, async (req, res) => {
                 directResults: directCount,
                 teamMembers: teamCount,
                 activeInvestments: user.investments?.filter(i => i.status === 'active').length || 0,
-                totalInvested: user.investments?.reduce((sum, i) => sum + i.package.investmentAmount, 0) || 0
+                totalInvested: user.investments?.reduce((sum, i) => sum + i.package.investmentAmount, 0) || 0,
+                totalDeposited: totalDeposited
             }
         });
     } catch (error) {

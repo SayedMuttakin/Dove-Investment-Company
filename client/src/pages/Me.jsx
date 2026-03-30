@@ -90,31 +90,29 @@ const Me = () => {
 
     const LevelStatusCard = () => {
         const levelNum = currentLevel + 1;
-
         return (
-            <div className="relative w-full aspect-[2.4/1] sm:aspect-[3/1] bg-[#0d0d0d] rounded-[2rem] overflow-hidden border border-white/5 mb-6 group shadow-2xl">
+            <div className="relative w-full aspect-[1.5/1] sm:aspect-[2.2/1] bg-[#0d0d0d] rounded-[2.5rem] overflow-hidden border border-white/5 mb-6 group shadow-2xl">
                 {/* 3D Animated Grid Background */}
-                <div className="absolute inset-0 opacity-10 dark:opacity-20">
+                <div className="absolute inset-0 opacity-10">
                     <div className="absolute inset-0" style={{
-                        backgroundImage: `radial-gradient(circle at 2px 2px, #444 1px, transparent 0)`,
+                        backgroundImage: `radial-gradient(circle at 2px 2px, #333 1px, transparent 0)`,
                         backgroundSize: '24px 24px',
                     }}></div>
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent"></div>
                 </div>
 
-                {/* Floating Elements */}
-                <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/10 blur-[80px] rounded-full animate-pulse"></div>
-                <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-cyan-500/10 blur-[80px] rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
+                {/* Light Glows */}
+                <div className="absolute top-0 left-1/4 w-32 h-32 bg-primary/5 blur-[60px] rounded-full"></div>
+                <div className="absolute bottom-0 right-1/4 w-32 h-32 bg-cyan-500/5 blur-[60px] rounded-full"></div>
 
-                <div className="relative h-full px-4 sm:px-10 flex items-center justify-between">
-                    {/* Level Identity Section */}
-                    <div className="flex items-center gap-3 sm:gap-6">
-                        <div className="relative w-14 h-14 sm:w-20 sm:h-20 flex items-center justify-center">
-                            <div className="absolute inset-0 bg-primary/10 blur-3xl rounded-full scale-150"></div>
+                <div className="relative h-full flex items-center p-5 sm:p-10">
+                    {/* Left Section: Level & Status */}
+                    <div className="flex-1 flex flex-col items-center justify-center">
+                        <div className="relative w-32 h-32 sm:w-40 sm:h-40 flex items-center justify-center">
+                            <div className="absolute inset-0 bg-primary/10 blur-3xl rounded-full scale-125"></div>
                             <img
                                 src={`/images/levels/level_${levelNum}.png`}
                                 alt={`Level ${levelNum}`}
-                                className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_20px_rgba(164,241,58,0.4)] transition-all duration-700 group-hover:scale-110 group-hover:rotate-6"
+                                className="w-full h-full object-contain relative z-10 drop-shadow-[0_0_20px_rgba(164,241,58,0.4)]"
                                 onError={(e) => { 
                                     e.target.src = `/images/vip/vip_level_${levelNum}.png`;
                                     e.target.onerror = () => {
@@ -124,36 +122,39 @@ const Me = () => {
                                 }}
                             />
                             <div className="hidden absolute inset-0 items-center justify-center text-primary/40">
-                                <Shield size={24} />
+                                <Shield size={48} />
                             </div>
                         </div>
-                        <div className="flex flex-col text-left">
-                            <span className="text-white/40 text-[7px] sm:text-[9px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] mb-0.5">Current Status</span>
-                            <span className="text-white font-black text-lg sm:text-2xl tracking-tighter italic uppercase leading-none shadow-primary/20 drop-shadow-lg scale-y-110">Level {levelNum}</span>
+                        <div className="flex flex-col items-center mt-3">
+                            <span className="text-white/40 text-[9px] sm:text-[11px] font-black uppercase tracking-[0.2em] mb-1">Current Status</span>
+                            <span className="text-white font-black text-2xl sm:text-4xl tracking-tighter italic uppercase leading-none shadow-primary/20 drop-shadow-lg scale-y-110">Level {levelNum}</span>
                         </div>
                     </div>
 
-                    {/* Action Hub Section */}
-                    <div className="flex flex-col gap-1.5 sm:gap-3 items-end">
-                        <button
+                    {/* Right Section: Action Tiles */}
+                    <div className="flex-1 flex flex-col gap-3 sm:gap-5 pl-2">
+                        {/* My Team Button */}
+                        <div
                             onClick={() => navigate('/my-team')}
-                            className="group/btn relative overflow-hidden bg-white/5 backdrop-blur-md border border-white/10 text-white font-black text-[8px] sm:text-[10px] px-4 sm:px-7 py-2 sm:py-3.5 rounded-xl sm:rounded-2xl hover:bg-white/10 active:scale-95 transition-all uppercase tracking-widest"
+                            className="bg-[#1a1a1a] rounded-[1.5rem] p-4 sm:p-6 border border-white/5 cursor-pointer active:scale-95 transition-all flex items-center gap-3 group/team"
                         >
-                            <span className="relative z-10 flex items-center gap-1.5">
-                                <Users size={10} className="sm:size-14 text-primary" />
-                                My team
-                            </span>
-                        </button>
-                        <button
+                            <div className="relative flex-shrink-0">
+                                <Users size={28} className="sm:size-40 text-primary" />
+                                <div className="absolute inset-0 bg-primary/20 blur-md rounded-full opacity-0 group-hover/team:opacity-100 transition-opacity"></div>
+                            </div>
+                            <span className="text-white/90 font-black text-[11px] sm:text-[14px] uppercase tracking-widest">My team</span>
+                        </div>
+
+                        {/* Upgrade Credit Button */}
+                        <div
                             onClick={() => navigate('/level-requirements')}
-                            className="group/btn relative overflow-hidden bg-primary text-black font-black text-[8px] sm:text-[10px] px-4 sm:px-7 py-2 sm:py-3.5 rounded-xl sm:rounded-2xl hover:shadow-[0_0_30px_rgba(164,241,58,0.6)] active:scale-95 transition-all uppercase tracking-widest"
+                            className="bg-primary rounded-[1.5rem] p-5 sm:p-7 cursor-pointer active:scale-95 transition-all flex items-center gap-3 shadow-[0_10px_40px_rgba(164,241,58,0.3)] filter hover:brightness-105"
                         >
-                            <div className="absolute inset-0 bg-gray-900/20 dark:bg-white/20 translate-y-full group-hover/btn:translate-y-0 transition-transform duration-300"></div>
-                            <span className="relative z-10 flex items-center gap-1.5">
-                                <Star size={10} className="sm:size-14" fill="black" />
-                                Upgrade credit
-                            </span>
-                        </button>
+                            <div className="flex-shrink-0">
+                                <Star size={32} className="sm:size-44" fill="black" />
+                            </div>
+                            <span className="text-black font-black text-[11px] sm:text-[14px] uppercase tracking-widest">Upgrade credit</span>
+                        </div>
                     </div>
                 </div>
             </div>

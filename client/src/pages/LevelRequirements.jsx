@@ -15,6 +15,7 @@ const LevelRequirements = () => {
     const { user } = useAuth();
     const currentLevel = user?.vipLevel || 0;
     const currentTeam = user?.stats?.teamMembers || 0;
+    const totalDeposited = user?.stats?.totalDeposited || 0;
 
     const levelRequirements = [
         { from: 0, to: 1, members: null, minInvestment: 50, maxInvestment: 2000, tree: null, incomeRates: { d7: '0.90%', d30: '1.20%', d60: '1.50%', d90: '1.80%' }, teamIncome: null },
@@ -89,7 +90,11 @@ const LevelRequirements = () => {
                 <div className="space-y-6">
                     {levelRequirements.map((level) => {
                         const isCurrentLevel = currentLevel === level.from;
-                        const progress = isCurrentLevel ? (level.members ? Math.min((currentTeam / level.members) * 100, 100) : 100) : 0;
+                        const teamProgress = isCurrentLevel ? (level.members ? Math.min((currentTeam / level.members) * 100, 100) : 100) : 0;
+                        const depositProgress = isCurrentLevel ? (level.members ? Math.min((totalDeposited / level.minInvestment) * 100, 100) : 100) : 0;
+                        const progress = isCurrentLevel ? Math.min(teamProgress, depositProgress) : 0;
+                        const teamDone = level.members ? currentTeam >= level.members : true;
+                        const depositDone = totalDeposited >= level.minInvestment;
 
                         return (
                             <div key={`${level.from}-${level.to}`} className="relative group">
@@ -125,7 +130,7 @@ const LevelRequirements = () => {
                                     </div>
 
                                     {isCurrentLevel && (
-                                        <div className="mb-6">
+                                        <div className="mb-6 space-y-3">
                                             <div className="flex justify-between text-[11px] font-black text-gray-900/40 dark:text-white/40 mb-2 uppercase tracking-widest">
                                                 <span>PROGRESS</span>
                                                 <span className="text-primary">{Math.round(progress)}%</span>
@@ -136,6 +141,28 @@ const LevelRequirements = () => {
                                                     style={{ width: `${progress}%` }}
                                                 ></div>
                                             </div>
+                                            {level.members && (
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    <div className={`rounded-xl p-2.5 border text-center ${teamDone ? 'bg-primary/10 border-primary/30' : 'bg-white/5 border-white/10'}`}>
+                                                        <div className="text-[8px] font-black uppercase tracking-widest text-gray-900/40 dark:text-white/40 mb-1">Team</div>
+                                                        <div className={`text-xs font-black ${teamDone ? 'text-primary' : 'text-gray-900 dark:text-white'}`}>
+                                                            {currentTeam} / {level.members}
+                                                        </div>
+                                                        <div className={`text-[8px] mt-0.5 font-bold ${teamDone ? 'text-primary' : 'text-gray-900/30 dark:text-white/30'}`}>
+                                                            {teamDone ? '✓ Done' : 'Need more'}
+                                                        </div>
+                                                    </div>
+                                                    <div className={`rounded-xl p-2.5 border text-center ${depositDone ? 'bg-primary/10 border-primary/30' : 'bg-white/5 border-white/10'}`}>
+                                                        <div className="text-[8px] font-black uppercase tracking-widest text-gray-900/40 dark:text-white/40 mb-1">Deposit</div>
+                                                        <div className={`text-xs font-black ${depositDone ? 'text-primary' : 'text-gray-900 dark:text-white'}`}>
+                                                            ${totalDeposited.toFixed(0)} / ${level.minInvestment}
+                                                        </div>
+                                                        <div className={`text-[8px] mt-0.5 font-bold ${depositDone ? 'text-primary' : 'text-gray-900/30 dark:text-white/30'}`}>
+                                                            {depositDone ? '✓ Done' : 'Need more'}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
 
