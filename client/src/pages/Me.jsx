@@ -232,7 +232,7 @@ const Me = () => {
                                 onClick={copyInvitationCode}
                                 className="flex flex-col items-center gap-0.5 ml-1 group"
                             >
-                                <div className="w-9 h-9 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-primary transition-all group-active:scale-90 group-hover:bg-primary/30 shadow-md">
+                                <div className="w-9 h-9 rounded-full bg-white border border-gray-100 flex items-center justify-center text-gray-900 transition-all group-active:scale-90 group-hover:bg-gray-50 shadow-md">
                                     <UserPlus size={18} />
                                 </div>
                                 <span className="text-gray-700 dark:text-white/60 text-[7px] font-black uppercase tracking-tighter">Invite</span>
@@ -344,7 +344,7 @@ const Me = () => {
                                 <div className="p-2 bg-red-100 dark:bg-red-500/10 rounded-xl text-red-500 shadow-inner">
                                     <LogOut size={18} />
                                 </div>
-                                <span className="text-red-500 text-sm font-bold uppercase tracking-tight">Logout Session</span>
+                                <span className="text-black dark:text-white text-sm font-bold uppercase tracking-tight">Logout Session</span>
                             </div>
                             <ChevronRight size={16} className="text-gray-300 dark:text-white/20" />
                         </button>
