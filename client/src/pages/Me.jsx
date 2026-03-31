@@ -91,7 +91,7 @@ const Me = () => {
     const LevelStatusCard = () => {
         const levelNum = currentLevel + 1;
         return (
-            <div className="relative w-full aspect-[1.5/1] sm:aspect-[2.2/1] bg-slate-800/80 dark:bg-dark-200 rounded-[2.5rem] overflow-hidden border border-white/20 mb-6 group shadow-2xl">
+            <div className="relative w-full aspect-[1.5/1] sm:aspect-[2.2/1] bg-slate-900/90 dark:bg-dark-200 rounded-[2.5rem] overflow-hidden border border-white/20 mb-6 group shadow-2xl">
                 {/* 3D Animated Grid Background */}
                 <div className="absolute inset-0 opacity-10">
                     <div className="absolute inset-0" style={{
@@ -136,7 +136,7 @@ const Me = () => {
                         {/* My Team Button */}
                         <div
                             onClick={() => navigate('/my-team')}
-                            className="bg-emerald-500/20 rounded-[1.5rem] p-4 sm:p-6 border border-emerald-500/40 cursor-pointer active:scale-95 transition-all flex items-center gap-3 group/team shadow-[0_0_20px_rgba(16,185,129,0.15)]"
+                            className="bg-emerald-500/20 rounded-[1.5rem] p-4 sm:p-6 border border-emerald-500/40 cursor-pointer active:scale-95 transition-all flex items-center gap-3 group/team shadow-none"
                         >
                             <div className="relative flex-shrink-0">
                                 <Users size={28} className="sm:size-40 text-emerald-300" />
@@ -148,7 +148,7 @@ const Me = () => {
                         {/* Upgrade Credit Button */}
                         <div
                             onClick={() => navigate('/level-requirements')}
-                            className="bg-primary rounded-[1.5rem] p-5 sm:p-7 cursor-pointer active:scale-95 transition-all flex items-center gap-3 shadow-[0_10px_40px_rgba(164,241,58,0.3)] filter hover:brightness-105"
+                            className="bg-primary rounded-[1.5rem] p-5 sm:p-7 cursor-pointer active:scale-95 transition-all flex items-center gap-3 shadow-none filter hover:brightness-105"
                         >
                             <div className="flex-shrink-0">
                                 <Star size={32} className="sm:size-44" fill="black" />
