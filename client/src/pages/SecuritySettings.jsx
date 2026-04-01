@@ -250,7 +250,7 @@ const SecuritySettings = () => {
                             onChange={handlePwdChange}
                             placeholder="New Password (min 6 chars)"
                             required
-                            className="w-full bg-black/20 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-3 text-gray-900 dark:text-white text-sm focus:border-primary/50 focus:outline-none placeholder:text-white/20"
+                            className="w-full bg-[#a4f13a] border-none rounded-xl px-4 py-3 text-black text-sm focus:outline-none placeholder:text-black/40"
                         />
                         <input
                             type="password"
@@ -259,7 +259,7 @@ const SecuritySettings = () => {
                             onChange={handlePwdChange}
                             placeholder="Confirm New Password"
                             required
-                            className="w-full bg-black/20 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-3 text-gray-900 dark:text-white text-sm focus:border-primary/50 focus:outline-none placeholder:text-white/20"
+                            className="w-full bg-[#a4f13a] border-none rounded-xl px-4 py-3 text-black text-sm focus:outline-none placeholder:text-black/40"
                         />
                         <button
                             type="submit"
@@ -286,7 +286,7 @@ const SecuritySettings = () => {
                             maxLength={6}
                             required
                             placeholder="New 6-Digit PIN"
-                            className="w-full bg-black/20 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-3 text-gray-900 dark:text-white text-sm focus:border-primary/50 focus:outline-none placeholder:text-white/20"
+                            className="w-full bg-[#a4f13a] border-none rounded-xl px-4 py-3 text-black text-sm focus:outline-none placeholder:text-black/40"
                         />
                         <input
                             type="text"
@@ -296,7 +296,7 @@ const SecuritySettings = () => {
                             maxLength={6}
                             required
                             placeholder="Confirm New PIN"
-                            className="w-full bg-black/20 border border-slate-200 dark:border-white/10 rounded-lg px-4 py-3 text-gray-900 dark:text-white text-sm focus:border-primary/50 focus:outline-none placeholder:text-white/20"
+                            className="w-full bg-[#a4f13a] border-none rounded-xl px-4 py-3 text-black text-sm focus:outline-none placeholder:text-black/40"
                         />
                         <button
                             type="submit"
