@@ -331,7 +331,19 @@ router.put('/settings', authMiddleware, adminMiddleware, async (req, res) => {
         if (!settings) {
             settings = new SystemSettings(req.body);
         } else {
-            Object.assign(settings, req.body);
+            // Only update fields that are explicitly provided and not empty strings
+            const updates = {};
+            for (const [key, value] of Object.entries(req.body)) {
+                // Allow booleans and numbers (including 0), skip empty strings only
+                if (value !== undefined && value !== '') {
+                    updates[key] = value;
+                }
+                // For wallet addresses: only update if a non-empty value is provided
+                if (typeof value === 'string' && value.trim() === '') {
+                    continue; // Skip empty wallet address updates
+                }
+            }
+            Object.assign(settings, updates);
         }
         await settings.save();
 
