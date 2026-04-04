@@ -331,16 +331,22 @@ router.put('/settings', authMiddleware, adminMiddleware, async (req, res) => {
         if (!settings) {
             settings = new SystemSettings(req.body);
         } else {
-            // Only update fields that are explicitly provided and not empty strings
+            // Only update fields that have actual values
+            // This prevents empty form fields from overwriting saved wallet addresses
             const updates = {};
             for (const [key, value] of Object.entries(req.body)) {
-                // Allow booleans and numbers (including 0), skip empty strings only
-                if (value !== undefined && value !== '') {
+                // Skip MongoDB internal fields
+                if (key === '_id' || key === '__v' || key === 'createdAt' || key === 'updatedAt') continue;
+                
+                // Always allow booleans (including false) and numbers (including 0)
+                if (typeof value === 'boolean' || typeof value === 'number') {
                     updates[key] = value;
+                    continue;
                 }
-                // For wallet addresses: only update if a non-empty value is provided
-                if (typeof value === 'string' && value.trim() === '') {
-                    continue; // Skip empty wallet address updates
+                
+                // For strings: only update if non-empty
+                if (typeof value === 'string' && value.trim() !== '') {
+                    updates[key] = value;
                 }
             }
             Object.assign(settings, updates);

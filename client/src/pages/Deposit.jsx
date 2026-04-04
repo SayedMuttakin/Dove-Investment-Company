@@ -23,7 +23,7 @@ const Deposit = () => {
         {
             id: 'TRC20',
             name: 'USDT (TRC20)',
-            address: 'TWTLHHvdcPT9RKHxUavSVujcZXgFgYjbDP',
+            address: '',
             coin: 'USDT',
             network: 'TRC20',
             logo: 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/usdt.png'
@@ -31,7 +31,7 @@ const Deposit = () => {
         {
             id: 'BSC',
             name: 'Binance Smart Chain',
-            address: '0x28C6c06298d514Db089934071355E5743bf21d60',
+            address: '',
             coin: 'BNB/USDT',
             network: 'BSC',
             logo: 'https://raw.githubusercontent.com/spothq/cryptocurrency-icons/master/128/color/bnb.png'
@@ -49,7 +49,7 @@ const Deposit = () => {
 
                 setNetworks(prev => prev.map(n => ({
                     ...n,
-                    address: wallets[n.id] || n.address
+                    address: wallets[n.id] || ''
                 })));
                 if (minDepositAmount) setMinDeposit(minDepositAmount);
             } catch (error) {

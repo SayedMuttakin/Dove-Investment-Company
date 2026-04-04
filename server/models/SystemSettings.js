@@ -44,19 +44,19 @@ const systemSettingsSchema = new mongoose.Schema({
     // Wallet Addresses
     walletTRC20: {
         type: String,
-        default: 'TWTLHHvdcPT9RKHxUavSVujcZXgFgYjbDP'
+        default: ''
     },
     walletBTC: {
         type: String,
-        default: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh'
+        default: ''
     },
     walletETH: {
         type: String,
-        default: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb'
+        default: ''
     },
     walletBSC: {
         type: String,
-        default: '0x28C6c06298d514Db089934071355E5743bf21d60'
+        default: ''
     },
     appDownloadUrl: {
         type: String,
