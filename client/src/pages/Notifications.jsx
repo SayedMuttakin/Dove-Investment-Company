@@ -94,33 +94,33 @@ const Notifications = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-dark-300 pb-20">
+        <div className="min-h-screen bg-slate-50 dark:bg-dark-300 transition-colors duration-300 pb-20">
             {/* Header */}
-            <div className="sticky top-0 z-50 bg-dark-200/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5 py-1.5 px-4 shadow-lg">
-                <div className="max-w-md mx-auto flex items-center justify-between relative h-10">
-                    <div className="flex items-center gap-3 relative z-10 w-24">
+            <div className="sticky top-0 z-50 bg-white/80 dark:bg-dark-200/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5 py-3 px-4 shadow-sm transition-all">
+                <div className="max-w-md mx-auto flex items-center justify-between relative">
+                    <div className="flex items-center gap-3 relative z-10">
                         <button
                             onClick={() => navigate(-1)}
-                            className="p-2 -ml-2 text-gray-900/60 dark:text-white/60 hover:text-white transition-colors"
+                            className="p-2 -ml-2 text-slate-400 dark:text-white/60 hover:text-slate-800 dark:hover:text-white transition-colors"
                         >
                             <ArrowLeft size={20} />
                         </button>
                     </div>
 
-                    <div className="absolute left-1/2 -translate-x-1/2 text-center">
-                        <h1 className="text-sm font-bold text-gray-900 dark:text-white leading-none">Notifications</h1>
+                    <div className="absolute left-1/2 -translate-x-1/2 text-center pointer-events-none">
+                        <h1 className="text-base font-black text-slate-800 dark:text-white uppercase tracking-wider">Notifications</h1>
                         {unreadCount > 0 && (
-                            <span className="text-[9px] text-primary font-medium block mt-1">{unreadCount} unread</span>
+                            <span className="text-[10px] text-blue-600 dark:text-blue-400 font-black block mt-0.5 tracking-widest">{unreadCount} UNREAD</span>
                         )}
                     </div>
 
-                    <div className="relative z-10 w-24 flex justify-end">
+                    <div className="relative z-10">
                         {notifications.length > 0 && (
                             <button
                                 onClick={markAllAsRead}
-                                className="flex items-center gap-1.5 text-[10px] text-primary hover:text-primary-light transition-colors font-medium px-2 py-1 rounded-lg bg-primary/10"
+                                className="flex items-center gap-1.5 text-[10px] text-blue-600 dark:text-white font-black hover:bg-blue-50 dark:hover:bg-white/10 transition-all uppercase px-3 py-1.5 rounded-xl border border-blue-100 dark:border-white/20 bg-blue-50 dark:bg-white/5"
                             >
-                                <CheckCheck size={12} />
+                                <CheckCheck size={14} />
                                 Read All
                             </button>
                         )}
@@ -144,72 +144,82 @@ const Notifications = () => {
                         ))}
                     </div>
                 ) : notifications.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center pt-20 text-center opacity-60">
-                        <div className="w-20 h-20 rounded-full bg-gray-900/5 dark:bg-white/5 flex items-center justify-center mb-4">
-                            <Bell size={40} />
+                    <div className="flex flex-col items-center justify-center pt-20 text-center">
+                        <div className="w-24 h-24 rounded-[2rem] bg-blue-500/10 flex items-center justify-center mb-6 text-blue-500">
+                            <Bell size={48} className="animate-bounce" />
                         </div>
-                        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">No notifications yet</h2>
-                        <p className="text-sm">We'll notify you when something important happens.</p>
+                        <h2 className="text-xl font-black text-slate-800 dark:text-white mb-2">Clean Slates!</h2>
+                        <p className="text-sm text-slate-500 dark:text-slate-400 px-10 leading-relaxed">
+                            No new alerts right now. We'll ping you as soon as something important happens.
+                        </p>
                     </div>
                 ) : (
-                    <div className="space-y-3">
+                    <div className="space-y-4 pb-10">
                         {notifications.map((notif) => (
                             <div
                                 key={notif._id}
                                 onClick={() => {
                                     if (notif.status === 'unread') markAsRead(notif._id);
-
-                                    // Navigate to withdrawal success page for approved withdrawals
                                     if (notif.type === 'withdrawal' && notif.title.toLowerCase().includes('approved')) {
-                                        if (notif.relatedId) {
-                                            navigate(`/withdrawal-success/${notif.relatedId}`);
-                                        }
-                                    }
-                                    // Navigate to bonus success page for admin bonuses
-                                    else if (notif.type === 'bonus') {
+                                        if (notif.relatedId) navigate(`/withdrawal-success/${notif.relatedId}`);
+                                    } else if (notif.type === 'bonus') {
                                         navigate(`/bonus-success/${notif._id}`);
-                                    }
-                                    // Show success modal for other approved notifications
-                                    else if (notif.title.toLowerCase().includes('approved') || notif.message.toLowerCase().includes('approved')) {
-                                        setModalConfig({
-                                            isOpen: true,
-                                            title: notif.title,
-                                            message: notif.message
-                                        });
+                                    } else if (notif.title.toLowerCase().includes('approved') || notif.message.toLowerCase().includes('approved')) {
+                                        setModalConfig({ isOpen: true, title: notif.title, message: notif.message });
                                     }
                                 }}
-                                className={`glass-card p-4 transition-all active:scale-[0.98] cursor-pointer group hover:bg-white/[0.03] ${notif.status === 'unread' ? 'border-primary/30 ring-1 ring-primary/20' : 'opacity-80'
+                                className={`bg-white dark:bg-dark-200 rounded-[1.8rem] p-5 shadow-lg border-2 transition-all active:scale-[0.97] cursor-pointer relative overflow-hidden group 
+                                    ${notif.status === 'unread' 
+                                        ? 'border-blue-500/30 ring-4 ring-blue-500/5' 
+                                        : 'border-slate-100 dark:border-white/5 opacity-90'
                                     }`}
                             >
-                                <div className="flex gap-4">
-                                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 shadow-lg ${notif.status === 'unread' ? 'bg-primary/20 bg-glow-primary' : 'bg-gray-900/5 dark:bg-white/5'
-                                        }`}>
-                                        {getIcon(notif.type)}
+                                {notif.status === 'unread' && (
+                                    <div className="absolute top-0 right-0 w-12 h-12">
+                                        <div className="absolute top-2 right-2 w-2.5 h-2.5 bg-blue-500 rounded-full ring-4 ring-blue-500/20"></div>
                                     </div>
+                                )}
+                                
+                                <div className="flex gap-5">
+                                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 shadow-inner group-hover:scale-110 transition-transform duration-300 ${
+                                        notif.status === 'unread' ? 'bg-blue-100 dark:bg-blue-500/10' : 'bg-slate-50 dark:bg-white/5'
+                                    }`}>
+                                        <div className={notif.status === 'unread' ? 'animate-pulse' : ''}>
+                                            {getIcon(notif.type)}
+                                        </div>
+                                    </div>
+                                    
                                     <div className="flex-1 min-w-0">
-                                        <div className="flex justify-between items-start mb-1">
-                                            <h3 className={`text-sm font-bold truncate pr-2 ${notif.status === 'unread' ? 'text-gray-900 dark:text-white' : 'text-gray-900/60 dark:text-white/60'
-                                                }`}>
+                                        <div className="flex justify-between items-start mb-1.5">
+                                            <h3 className={`text-[15px] font-black truncate pr-4 ${
+                                                notif.status === 'unread' ? 'text-slate-800 dark:text-white' : 'text-slate-600 dark:text-slate-400'
+                                            }`}>
                                                 {notif.title}
                                             </h3>
-                                            <span className="text-[10px] text-gray-900/40 dark:text-white/40 whitespace-nowrap pt-0.5">
-                                                {formatDistanceToNow(new Date(notif.createdAt), { addSuffix: true })}
-                                            </span>
                                         </div>
-                                        <p className="text-xs text-gray-900/60 dark:text-white/60 leading-relaxed mb-3">
+                                        
+                                        <p className="text-[13px] text-slate-500 dark:text-slate-400 leading-relaxed mb-4 font-medium">
                                             {notif.message}
                                         </p>
-                                        <div className="flex justify-between items-end">
-                                            {notif.amount && (
-                                                <div className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">
-                                                    ${notif.amount.toFixed(2)}
-                                                </div>
-                                            )}
+                                        
+                                        <div className="flex justify-between items-center">
+                                            <div className="flex items-center gap-3">
+                                                <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-1">
+                                                    <Info size={12} />
+                                                    {formatDistanceToNow(new Date(notif.createdAt), { addSuffix: true })}
+                                                </span>
+                                                {notif.amount && (
+                                                    <div className="text-[11px] font-black text-emerald-600 dark:text-[#a4f13a] bg-emerald-50 dark:bg-[#a4f13a]/10 px-3 py-1 rounded-full border border-emerald-100 dark:border-[#a4f13a]/20">
+                                                        +{notif.amount.toFixed(2)} USDT
+                                                    </div>
+                                                )}
+                                            </div>
+                                            
                                             <button
                                                 onClick={(e) => deleteNotification(notif._id, e)}
-                                                className="p-1 -mr-1 text-gray-900/20 dark:text-white/20 hover:text-red-400 transition-colors"
+                                                className="w-8 h-8 rounded-full flex items-center justify-center text-slate-300 hover:bg-rose-50 dark:hover:bg-rose-500/10 hover:text-rose-500 transition-all active:scale-90"
                                             >
-                                                <Trash2 size={14} />
+                                                <Trash2 size={16} />
                                             </button>
                                         </div>
                                     </div>
