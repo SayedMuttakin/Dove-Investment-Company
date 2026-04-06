@@ -143,50 +143,46 @@ const Income = () => {
 
             <div className="max-w-md mx-auto p-4 space-y-4">
                 {/* Total Income Card */}
-                <div className="bg-gradient-to-br from-black to-gray-900 text-gray-900 dark:text-white rounded-3xl p-6 relative overflow-hidden shadow-lg border border-slate-200 dark:border-white/5">
-                    {/* Background decoration - faint Tether logo vibe */}
-                    <div className="absolute right-[-20px] top-[10px] opacity-10 pointer-events-none">
-                        <svg width="150" height="150" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v3h3v2h-3v3h-2v-3H8V7h3V5z" />
-                        </svg>
-                    </div>
-
-                    <div className="relative z-10 text-center py-4">
-                        <p className="text-gray-400 text-sm mb-1">Cumulative Total Income</p>
-                        <h2 className="text-[#a4f13a] text-4xl font-bold tracking-tight">
+                <div className="bg-zinc-900 text-white rounded-[2rem] p-8 relative overflow-hidden shadow-xl border border-white/5 mx-1">
+                    <div className="relative z-10 text-center">
+                        <p className="text-gray-400 text-xs font-medium uppercase tracking-widest mb-2">Cumulative Total Income</p>
+                        <h2 className="text-[#a4f13a] text-4xl font-black tracking-tight italic">
                             {incomeData.stats.totalEarnings.toFixed(2)} USDT
                         </h2>
                     </div>
                 </div>
 
                 {/* Stats Grid - Row 1 */}
-                <div className="grid grid-cols-3 gap-3">
-                    <div className="bg-white dark:bg-dark-200 rounded-2xl p-3 shadow-lg flex flex-col justify-between h-24 relative overflow-hidden border border-slate-200 dark:border-white/5">
-                        <div className="absolute top-2 right-2 text-gray-500">
+                <div className="grid grid-cols-3 gap-3 font-sans">
+                    {/* Interest Income - Deep Emerald */}
+                    <div className="bg-emerald-600 rounded-2xl p-3 shadow-lg flex flex-col justify-between h-24 relative overflow-hidden border border-emerald-500/20">
+                        <div className="absolute top-2 right-2 text-white/20">
                             <ChevronRight size={14} />
                         </div>
-                        <div className="text-xs text-gray-400 font-medium leading-tight">Interest<br />Income</div>
-                        <div className="font-bold text-sm text-gray-900 dark:text-white">
+                        <div className="text-[10px] text-white/70 font-bold uppercase tracking-tight leading-tight">Interest<br />Income</div>
+                        <div className="font-bold text-[13px] text-white whitespace-nowrap">
                             {incomeData.stats.interestIncome.toFixed(2)} USDT
                         </div>
                     </div>
 
-                    <div className="bg-white dark:bg-dark-200 rounded-2xl p-3 shadow-lg flex flex-col justify-between h-24 relative overflow-hidden border border-slate-200 dark:border-white/5">
-                        <div className="absolute top-2 right-2 text-gray-500">
+                    {/* Team Income - Deep Blue */}
+                    <div className="bg-blue-600 rounded-2xl p-3 shadow-lg flex flex-col justify-between h-24 relative overflow-hidden border border-blue-500/20">
+                        <div className="absolute top-2 right-2 text-white/20">
                             <ChevronRight size={14} />
                         </div>
-                        <div className="text-xs text-gray-400 font-medium leading-tight">Team Income</div>
-                        <div className="font-bold text-sm text-gray-900 dark:text-white">
+                        <div className="text-[10px] text-white/70 font-bold uppercase tracking-tight leading-tight">Team Income</div>
+                        <div className="font-bold text-[13px] text-white whitespace-nowrap">
                             {incomeData.stats.teamIncome.toFixed(2)} USDT
                         </div>
                     </div>
 
-                    <div className="bg-white dark:bg-dark-200 rounded-2xl p-3 shadow-lg flex flex-col justify-between h-24 relative overflow-hidden border border-slate-200 dark:border-white/5">
-                        <div className="absolute top-2 right-2 text-gray-500">
+                    {/* Bonus - Deep Rose */}
+                    <div className="bg-rose-600 rounded-2xl p-3 shadow-lg flex flex-col justify-between h-24 relative overflow-hidden border border-rose-500/20">
+                        <div className="absolute top-2 right-2 text-white/20">
                             <ChevronRight size={14} />
                         </div>
-                        <div className="text-xs text-gray-400 font-medium leading-tight">Bonus</div>
-                        <div className="font-bold text-sm text-gray-900 dark:text-white">
+                        <div className="text-[10px] text-white/70 font-bold uppercase tracking-tight leading-tight">Bonus</div>
+                        <div className="font-bold text-[13px] text-white whitespace-nowrap">
                             {incomeData.stats.bonusIncome.toFixed(2)} USDT
                         </div>
                     </div>
