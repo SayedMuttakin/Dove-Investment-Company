@@ -143,10 +143,10 @@ const Income = () => {
 
             <div className="max-w-md mx-auto p-4 space-y-4">
                 {/* Total Income Card */}
-                <div className="bg-zinc-900 text-white rounded-[2rem] p-8 relative overflow-hidden shadow-xl border border-white/5 mx-1">
+                <div className="bg-zinc-800 text-white rounded-[2rem] p-8 relative overflow-hidden shadow-lg border border-white/5 mx-1">
                     <div className="relative z-10 text-center">
-                        <p className="text-gray-400 text-xs font-medium uppercase tracking-widest mb-2">Cumulative Total Income</p>
-                        <h2 className="text-[#a4f13a] text-4xl font-black tracking-tight italic">
+                        <p className="text-gray-400 text-xs font-semibold uppercase tracking-widest mb-2">Cumulative Total Income</p>
+                        <h2 className="text-[#a4f13a] text-4xl font-black tracking-tight">
                             {incomeData.stats.totalEarnings.toFixed(2)} USDT
                         </h2>
                     </div>
