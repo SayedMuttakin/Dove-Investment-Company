@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ArrowLeft, Wallet, AlertCircle, Bell, HelpCircle, CheckCircle2, Lock, Shield } from 'lucide-react';
+import { ArrowLeft, Wallet, AlertCircle, Bell, HelpCircle, CheckCircle2, Lock, Shield, Users, TrendingUp, Info, XCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 import SuccessModal from '../components/SuccessModal';
@@ -17,6 +17,8 @@ const Withdraw = () => {
     const [emailOtp, setEmailOtp] = useState('');
     const [otpSending, setOtpSending] = useState(false);
     const [countdown, setCountdown] = useState(0);
+    const [eligibility, setEligibility] = useState(null);
+    const [eligibilityLoading, setEligibilityLoading] = useState(true);
 
     useEffect(() => {
         let timer;
@@ -44,6 +46,28 @@ const Withdraw = () => {
         }
     };
 
+    // Fetch withdrawal eligibility
+    const fetchEligibility = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await axios.get('/api/withdrawal/eligibility', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setEligibility(res.data);
+            if (res.data.blockMessage) {
+                setBlockMessage(res.data.blockMessage);
+            }
+        } catch (error) {
+            console.error('Failed to fetch eligibility:', error);
+        } finally {
+            setEligibilityLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchEligibility();
+    }, []);
+
     useEffect(() => {
         if (user && user.withdrawalBlockMessage) {
             setBlockMessage(user.withdrawalBlockMessage);
@@ -68,6 +92,14 @@ const Withdraw = () => {
         setPaymentMethod(method);
     };
 
+    const handleSetMaxAmount = () => {
+        if (eligibility) {
+            setAmount(eligibility.maxWithdrawable > 0 ? String(eligibility.maxWithdrawable) : '0');
+        } else {
+            setAmount(user?.balance?.toFixed(0));
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -75,17 +107,11 @@ const Withdraw = () => {
             return toast.error('Please enter 2FA verification code');
         }
 
-        /*
-        if (!emailOtp) {
-            return toast.error('Please enter email verification code');
-        }
-        */
-
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
             const bankData = {
-                accountName: user.email || user.phone, // Using email/phone as reference name
+                accountName: user.email || user.phone,
                 accountNumber: details.address,
                 bankName: paymentMethod.toUpperCase(),
             };
@@ -95,14 +121,21 @@ const Withdraw = () => {
                 paymentMethod,
                 bankDetails: bankData,
                 twoFactorToken: user?.twoFactorEnabled ? twoFactorToken : undefined,
-                // emailOtp
             }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
             setShowSuccess(true);
+            fetchEligibility(); // Refresh eligibility after submission
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Failed to submit request');
+            const errData = error.response?.data;
+            if (errData?.code === 'INSUFFICIENT_REFERRALS' || errData?.code === 'INSUFFICIENT_REFERRALS_AND_BALANCE') {
+                toast.error(`❌ You need ${errData.requiredReferrals} active referrals! You have ${errData.activeReferrals}.`);
+            } else if (errData?.code === 'WITHDRAWAL_LIMIT_EXCEEDED') {
+                toast.error(`❌ Withdrawal limit exceeded! Remaining: $${errData.remainingLimit?.toFixed(2)}`);
+            } else {
+                toast.error(errData?.message || 'Failed to submit request');
+            }
         } finally {
             setLoading(false);
         }
@@ -170,6 +203,102 @@ const Withdraw = () => {
                     </div>
                 </div>
 
+                {/* Withdrawal Eligibility Status Card */}
+                {!eligibilityLoading && eligibility && (
+                    <div className="glass-card p-4 border border-slate-200 dark:border-white/10 space-y-3">
+                        <h3 className="text-gray-900 dark:text-white font-bold text-sm flex items-center gap-2">
+                            <Info size={16} className="text-primary" />
+                            Withdrawal Rules & Status
+                        </h3>
+
+                        {/* Rule 1: Active Referrals */}
+                        <div className={`flex items-start gap-3 p-3 rounded-xl border ${eligibility.hasEnoughReferrals ? 'bg-green-500/5 border-green-500/20' : 'bg-orange-500/5 border-orange-500/20'}`}>
+                            <div className={`p-1.5 rounded-lg flex-shrink-0 ${eligibility.hasEnoughReferrals ? 'bg-green-500/20' : 'bg-orange-500/20'}`}>
+                                <Users size={16} className={eligibility.hasEnoughReferrals ? 'text-green-500' : 'text-orange-500'} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between">
+                                    <p className="text-gray-900 dark:text-white text-xs font-bold">Active Level-1 Referrals</p>
+                                    <span className={`text-xs font-black px-2 py-0.5 rounded-full ${eligibility.hasEnoughReferrals ? 'bg-green-500/20 text-green-500' : 'bg-orange-500/20 text-orange-500'}`}>
+                                        {eligibility.activeLevel1Referrals}/{eligibility.requiredReferrals}
+                                    </span>
+                                </div>
+                                <p className="text-gray-900/50 dark:text-white/50 text-[10px] mt-1 leading-relaxed">
+                                    {eligibility.hasEnoughReferrals
+                                        ? '✅ You can withdraw full balance (no $50 reserve needed)'
+                                        : `⚠️ Need ${eligibility.requiredReferrals - eligibility.activeLevel1Referrals} more active referral(s) for full withdrawal. $50 must stay in your account.`
+                                    }
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Rule 2: $50 Reserve */}
+                        {!eligibility.hasEnoughReferrals && (
+                            <div className="flex items-start gap-3 p-3 rounded-xl border bg-blue-500/5 border-blue-500/20">
+                                <div className="p-1.5 rounded-lg flex-shrink-0 bg-blue-500/20">
+                                    <Shield size={16} className="text-blue-500" />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-gray-900 dark:text-white text-xs font-bold">$50 Account Reserve</p>
+                                    <p className="text-gray-900/50 dark:text-white/50 text-[10px] mt-1 leading-relaxed">
+                                        Without 3 active referrals, you must maintain a minimum $50 balance. Your daily investment earnings will continue as normal.
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Rule 3: 150% Deposit Cap */}
+                        <div className="flex items-start gap-3 p-3 rounded-xl border bg-purple-500/5 border-purple-500/20">
+                            <div className="p-1.5 rounded-lg flex-shrink-0 bg-purple-500/20">
+                                <TrendingUp size={16} className="text-purple-500" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <p className="text-gray-900 dark:text-white text-xs font-bold">Withdrawal Limit (150% of Deposits)</p>
+                                <div className="mt-2 space-y-1">
+                                    <div className="flex justify-between text-[10px]">
+                                        <span className="text-gray-900/50 dark:text-white/50">Total Deposits</span>
+                                        <span className="text-gray-900/80 dark:text-white/80 font-bold">${eligibility.totalDeposits?.toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex justify-between text-[10px]">
+                                        <span className="text-gray-900/50 dark:text-white/50">Max Lifetime Withdrawal</span>
+                                        <span className="text-gray-900/80 dark:text-white/80 font-bold">${eligibility.maxLifetimeWithdrawal?.toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex justify-between text-[10px]">
+                                        <span className="text-gray-900/50 dark:text-white/50">Already Withdrawn/Pending</span>
+                                        <span className="text-orange-400 font-bold">${eligibility.totalAlreadyWithdrawn?.toFixed(2)}</span>
+                                    </div>
+                                    <div className="h-px bg-gray-900/10 dark:bg-white/10 my-1"></div>
+                                    <div className="flex justify-between text-[10px]">
+                                        <span className="text-gray-900/80 dark:text-white/80 font-bold">Remaining Limit</span>
+                                        <span className="text-primary font-black">${eligibility.remainingWithdrawLimit?.toFixed(2)}</span>
+                                    </div>
+                                    {/* Progress bar */}
+                                    <div className="w-full bg-gray-200 dark:bg-white/10 rounded-full h-1.5 mt-1">
+                                        <div
+                                            className="bg-gradient-to-r from-primary to-purple-500 h-1.5 rounded-full transition-all"
+                                            style={{ width: `${eligibility.maxLifetimeWithdrawal > 0 ? Math.min(100, (eligibility.totalAlreadyWithdrawn / eligibility.maxLifetimeWithdrawal) * 100) : 0}%` }}
+                                        ></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Max Withdrawable Summary */}
+                        <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-3 rounded-xl border border-primary/20">
+                            <div className="flex justify-between items-center">
+                                <span className="text-gray-900/80 dark:text-white/80 text-xs font-bold">Max Withdrawable Now</span>
+                                <span className="text-primary font-black text-lg">${eligibility.maxWithdrawable?.toFixed(0) || '0'}</span>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {eligibilityLoading && (
+                    <div className="glass-card p-6 border border-slate-200 dark:border-white/10 flex justify-center">
+                        <div className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+                    </div>
+                )}
+
                 {/* Blocked Message Banner */}
                 {blockMessage && (
                     <div className="glass-card p-5 border border-red-500/30 bg-red-500/10 animate-fade-in relative overflow-hidden">
@@ -210,12 +339,21 @@ const Withdraw = () => {
                             <p className="text-gray-900/40 dark:text-white/40 text-xs text-secondary">Minimum withdrawal: $50</p>
                             <button
                                 type="button"
-                                onClick={() => setAmount(user?.balance?.toFixed(0))}
+                                onClick={handleSetMaxAmount}
                                 className="text-primary text-xs font-bold hover:underline"
                             >
                                 Max Amount
                             </button>
                         </div>
+                        {/* Amount warning if exceeding max */}
+                        {amount && eligibility && Number(amount) > eligibility.maxWithdrawable && (
+                            <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/20 rounded-xl p-2.5">
+                                <XCircle size={14} className="text-red-500 flex-shrink-0" />
+                                <p className="text-red-400 text-[10px] font-medium">
+                                    Amount exceeds your max withdrawable (${eligibility.maxWithdrawable}). Please reduce the amount.
+                                </p>
+                            </div>
+                        )}
                     </div>
 
                     {/* Payment Method - New Grid Layout */}
@@ -279,39 +417,16 @@ const Withdraw = () => {
                                 <span className="text-gray-900 dark:text-white font-bold">Total Deduction</span>
                                 <span className="text-primary font-bold text-lg">${(Number(amount) * 1.05).toFixed(2)}</span>
                             </div>
+                            {!eligibility?.hasEnoughReferrals && (
+                                <div className="flex justify-between items-center text-[10px] pt-1">
+                                    <span className="text-gray-900/50 dark:text-white/50">Balance After (min $50 reserve)</span>
+                                    <span className={`font-bold ${(user?.balance - Number(amount) * 1.05) < 50 ? 'text-red-400' : 'text-green-400'}`}>
+                                        ${(user?.balance - Number(amount) * 1.05).toFixed(2)}
+                                    </span>
+                                </div>
+                            )}
                         </div>
                     )}
-
-                    {/* Email Verification - Hidden as per request */}
-                    {/*
-                    <div className="space-y-2">
-                        <label className="flex items-center gap-2 text-gray-900 dark:text-white text-xs font-medium">
-                            <Lock size={14} className="text-primary" />
-                            Email Verification Code
-                        </label>
-                        <div className="relative">
-                            <input
-                                type="text"
-                                value={emailOtp}
-                                onChange={(e) => setEmailOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                                placeholder="Enter 6-digit code"
-                                className="w-full bg-white dark:bg-dark-200 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-3 pr-28 text-gray-900 dark:text-white text-sm focus:outline-none focus:border-primary transition-all"
-                                required
-                            />
-                            <button
-                                type="button"
-                                onClick={handleSendOtp}
-                                disabled={otpSending || countdown > 0}
-                                className="absolute right-2 top-1.5 bottom-1.5 px-4 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all text-xs font-bold"
-                            >
-                                {otpSending ? 'Sending...' : countdown > 0 ? `${countdown}s` : 'Send Code'}
-                            </button>
-                        </div>
-                        <p className="text-[10px] text-gray-900/40 dark:text-white/40 italic">
-                            Click 'Send Code' to receive a verification code in your email.
-                        </p>
-                    </div>
-                    */}
 
                     {/* 2FA Verification */}
                     {user?.twoFactorEnabled ? (
@@ -437,6 +552,7 @@ const Withdraw = () => {
                 onClose={() => {
                     setShowSuccess(false);
                     fetchWithdrawals(); // Refresh list after success
+                    fetchEligibility(); // Refresh eligibility after success
                 }}
                 title="Withdrawal Requested!"
                 message={`Your withdrawal request for $${amount} has been submitted successfully.`}
