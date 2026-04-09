@@ -11,7 +11,7 @@ const Login = () => {
     const navigate = useNavigate();
     const { login } = useAuth();
     const [formData, setFormData] = useState({
-        countryCode: '+880',
+        countryCode: '+1',
         phone: '',
         password: '',
         rememberMe: false
