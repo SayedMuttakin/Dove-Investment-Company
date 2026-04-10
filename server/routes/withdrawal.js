@@ -109,50 +109,8 @@ router.post('/request', authMiddleware, async (req, res) => {
 
         // ====== WITHDRAWAL RULES VALIDATION ======
 
-        // Rule 1: Count active first-level referrals (users referred by this user who have at least 1 investment)
-        const activeLevel1Referrals = await User.countDocuments({
-            referredBy: user.invitationCode,
-            'investments.0': { $exists: true } // Has at least one investment
-        });
-
-        // Rule 2: Check remaining balance after withdrawal
-        const balanceAfterWithdrawal = user.balance - totalAmount;
-        const MINIMUM_RESERVE = 50; // $50 minimum reserve
-
-        // If balance after withdrawal would be less than $50
-        if (balanceAfterWithdrawal < MINIMUM_RESERVE) {
-            // User is trying to withdraw more than allowed (dipping into reserve)
-            // Check if they have 3 active referrals for full withdrawal
-            if (activeLevel1Referrals < 3) {
-                // Cannot withdraw below $50 without 3 referrals - AUTO REJECT
-                const maxWithdrawableRaw = user.balance - MINIMUM_RESERVE - (user.balance - MINIMUM_RESERVE) * 0.05;
-                // Solve: amount + amount*0.05 <= balance - 50 => amount * 1.05 <= balance - 50 => amount <= (balance-50)/1.05
-                const maxWithdrawable = Math.floor((user.balance - MINIMUM_RESERVE) / 1.05);
-
-                if (maxWithdrawable < 50) {
-                    return res.status(400).json({
-                        message: `Withdrawal rejected! You must keep $${MINIMUM_RESERVE} in your account. You need at least 3 active Level-1 referrals to withdraw your full balance. Currently you have ${activeLevel1Referrals} active referral(s). Your balance is too low to withdraw while keeping the $${MINIMUM_RESERVE} reserve.`,
-                        code: 'INSUFFICIENT_REFERRALS_AND_BALANCE',
-                        activeReferrals: activeLevel1Referrals,
-                        requiredReferrals: 3,
-                        minimumReserve: MINIMUM_RESERVE
-                    });
-                }
-
-                return res.status(400).json({
-                    message: `Withdrawal rejected! You must keep $${MINIMUM_RESERVE} in your account. You need at least 3 active Level-1 referrals to withdraw your full balance. Currently you have ${activeLevel1Referrals} active referral(s). Maximum you can withdraw now: $${maxWithdrawable}.`,
-                    code: 'INSUFFICIENT_REFERRALS',
-                    activeReferrals: activeLevel1Referrals,
-                    requiredReferrals: 3,
-                    maxWithdrawable: maxWithdrawable,
-                    minimumReserve: MINIMUM_RESERVE
-                });
-            }
-            // Has 3+ referrals - allow full withdrawal (no reserve needed)
-        }
-
-        // Rule 3: 150% total deposit withdrawal cap
-        // Total lifetime withdrawals cannot exceed 150% of total approved deposits
+        // --- Phase 1: Calculate 150% cap status ---
+        // Get total approved deposits
         const totalDepositsResult = await Deposit.aggregate([
             { $match: { userId: user._id, status: 'approved' } },
             { $group: { _id: null, total: { $sum: '$amount' } } }
@@ -169,15 +127,65 @@ router.post('/request', authMiddleware, async (req, res) => {
 
         const remainingWithdrawLimit = maxLifetimeWithdrawal - totalAlreadyWithdrawn;
 
-        if (amount > remainingWithdrawLimit) {
-            return res.status(400).json({
-                message: `Withdrawal limit exceeded! You have deposited $${totalDeposits} total, so your maximum total withdrawal is $${maxLifetimeWithdrawal.toFixed(2)} (150% of deposits). You have already withdrawn/pending $${totalAlreadyWithdrawn.toFixed(2)}. Remaining limit: $${remainingWithdrawLimit > 0 ? remainingWithdrawLimit.toFixed(2) : '0.00'}.`,
-                code: 'WITHDRAWAL_LIMIT_EXCEEDED',
-                totalDeposits,
-                maxLifetimeWithdrawal,
-                totalAlreadyWithdrawn,
-                remainingLimit: remainingWithdrawLimit > 0 ? remainingWithdrawLimit : 0
+        // --- Phase 1: User has NOT yet exceeded the 150% cap ---
+        // They can withdraw freely (no referral or reserve conditions)
+        if (totalAlreadyWithdrawn < maxLifetimeWithdrawal) {
+            // Only check: requested amount must not exceed remaining limit
+            if (amount > remainingWithdrawLimit) {
+                return res.status(400).json({
+                    message: `You can withdraw up to $${remainingWithdrawLimit.toFixed(2)} more (150% of your $${totalDeposits} deposit). You've already withdrawn $${totalAlreadyWithdrawn.toFixed(2)}.`,
+                    code: 'WITHIN_CAP_LIMIT_EXCEEDED',
+                    totalDeposits,
+                    maxLifetimeWithdrawal,
+                    totalAlreadyWithdrawn,
+                    remainingLimit: remainingWithdrawLimit > 0 ? remainingWithdrawLimit : 0
+                });
+            }
+            // No other conditions — allow withdrawal freely within cap
+        } else {
+            // --- Phase 2: User has already reached/exceeded the 150% cap ---
+            // Strict rules NOW apply: 3 referrals + $50 reserve
+
+            // Check 150% cap
+            if (amount > remainingWithdrawLimit) {
+                return res.status(400).json({
+                    message: `Withdrawal limit exceeded! You have deposited $${totalDeposits} total, so your maximum total withdrawal is $${maxLifetimeWithdrawal.toFixed(2)} (150% of deposits). You have already withdrawn/pending $${totalAlreadyWithdrawn.toFixed(2)}. Remaining limit: $${remainingWithdrawLimit > 0 ? remainingWithdrawLimit.toFixed(2) : '0.00'}.`,
+                    code: 'WITHDRAWAL_LIMIT_EXCEEDED',
+                    totalDeposits,
+                    maxLifetimeWithdrawal,
+                    totalAlreadyWithdrawn,
+                    remainingLimit: remainingWithdrawLimit > 0 ? remainingWithdrawLimit : 0
+                });
+            }
+
+            // Count active first-level referrals
+            const activeLevel1Referrals = await User.countDocuments({
+                referredBy: user.invitationCode,
+                'investments.0': { $exists: true }
             });
+
+            // Must have 3 active referrals
+            if (activeLevel1Referrals < 3) {
+                return res.status(400).json({
+                    message: `You have already withdrawn 150% of your deposit. Now you need at least 3 active Level-1 referrals to continue withdrawing. Currently you have ${activeLevel1Referrals} active referral(s).`,
+                    code: 'INSUFFICIENT_REFERRALS',
+                    activeReferrals: activeLevel1Referrals,
+                    requiredReferrals: 3
+                });
+            }
+
+            // Must keep $50 reserve in account
+            const MINIMUM_RESERVE = 50;
+            const balanceAfterWithdrawal = user.balance - totalAmount;
+            if (balanceAfterWithdrawal < MINIMUM_RESERVE) {
+                const maxWithdrawable = Math.floor((user.balance - MINIMUM_RESERVE) / (1 + (paymentMethod === 'trc20' ? 0.10 : 0.05)));
+                return res.status(400).json({
+                    message: `You must keep $${MINIMUM_RESERVE} in your account. Maximum you can withdraw: $${maxWithdrawable > 0 ? maxWithdrawable : 0}.`,
+                    code: 'INSUFFICIENT_RESERVE',
+                    minimumReserve: MINIMUM_RESERVE,
+                    maxWithdrawable: maxWithdrawable > 0 ? maxWithdrawable : 0
+                });
+            }
         }
 
         // ====== END WITHDRAWAL RULES VALIDATION ======
@@ -239,12 +247,6 @@ router.get('/eligibility', authMiddleware, async (req, res) => {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        // Count active first-level referrals
-        const activeLevel1Referrals = await User.countDocuments({
-            referredBy: user.invitationCode,
-            'investments.0': { $exists: true }
-        });
-
         // Total approved deposits
         const totalDepositsResult = await Deposit.aggregate([
             { $match: { userId: user._id, status: 'approved' } },
@@ -261,32 +263,57 @@ router.get('/eligibility', authMiddleware, async (req, res) => {
         const totalAlreadyWithdrawn = totalWithdrawnResult.length > 0 ? totalWithdrawnResult[0].total : 0;
         const remainingWithdrawLimit = Math.max(0, maxLifetimeWithdrawal - totalAlreadyWithdrawn);
 
-        // Calculate max withdrawable considering all rules
-        const MINIMUM_RESERVE = 50;
+        // --- Determine which phase the user is in ---
+        const isWithinCap = totalAlreadyWithdrawn < maxLifetimeWithdrawal;
+
+        // Count active first-level referrals (only needed for Phase 2)
+        const activeLevel1Referrals = await User.countDocuments({
+            referredBy: user.invitationCode,
+            'investments.0': { $exists: true }
+        });
         const hasEnoughReferrals = activeLevel1Referrals >= 3;
 
-        // Max from balance (considering reserve)
-        let maxFromBalance;
-        if (hasEnoughReferrals) {
-            maxFromBalance = Math.floor(user.balance / 1.05); // No reserve needed
-        } else {
-            maxFromBalance = Math.floor((user.balance - MINIMUM_RESERVE) / 1.05);
-            if (maxFromBalance < 0) maxFromBalance = 0;
-        }
+        const MINIMUM_RESERVE = 50;
 
-        // Apply withdrawal cap limit
-        const maxWithdrawable = Math.min(maxFromBalance, remainingWithdrawLimit);
+        // --- Calculate maxWithdrawable based on phase ---
+        let maxWithdrawable;
+        if (isWithinCap) {
+            // Phase 1: Free withdrawal up to remaining 150% cap limit
+            // Only constraint is balance and remaining cap
+            maxWithdrawable = Math.min(
+                Math.floor(user.balance / 1.05), // can use full balance (no $50 reserve)
+                Math.floor(remainingWithdrawLimit) // but can't exceed remaining cap
+            );
+        } else {
+            // Phase 2: Strict rules — must have 3 referrals & keep $50
+            if (!hasEnoughReferrals) {
+                maxWithdrawable = 0; // blocked until they get 3 referrals
+            } else {
+                maxWithdrawable = Math.min(
+                    Math.floor((user.balance - MINIMUM_RESERVE) / 1.05),
+                    Math.floor(remainingWithdrawLimit)
+                );
+                if (maxWithdrawable < 0) maxWithdrawable = 0;
+            }
+        }
 
         res.json({
             balance: user.balance,
+            // Phase info
+            isWithinCap,
+            phase: isWithinCap ? 1 : 2,
+            // Referral info (relevant in Phase 2)
             activeLevel1Referrals,
             hasEnoughReferrals,
             requiredReferrals: 3,
+            // Reserve info (relevant in Phase 2)
             minimumReserve: MINIMUM_RESERVE,
+            // Cap info
             totalDeposits,
             maxLifetimeWithdrawal,
             totalAlreadyWithdrawn,
             remainingWithdrawLimit,
+            // Result
             maxWithdrawable: maxWithdrawable > 0 ? maxWithdrawable : 0,
             isBlocked: !!user.withdrawalBlockMessage,
             blockMessage: user.withdrawalBlockMessage

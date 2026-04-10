@@ -133,10 +133,12 @@ const Withdraw = () => {
             fetchEligibility(); // Refresh eligibility after submission
         } catch (error) {
             const errData = error.response?.data;
-            if (errData?.code === 'INSUFFICIENT_REFERRALS' || errData?.code === 'INSUFFICIENT_REFERRALS_AND_BALANCE') {
-                toast.error(`❌ You need ${errData.requiredReferrals} active referrals! You have ${errData.activeReferrals}.`);
-            } else if (errData?.code === 'WITHDRAWAL_LIMIT_EXCEEDED') {
-                toast.error(`❌ Withdrawal limit exceeded! Remaining: $${errData.remainingLimit?.toFixed(2)}`);
+            if (errData?.code === 'INSUFFICIENT_REFERRALS') {
+                toast.error(`❌ You need 3 active referrals to continue! You have ${errData.activeReferrals}.`);
+            } else if (errData?.code === 'INSUFFICIENT_RESERVE') {
+                toast.error(`❌ Must keep $50 in account. Max: $${errData.maxWithdrawable}`);
+            } else if (errData?.code === 'WITHDRAWAL_LIMIT_EXCEEDED' || errData?.code === 'WITHIN_CAP_LIMIT_EXCEEDED') {
+                toast.error(`❌ Limit exceeded! Remaining: $${errData.remainingLimit?.toFixed(2)}`);
             } else {
                 toast.error(errData?.message || 'Failed to submit request');
             }
@@ -212,74 +214,105 @@ const Withdraw = () => {
                     <div className="glass-card p-4 border border-slate-200 dark:border-white/10 space-y-3">
                         <h3 className="text-gray-900 dark:text-white font-bold text-sm flex items-center gap-2">
                             <Info size={16} className="text-primary" />
-                            Withdrawal Rules & Status
+                            Withdrawal Status
                         </h3>
 
-                        {/* Rule 1: Active Referrals */}
-                        <div className={`flex items-start gap-3 p-3 rounded-xl border ${eligibility.hasEnoughReferrals ? 'bg-green-500/5 border-green-500/20' : 'bg-orange-500/5 border-orange-500/20'}`}>
-                            <div className={`p-1.5 rounded-lg flex-shrink-0 ${eligibility.hasEnoughReferrals ? 'bg-green-500/20' : 'bg-orange-500/20'}`}>
-                                <Users size={16} className={eligibility.hasEnoughReferrals ? 'text-green-500' : 'text-orange-500'} />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <div className="flex items-center justify-between">
-                                    <p className="text-gray-900 dark:text-white text-xs font-bold">Active Level-1 Referrals</p>
-                                    <span className={`text-xs font-black px-2 py-0.5 rounded-full ${eligibility.hasEnoughReferrals ? 'bg-green-500/20 text-green-500' : 'bg-orange-500/20 text-orange-500'}`}>
-                                        {eligibility.activeLevel1Referrals}/{eligibility.requiredReferrals}
-                                    </span>
-                                </div>
-                                <p className="text-gray-900/50 dark:text-white/50 text-[10px] mt-1 leading-relaxed">
-                                    {eligibility.hasEnoughReferrals
-                                        ? '✅ You can withdraw full balance (no $50 reserve needed)'
-                                        : `⚠️ Need ${eligibility.requiredReferrals - eligibility.activeLevel1Referrals} more active referral(s) for full withdrawal. $50 must stay in your account.`
-                                    }
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Rule 2: $50 Reserve */}
-                        {!eligibility.hasEnoughReferrals && (
-                            <div className="flex items-start gap-3 p-3 rounded-xl border bg-blue-500/5 border-blue-500/20">
-                                <div className="p-1.5 rounded-lg flex-shrink-0 bg-blue-500/20">
-                                    <Shield size={16} className="text-blue-500" />
+                        {/* Phase Banner */}
+                        {eligibility.isWithinCap ? (
+                            // PHASE 1: Free Withdrawal Zone
+                            <div className="flex items-start gap-3 p-3 rounded-xl border bg-green-500/5 border-green-500/30">
+                                <div className="p-1.5 rounded-lg flex-shrink-0 bg-green-500/20">
+                                    <CheckCircle2 size={16} className="text-green-500" />
                                 </div>
                                 <div className="flex-1">
-                                    <p className="text-gray-900 dark:text-white text-xs font-bold">$50 Account Reserve</p>
-                                    <p className="text-gray-900/50 dark:text-white/50 text-[10px] mt-1 leading-relaxed">
-                                        Without 3 active referrals, you must maintain a minimum $50 balance. Your daily investment earnings will continue as normal.
+                                    <p className="text-green-500 text-xs font-black">✅ Phase 1 — Free Withdrawal Zone</p>
+                                    <p className="text-gray-900/60 dark:text-white/60 text-[10px] mt-1 leading-relaxed">
+                                        You haven't yet reached 150% of your deposit. You can withdraw freely — no referral requirement, no $50 reserve needed.
+                                    </p>
+                                </div>
+                            </div>
+                        ) : (
+                            // PHASE 2: Strict Rules Apply
+                            <div className="flex items-start gap-3 p-3 rounded-xl border bg-orange-500/5 border-orange-500/30">
+                                <div className="p-1.5 rounded-lg flex-shrink-0 bg-orange-500/20">
+                                    <Lock size={16} className="text-orange-500" />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-orange-500 text-xs font-black">⚠️ Phase 2 — Conditions Apply</p>
+                                    <p className="text-gray-900/60 dark:text-white/60 text-[10px] mt-1 leading-relaxed">
+                                        You've already withdrawn 150% of your deposit. Now you must have 3 active referrals and keep $50 in your account.
                                     </p>
                                 </div>
                             </div>
                         )}
 
-                        {/* Rule 3: 150% Deposit Cap */}
+                        {/* Phase 2 Only: Referral Requirement */}
+                        {!eligibility.isWithinCap && (
+                            <div className={`flex items-start gap-3 p-3 rounded-xl border ${eligibility.hasEnoughReferrals ? 'bg-green-500/5 border-green-500/20' : 'bg-red-500/5 border-red-500/20'}`}>
+                                <div className={`p-1.5 rounded-lg flex-shrink-0 ${eligibility.hasEnoughReferrals ? 'bg-green-500/20' : 'bg-red-500/20'}`}>
+                                    <Users size={16} className={eligibility.hasEnoughReferrals ? 'text-green-500' : 'text-red-500'} />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex items-center justify-between">
+                                        <p className="text-gray-900 dark:text-white text-xs font-bold">Active Level-1 Referrals</p>
+                                        <span className={`text-xs font-black px-2 py-0.5 rounded-full ${eligibility.hasEnoughReferrals ? 'bg-green-500/20 text-green-500' : 'bg-red-500/20 text-red-500'}`}>
+                                            {eligibility.activeLevel1Referrals}/{eligibility.requiredReferrals}
+                                        </span>
+                                    </div>
+                                    <p className="text-gray-900/50 dark:text-white/50 text-[10px] mt-1">
+                                        {eligibility.hasEnoughReferrals
+                                            ? '✅ Referral requirement met'
+                                            : `Need ${eligibility.requiredReferrals - eligibility.activeLevel1Referrals} more active referral(s)`
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Phase 2 Only: $50 Reserve */}
+                        {!eligibility.isWithinCap && (
+                            <div className="flex items-start gap-3 p-3 rounded-xl border bg-blue-500/5 border-blue-500/20">
+                                <div className="p-1.5 rounded-lg flex-shrink-0 bg-blue-500/20">
+                                    <Shield size={16} className="text-blue-500" />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="text-gray-900 dark:text-white text-xs font-bold">$50 Minimum Reserve</p>
+                                    <p className="text-gray-900/50 dark:text-white/50 text-[10px] mt-1">
+                                        Must keep at least $50 in your account at all times.
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* 150% Cap Progress — Always Visible */}
                         <div className="flex items-start gap-3 p-3 rounded-xl border bg-purple-500/5 border-purple-500/20">
                             <div className="p-1.5 rounded-lg flex-shrink-0 bg-purple-500/20">
                                 <TrendingUp size={16} className="text-purple-500" />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-gray-900 dark:text-white text-xs font-bold">Withdrawal Limit (150% of Deposits)</p>
+                                <p className="text-gray-900 dark:text-white text-xs font-bold">150% Withdrawal Cap Progress</p>
                                 <div className="mt-2 space-y-1">
                                     <div className="flex justify-between text-[10px]">
-                                        <span className="text-gray-900/50 dark:text-white/50">Total Deposits</span>
+                                        <span className="text-gray-900/50 dark:text-white/50">Your Total Deposit</span>
                                         <span className="text-gray-900/80 dark:text-white/80 font-bold">${eligibility.totalDeposits?.toFixed(2)}</span>
                                     </div>
                                     <div className="flex justify-between text-[10px]">
-                                        <span className="text-gray-900/50 dark:text-white/50">Max Lifetime Withdrawal</span>
+                                        <span className="text-gray-900/50 dark:text-white/50">Max Withdrawal (150%)</span>
                                         <span className="text-gray-900/80 dark:text-white/80 font-bold">${eligibility.maxLifetimeWithdrawal?.toFixed(2)}</span>
                                     </div>
                                     <div className="flex justify-between text-[10px]">
-                                        <span className="text-gray-900/50 dark:text-white/50">Already Withdrawn/Pending</span>
+                                        <span className="text-gray-900/50 dark:text-white/50">Already Withdrawn</span>
                                         <span className="text-orange-400 font-bold">${eligibility.totalAlreadyWithdrawn?.toFixed(2)}</span>
                                     </div>
                                     <div className="h-px bg-gray-900/10 dark:bg-white/10 my-1"></div>
                                     <div className="flex justify-between text-[10px]">
-                                        <span className="text-gray-900/80 dark:text-white/80 font-bold">Remaining Limit</span>
+                                        <span className="text-gray-900/80 dark:text-white/80 font-bold">Remaining Cap</span>
                                         <span className="text-primary font-black">${eligibility.remainingWithdrawLimit?.toFixed(2)}</span>
                                     </div>
                                     {/* Progress bar */}
                                     <div className="w-full bg-gray-200 dark:bg-white/10 rounded-full h-1.5 mt-1">
                                         <div
-                                            className="bg-gradient-to-r from-primary to-purple-500 h-1.5 rounded-full transition-all"
+                                            className={`h-1.5 rounded-full transition-all ${eligibility.isWithinCap ? 'bg-gradient-to-r from-green-400 to-primary' : 'bg-gradient-to-r from-orange-400 to-red-500'}`}
                                             style={{ width: `${eligibility.maxLifetimeWithdrawal > 0 ? Math.min(100, (eligibility.totalAlreadyWithdrawn / eligibility.maxLifetimeWithdrawal) * 100) : 0}%` }}
                                         ></div>
                                     </div>
