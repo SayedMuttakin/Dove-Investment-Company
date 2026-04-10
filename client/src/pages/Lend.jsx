@@ -156,6 +156,25 @@ const Lend = () => {
             {/* Content */}
             <div className="max-w-md mx-auto px-4 py-4 space-y-4">
 
+                {/* Level 1 Low Balance Warning */}
+                {user?.vipLevel === 0 && (user?.balance || 0) < 50 && targetLevel === 0 && (
+                    <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded-2xl text-amber-500 text-sm flex items-start gap-3 animate-pulse-slow">
+                        <DollarSign size={22} className="mt-0.5 shrink-0" />
+                        <div>
+                            <p className="font-bold text-xs mb-1">⚠️ Insufficient Balance for Lending</p>
+                            <p className="text-[11px] leading-relaxed opacity-80">
+                                Your available balance is <strong>${(user?.balance || 0).toFixed(2)}</strong>, which is below the required <strong>$50.00</strong> minimum for Level 1 investments. Please deposit more funds to start lending.
+                            </p>
+                            <button
+                                onClick={() => navigate('/recharge')}
+                                className="mt-3 px-5 py-2 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-full text-[11px] font-bold hover:bg-amber-500/30 transition-all active:scale-[0.97]"
+                            >
+                                Deposit Now →
+                            </button>
+                        </div>
+                    </div>
+                )}
+
                 {error && (
                     <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 text-sm flex items-start gap-3 animate-shake">
                         <Info size={18} className="mt-0.5 shrink-0" />
@@ -317,16 +336,23 @@ const Lend = () => {
                                         <button
                                             onClick={() => {
                                                 if (activeCount > 0) return;
+                                                // Block Level 1 users with balance < $50
+                                                if (user?.vipLevel === 0 && (user?.balance || 0) < 50) {
+                                                    navigate('/recharge');
+                                                    return;
+                                                }
                                                 setShowInvestModal(pkg);
                                                 setInvestAmount(pkg.minAmount.toString());
                                             }}
                                             disabled={activeCount > 0}
                                             className={`relative z-10 w-full py-3 rounded-lg font-bold text-sm transition-all active:scale-[0.98] ${activeCount > 0
                                                 ? 'bg-gray-900/5 dark:bg-white/5 text-gray-900/20 dark:text-white/20 cursor-not-allowed border border-slate-200 dark:border-white/5'
-                                                : 'text-black bg-gradient-to-r from-primary to-secondary hover:shadow-glow-lg'
+                                                : (user?.vipLevel === 0 && (user?.balance || 0) < 50)
+                                                    ? 'bg-amber-500/10 text-amber-500 border border-amber-500/30 cursor-pointer'
+                                                    : 'text-black bg-gradient-to-r from-primary to-secondary hover:shadow-glow-lg'
                                                 }`}
                                         >
-                                            {activeCount > 0 ? 'Active Plan' : 'Details'}
+                                            {activeCount > 0 ? 'Active Plan' : (user?.vipLevel === 0 && (user?.balance || 0) < 50) ? '⚠ Deposit Required' : 'Details'}
                                         </button>
                                     </div>
                                 </div>

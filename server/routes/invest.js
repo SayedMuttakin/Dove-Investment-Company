@@ -116,6 +116,19 @@ router.post('/create', authMiddleware, async (req, res) => {
 
         const user = await User.findById(req.userId);
 
+        // ===== Level 1 (vipLevel 0) Minimum Balance Check =====
+        // Level 1 users must have at least $50 available balance to invest in lend packages.
+        // If their balance is below $50, they need to deposit more first.
+        if (user.vipLevel === 0) {
+            if (user.balance < 50) {
+                return res.status(400).json({
+                    message: 'Your available balance is below $50. Please deposit more funds to start lending. Minimum $50 balance required for Level 1 investments.',
+                    code: 'LEVEL1_LOW_BALANCE'
+                });
+            }
+            // Also ensure balance won't drop below $0 after investment (standard check still applies below)
+        }
+
         // Check for existing active investment of the same package
         const hasActivePackage = user.investments.some(inv =>
             inv.package.name === pkg.name && inv.status === 'active'
