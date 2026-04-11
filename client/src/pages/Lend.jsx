@@ -52,6 +52,11 @@ const Lend = () => {
     // Determine which level to show: active state or current user level
     const targetLevel = location.state?.viewLevel !== undefined ? location.state.viewLevel : (user?.vipLevel || 0);
 
+    // Calculate total funds for Level 1 check: available balance + active lend package principals
+    const activeLendPrincipal = (user?.investments || []).filter(inv => inv.status === 'active').reduce((sum, inv) => sum + (inv.package?.investmentAmount || 0), 0);
+    const totalFunds = (user?.balance || 0) + activeLendPrincipal;
+    const isLevel1LowBalance = user?.vipLevel === 0 && totalFunds < 50;
+
     useEffect(() => {
         const fetchPackages = async () => {
             try {
@@ -212,7 +217,7 @@ const Lend = () => {
                 )}
 
                 {/* Level 1 Low Balance Warning (ongoing) */}
-                {user?.vipLevel === 0 && (user?.balance || 0) < 50 && targetLevel === 0 && !autoCancelInfo && (
+                {isLevel1LowBalance && targetLevel === 0 && !autoCancelInfo && (
                     <div className="p-4 bg-gradient-to-br from-amber-600 to-orange-600 rounded-2xl text-white shadow-lg shadow-orange-500/20 flex items-start gap-3 animate-pulse-slow">
                         <DollarSign size={22} className="mt-0.5 shrink-0 opacity-90" />
                         <div>
@@ -391,8 +396,8 @@ const Lend = () => {
                                         <button
                                             onClick={() => {
                                                 if (activeCount > 0) return;
-                                                // Block Level 1 users with balance < $50
-                                                if (user?.vipLevel === 0 && (user?.balance || 0) < 50) {
+                                                // Block Level 1 users with totalFunds < $50
+                                                if (isLevel1LowBalance) {
                                                     navigate('/recharge');
                                                     return;
                                                 }
@@ -402,12 +407,12 @@ const Lend = () => {
                                             disabled={activeCount > 0}
                                             className={`relative z-10 w-full py-3 rounded-lg font-bold text-sm transition-all active:scale-[0.98] ${activeCount > 0
                                                 ? 'bg-gray-900/5 dark:bg-white/5 text-gray-900/20 dark:text-white/20 cursor-not-allowed border border-slate-200 dark:border-white/5'
-                                                : (user?.vipLevel === 0 && (user?.balance || 0) < 50)
+                                                : isLevel1LowBalance
                                                     ? 'bg-amber-500/10 text-amber-500 border border-amber-500/30 cursor-pointer'
                                                     : 'text-black bg-gradient-to-r from-primary to-secondary hover:shadow-glow-lg'
                                                 }`}
                                         >
-                                            {activeCount > 0 ? 'Active Plan' : (user?.vipLevel === 0 && (user?.balance || 0) < 50) ? '⚠ Deposit Required' : 'Details'}
+                                            {activeCount > 0 ? 'Active Plan' : isLevel1LowBalance ? '⚠ Deposit Required' : 'Details'}
                                         </button>
                                     </div>
                                 </div>
