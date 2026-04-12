@@ -210,7 +210,7 @@ const Withdraw = () => {
                 </div>
 
                 {/* Withdrawal Eligibility Status Card */}
-                {!eligibilityLoading && eligibility && (
+                {!eligibilityLoading && eligibility && user?.vipLevel === 0 && (
                     <div className="glass-card p-4 border border-slate-200 dark:border-white/10 space-y-3">
                         <h3 className="text-gray-900 dark:text-white font-bold text-sm flex items-center gap-2">
                             <Info size={16} className="text-primary" />
