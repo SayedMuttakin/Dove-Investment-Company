@@ -447,6 +447,15 @@ router.get('/me', authMiddleware, async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
+
+        // Instant block check
+        if (user.isBlocked) {
+            return res.status(403).json({ 
+                message: 'Your account has been blocked. Please contact support.', 
+                code: 'ACCOUNT_BLOCKED' 
+            });
+        }
+
         console.log(`[Auth] /me called for ${user.phone || user.email}. memberId: ${user.memberId}`);
 
         // Calculate Referral Stats (Gen 1 + Gen 2)
@@ -570,6 +579,14 @@ router.get('/me', authMiddleware, async (req, res) => {
         console.error('Get user error:', error);
         res.status(500).json({ message: 'Server error' });
     }
+});
+
+// ✅ INSTANT BLOCK CHECK: Lightweight endpoint for frontend polling
+// Returns 200 if user is active, 403 if blocked
+// Used by AuthContext every 15 seconds to detect real-time blocks
+router.get('/check-block', authMiddleware, async (req, res) => {
+    // authMiddleware already checks isBlocked — if we reach here, user is not blocked
+    res.json({ status: 'ok', blocked: false });
 });
 
 export default router;
