@@ -62,13 +62,14 @@ const Login = () => {
                 <button
                     onClick={() => navigate(-1)}
                     className="absolute left-0 top-0 p-2 text-gray-900/60 dark:text-white/60 hover:text-white transition-colors"
+                    aria-label="Go back"
                 >
                     <ArrowLeft size={24} />
                 </button>
 
                 <div className="flex items-center justify-center gap-2 mb-2">
-                    <Globe size={20} className="text-gray-900/60 dark:text-white/60" />
-                    <RefreshCw size={20} className="text-gray-900/60 dark:text-white/60" />
+                    <Globe size={20} className="text-gray-900/60 dark:text-white/60" aria-hidden="true" />
+                    <RefreshCw size={20} className="text-gray-900/60 dark:text-white/60" aria-hidden="true" />
                 </div>
 
                 <div className="flex items-center justify-center gap-3 mb-3">
@@ -76,14 +77,14 @@ const Login = () => {
                     <div className="w-20 h-20 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-glow-lg transition-transform hover:scale-110 overflow-hidden">
                         <img
                             src="/pwa-icon-192.png"
-                            alt="Dove Logo"
+                            alt="Dove Investment Gold Mine - US-Based Gold & Crypto Investment Platform"
                             className="w-full h-full object-cover p-1"
                         />
                     </div>
                 </div>
 
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Hello,</h1>
-                <p className="text-gray-900/60 dark:text-white/60">Welcome Dove Investment Gold Mine</p>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Dove Investment Gold Mine</h1>
+                <p className="text-gray-900/60 dark:text-white/60 text-sm">Secure Gold & Crypto Investment Platform — Based in the USA</p>
             </div>
 
             {/* Login Form */}

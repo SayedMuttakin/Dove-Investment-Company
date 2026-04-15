@@ -1,0 +1,51 @@
+# Dove Investment Gold Mine - Robots.txt
+# https://doveinvestment.cloud
+
+User-agent: *
+Allow: /
+Allow: /login
+Allow: /register
+Allow: /about
+
+# Block admin and sensitive areas from crawling
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /api/
+Disallow: /api/*
+Disallow: /settings
+Disallow: /settings/*
+Disallow: /deposit
+Disallow: /withdraw
+Disallow: /wallet
+Disallow: /history
+Disallow: /notifications
+
+# Sitemap location
+Sitemap: https://doveinvestment.cloud/sitemap.xml
+
+# Crawl rate
+Crawl-delay: 1
+
+# Google specific
+User-agent: Googlebot
+Allow: /
+Allow: /login
+Allow: /register
+Allow: /about
+Disallow: /admin
+Disallow: /api/
+
+# Bing specific
+User-agent: Bingbot
+Allow: /
+Allow: /login
+Allow: /register
+Allow: /about
+Disallow: /admin
+Disallow: /api/
+
+# Allow search engine image crawlers
+User-agent: Googlebot-Image
+Allow: /images/
+Allow: /pwa-icon-192.png
+Allow: /pwa-icon-512.png

@@ -62,7 +62,36 @@ app.use('/api/rewards', rewardsRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
-    res.json({ status: 'OK', message: 'Dove Investment API is running' });
+    res.json({ 
+        status: 'OK', 
+        message: 'Dove Investment Gold Mine API is running',
+        company: 'Dove Investment Gold Mine',
+        website: 'https://doveinvestment.cloud',
+        country: 'US'
+    });
+});
+
+// SEO: Serve robots.txt at root level
+app.get('/robots.txt', (req, res) => {
+    const robotsPath = path.join(__dirname, '../client/public/robots.txt');
+    if (fs.existsSync(robotsPath)) {
+        res.type('text/plain');
+        res.sendFile(robotsPath);
+    } else {
+        res.type('text/plain');
+        res.send(`User-agent: *\nAllow: /\nSitemap: https://doveinvestment.cloud/sitemap.xml`);
+    }
+});
+
+// SEO: Serve sitemap.xml at root level
+app.get('/sitemap.xml', (req, res) => {
+    const sitemapPath = path.join(__dirname, '../client/public/sitemap.xml');
+    if (fs.existsSync(sitemapPath)) {
+        res.type('application/xml');
+        res.sendFile(sitemapPath);
+    } else {
+        res.status(404).send('Sitemap not found');
+    }
 });
 
 // MongoDB Connection

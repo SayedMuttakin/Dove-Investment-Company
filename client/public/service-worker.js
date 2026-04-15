@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dove-investment-v2';
+const CACHE_NAME = 'dove-investment-v3';
 const urlsToCache = [
     '/',
     '/index.html',

@@ -217,7 +217,7 @@ const Home = () => {
                         <div className="mb-4">
                             <h2 className="text-gray-900 dark:text-white text-xl font-bold mb-2">{companyInfo?.name || 'Dove Investment Gold Mine'}</h2>
                             <p className="text-gray-900/70 dark:text-white/70 text-sm leading-relaxed">
-                                {companyInfo?.description || 'Your trusted partner in financial growth. We provide secure and profitable investment solutions with transparency and excellence.'}
+                                {companyInfo?.description || 'A premier US-based investment company specializing in gold mining and cryptocurrency. We provide secure, transparent, and high-yield investment solutions trusted by investors across 36+ countries worldwide.'}
                             </p>
                         </div>
                         <button

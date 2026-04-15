@@ -111,7 +111,7 @@ const About = () => {
                 {/* Bottom Credit */}
                 <div className="px-8 text-center pb-8 opacity-20 mt-auto">
                     <p className="text-black text-[9px] font-bold uppercase tracking-[0.3em]">
-                        Dove Investment Gold Mine © 2025
+                        Dove Investment Gold Mine © 2025 — USA
                     </p>
                 </div>
             </div>

@@ -140,6 +140,7 @@ const Register = () => {
                 <button
                     onClick={() => navigate(-1)}
                     className="absolute left-0 top-0 p-2 text-gray-900/60 dark:text-white/60 hover:text-white transition-colors"
+                    aria-label="Go back"
                 >
                     <ArrowLeft size={24} />
                 </button>
@@ -154,19 +155,19 @@ const Register = () => {
                     <div className="w-20 h-20 bg-gradient-primary rounded-2xl flex items-center justify-center shadow-glow-lg transition-transform hover:scale-110 overflow-hidden">
                         <img
                             src="/pwa-icon-192.png"
-                            alt="Dove Logo"
+                            alt="Dove Investment Gold Mine - Create Your Account"
                             className="w-full h-full object-cover p-1"
                         />
                     </div>
                 </div>
 
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Welcome To,</h1>
-                <p className="text-gray-900/60 dark:text-white/60">Dove Investment Gold Mine</p>
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">Join Dove Investment Gold Mine</h1>
+                <p className="text-gray-900/60 dark:text-white/60 text-sm">Start Earning with a Trusted US-Based Investment Platform</p>
             </div>
 
             {/* Registration Form */}
             <div className="glass-card p-6 space-y-5 shadow-glow">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Account Login</h2>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Create Account</h2>
 
                 {error && (
                     <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3 text-red-400 text-sm">
