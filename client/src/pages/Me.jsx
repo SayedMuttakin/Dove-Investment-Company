@@ -205,11 +205,11 @@ const Me = () => {
                                 />
                             </div>
                             <div className="flex flex-col">
-                                <h1 className="text-gray-900 font-black text-lg tracking-tight leading-none uppercase italic">Dove</h1>
-                                <span className="text-gray-600 text-[10px] font-bold mt-1">
+                                <h1 className="text-gray-900 dark:text-white font-black text-lg tracking-tight leading-none uppercase italic">Dove</h1>
+                                <span className="text-gray-600 dark:text-white/90 text-[10px] font-bold mt-1">
                                     User: {user?.fullName || 'Anonymous'}
                                 </span>
-                                <span className="text-gray-500 text-[9px] font-medium leading-none mt-0.5">
+                                <span className="text-gray-500 dark:text-white/80 text-[9px] font-medium leading-none mt-0.5">
                                     User ID: {user?.memberId || 'N/A'}
                                 </span>
                             </div>
