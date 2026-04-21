@@ -507,11 +507,11 @@ router.get('/me', authMiddleware, async (req, res) => {
         // Level 5: Gen1 >= 30, Gen2+3 >= 50, Total >= 80,  minDeposit $2000
         // Level 6: Gen1 >= 45, Gen2+3 >= 95, Total >= 140, minDeposit $3000
         const levelUpRequirements = [
-            { level: 6, gen1Min: 45, gen23Min: 95, totalMin: 140, minDeposit: 3000 },
-            { level: 5, gen1Min: 30, gen23Min: 50, totalMin: 80,  minDeposit: 2000 },
-            { level: 4, gen1Min: 15, gen23Min: 35, totalMin: 50,  minDeposit: 1300 },
-            { level: 3, gen1Min: 8,  gen23Min: 10, totalMin: 18,  minDeposit: 800  },
-            { level: 2, gen1Min: 3,  gen23Min: 4,  totalMin: 7,   minDeposit: 300  }
+            { level: 5, gen1Min: 45, gen23Min: 95, totalMin: 140, minDeposit: 3000 },
+            { level: 4, gen1Min: 30, gen23Min: 50, totalMin: 80,  minDeposit: 2000 },
+            { level: 3, gen1Min: 15, gen23Min: 35, totalMin: 50,  minDeposit: 1300 },
+            { level: 2, gen1Min: 8,  gen23Min: 10, totalMin: 18,  minDeposit: 800  },
+            { level: 1, gen1Min: 3,  gen23Min: 4,  totalMin: 7,   minDeposit: 300  }
         ];
 
         console.log(`[LevelCheck] User: ${user.email || user.phone} | vipLevel: ${user.vipLevel}`);
