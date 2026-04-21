@@ -458,15 +458,34 @@ router.get('/me', authMiddleware, async (req, res) => {
 
         console.log(`[Auth] /me called for ${user.phone || user.email}. memberId: ${user.memberId}`);
 
-        // Calculate Referral Stats (Gen 1 + Gen 2)
-        // 1. Direct Referrals (Gen 1)
-        const directReferrals = await User.find({ referredBy: user.invitationCode });
-        const directCount = directReferrals.length;
+        // ─── Calculate Active Referral Stats (Gen 1 + Gen 2 + Gen 3) ───
+        // Active member = isTeamMember: true (has made at least one approved deposit)
 
-        // 2. Second Generation (Gen 2) - Referrals of Directs
-        const directCodes = directReferrals.map(u => u.invitationCode);
-        const secondGenReferrals = await User.find({ referredBy: { $in: directCodes } });
-        const teamCount = directCount + secondGenReferrals.length;
+        // Gen 1 — Direct referrals
+        const gen1Users = await User.find({ referredBy: user.invitationCode }, 'invitationCode isTeamMember');
+        const gen1ActiveCount = gen1Users.filter(u => u.isTeamMember).length;
+        const gen1Codes = gen1Users.map(u => u.invitationCode);
+
+        // Gen 2 — Referrals of Gen 1
+        const gen2Users = gen1Codes.length > 0
+            ? await User.find({ referredBy: { $in: gen1Codes } }, 'invitationCode isTeamMember')
+            : [];
+        const gen2ActiveCount = gen2Users.filter(u => u.isTeamMember).length;
+        const gen2Codes = gen2Users.map(u => u.invitationCode);
+
+        // Gen 3 — Referrals of Gen 2
+        const gen3Users = gen2Codes.length > 0
+            ? await User.find({ referredBy: { $in: gen2Codes } }, 'invitationCode isTeamMember')
+            : [];
+        const gen3ActiveCount = gen3Users.filter(u => u.isTeamMember).length;
+
+        // Combined counts for level check
+        const gen23ActiveCount = gen2ActiveCount + gen3ActiveCount;  // Gen 2 + Gen 3 combined
+        const totalActiveCount = gen1ActiveCount + gen23ActiveCount; // All active members
+
+        // For /me stats (total team including non-active, used for display)
+        const directCount = gen1Users.length;
+        const teamCount = directCount + gen2Users.length + gen3Users.length;
 
         // Calculate user's total approved deposits
         const approvedDeposits = await Deposit.aggregate([
@@ -475,26 +494,40 @@ router.get('/me', authMiddleware, async (req, res) => {
         ]);
         const totalDeposited = approvedDeposits.length > 0 ? approvedDeposits[0].total : 0;
 
-        // Auto-Upgrade Logic (Check from highest level down)
-        // Level 1 (vipLevel 0) = no team needed (default)
-        // Level 2+ requires BOTH: team members + minimum deposit
+        // ─── Auto-Upgrade Logic ───
+        // Rules:
+        //   - Gen 1 MUST have the minimum required active members
+        //   - Gen 2+3 combined must fill the rest
+        //   - Total active members must meet the total requirement
+        //   - User's own deposit must meet the minimum
+        //
+        // Level 2: Gen1 >= 3,  Gen2+3 >= 4,  Total >= 7,   minDeposit $300
+        // Level 3: Gen1 >= 8,  Gen2+3 >= 10, Total >= 18,  minDeposit $800
+        // Level 4: Gen1 >= 15, Gen2+3 >= 35, Total >= 50,  minDeposit $1300
+        // Level 5: Gen1 >= 30, Gen2+3 >= 50, Total >= 80,  minDeposit $2000
+        // Level 6: Gen1 >= 45, Gen2+3 >= 95, Total >= 140, minDeposit $3000
         const levelUpRequirements = [
-            { level: 5, members: 140, minDeposit: 3000 },
-            { level: 4, members: 80, minDeposit: 2000 },
-            { level: 3, members: 50, minDeposit: 1300 },
-            { level: 2, members: 18, minDeposit: 800 },
-            { level: 1, members: 7, minDeposit: 300 }
+            { level: 5, gen1Min: 45, gen23Min: 95, totalMin: 140, minDeposit: 3000 },
+            { level: 4, gen1Min: 30, gen23Min: 50, totalMin: 80,  minDeposit: 2000 },
+            { level: 3, gen1Min: 15, gen23Min: 35, totalMin: 50,  minDeposit: 1300 },
+            { level: 2, gen1Min: 8,  gen23Min: 10, totalMin: 18,  minDeposit: 800  },
+            { level: 1, gen1Min: 3,  gen23Min: 4,  totalMin: 7,   minDeposit: 300  }
         ];
 
         let newLevel = user.vipLevel;
         for (const req of levelUpRequirements) {
-            if (teamCount >= req.members && totalDeposited >= req.minDeposit) {
+            if (
+                gen1ActiveCount >= req.gen1Min &&
+                gen23ActiveCount >= req.gen23Min &&
+                totalActiveCount >= req.totalMin &&
+                totalDeposited >= req.minDeposit
+            ) {
                 newLevel = req.level;
                 break;
             }
         }
 
-        // Apply Upgrade if level increased
+        // Apply upgrade if level increased
         if (newLevel > user.vipLevel) {
             user.vipLevel = newLevel;
             await user.save();
