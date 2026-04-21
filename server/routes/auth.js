@@ -487,12 +487,12 @@ router.get('/me', authMiddleware, async (req, res) => {
         const directCount = gen1Users.length;
         const teamCount = directCount + gen2Users.length + gen3Users.length;
 
-        // Calculate user's total approved deposits
-        const approvedDeposits = await Deposit.aggregate([
-            { $match: { userId: user._id, status: 'approved' } },
-            { $group: { _id: null, total: { $sum: '$amount' } } }
-        ]);
-        const totalDeposited = approvedDeposits.length > 0 ? approvedDeposits[0].total : 0;
+        // Calculate user's Total Assets (balance + active investments + redeemable)
+        // This matches the "Total assets (Converted)" shown in the Wallet page
+        const activeInvestmentTotal = user.investments
+            .filter(inv => inv.status === 'active')
+            .reduce((sum, inv) => sum + (inv.package?.investmentAmount || 0), 0);
+        const totalAssets = (user.balance || 0) + activeInvestmentTotal + (user.redeemableBalance || 0);
 
         // ─── Auto-Upgrade Logic ───
         // Rules:
@@ -515,15 +515,15 @@ router.get('/me', authMiddleware, async (req, res) => {
         ];
 
         console.log(`[LevelCheck] User: ${user.email || user.phone} | vipLevel: ${user.vipLevel}`);
-        console.log(`[LevelCheck] gen1Active: ${gen1ActiveCount}, gen23Active: ${gen23ActiveCount}, totalActive: ${totalActiveCount}, totalDeposited: $${totalDeposited}`);
+        console.log(`[LevelCheck] gen1Active: ${gen1ActiveCount}, gen23Active: ${gen23ActiveCount}, totalActive: ${totalActiveCount}, totalAssets: $${totalAssets.toFixed(2)}`);
 
         let newLevel = user.vipLevel;
         for (const req of levelUpRequirements) {
             const g1ok = gen1ActiveCount >= req.gen1Min;
             const g23ok = gen23ActiveCount >= req.gen23Min;
             const totok = totalActiveCount >= req.totalMin;
-            const depok = totalDeposited >= req.minDeposit;
-            console.log(`[LevelCheck] → Level ${req.level}: gen1(${gen1ActiveCount}>=${req.gen1Min}=${g1ok}), gen23(${gen23ActiveCount}>=${req.gen23Min}=${g23ok}), total(${totalActiveCount}>=${req.totalMin}=${totok}), dep($${totalDeposited}>=$${req.minDeposit}=${depok})`);
+            const depok = totalAssets >= req.minDeposit;
+            console.log(`[LevelCheck] → Level ${req.level}: gen1(${gen1ActiveCount}>=${req.gen1Min}=${g1ok}), gen23(${gen23ActiveCount}>=${req.gen23Min}=${g23ok}), total(${totalActiveCount}>=${req.totalMin}=${totok}), assets($${totalAssets.toFixed(2)}>=$${req.minDeposit}=${depok})`);
             if (g1ok && g23ok && totok && depok) {
                 newLevel = req.level;
                 break;
@@ -612,7 +612,7 @@ router.get('/me', authMiddleware, async (req, res) => {
                 gen23ActiveCount: gen23ActiveCount,
                 activeInvestments: user.investments?.filter(i => i.status === 'active').length || 0,
                 totalInvested: user.investments?.reduce((sum, i) => sum + i.package.investmentAmount, 0) || 0,
-                totalDeposited: totalDeposited
+                totalDeposited: totalAssets
             }
         });
     } catch (error) {
