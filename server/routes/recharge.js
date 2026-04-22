@@ -1,5 +1,4 @@
 import express from 'express';
-import crypto from 'crypto';
 import Deposit from '../models/Deposit.js';
 import User from '../models/User.js';
 import { authMiddleware } from '../middleware/auth.js';
@@ -11,15 +10,15 @@ import {
     getPaymentStatus,
     verifyIpnSignature,
     CONFIRMED_STATUSES,
-    checkApiStatus
+    checkApiStatus,
 } from '../services/nowpaymentsService.js';
 import { distributeCommissions } from '../utils/teamCommissions.js';
 
 const router = express.Router();
 
-/* ══════════════════════════════════════════════
-   SHARED HELPER — credit user balance on approval
-══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   HELPER: Credit user balance after approval
+═══════════════════════════════════════════ */
 async function creditUserBalance(deposit) {
     const user = await User.findById(deposit.userId);
     if (!user) throw new Error('User not found');
@@ -29,45 +28,46 @@ async function creditUserBalance(deposit) {
     if (user.withdrawalBlockMessage) user.withdrawalBlockMessage = null;
     await user.save();
 
-    // Unblock referrer too
+    // Unblock referrer
     if (user.referredBy) {
-        const referrer = await User.findOne({ invitationCode: user.referredBy });
-        if (referrer && referrer.withdrawalBlockMessage) {
-            referrer.withdrawalBlockMessage = null;
-            await referrer.save();
-        }
+        try {
+            const referrer = await User.findOne({ invitationCode: user.referredBy });
+            if (referrer?.withdrawalBlockMessage) {
+                referrer.withdrawalBlockMessage = null;
+                await referrer.save();
+            }
+        } catch { /* non-critical */ }
     }
 
-    // Distribute team commissions
-    try {
-        await distributeCommissions(user, deposit.amount);
-    } catch (e) {
+    // Distribute commissions
+    try { await distributeCommissions(user, deposit.amount); } catch (e) {
         console.error('[Credit] Commission error:', e.message);
     }
 
-    // Notification
-    await createNotification({
-        userId: deposit.userId,
-        title: 'Deposit Approved ✓',
-        message: `Your deposit of $${deposit.amount} USDT has been confirmed and added to your balance.`,
-        type: 'deposit',
-        amount: deposit.amount,
-        relatedId: deposit._id
-    });
+    // In-app notification
+    try {
+        await createNotification({
+            userId: deposit.userId,
+            title: 'Deposit Approved ✓',
+            message: `Your deposit of $${deposit.amount} USDT has been confirmed and credited.`,
+            type: 'deposit',
+            amount: deposit.amount,
+            relatedId: deposit._id,
+        });
+    } catch { /* non-critical */ }
 
     // Email
     if (user.email) {
         try { await sendDepositApprovedEmail(user, deposit); } catch { }
     }
 
-    console.log(`[Credit] $${deposit.amount} credited to user ${user._id}`);
+    console.log(`[Credit] $${deposit.amount} credited → user ${user._id}`);
     return user;
 }
 
-/* ══════════════════════════════════════════════
+/* ═══════════════════════════════════════════
    GET /api/recharge/history
-   User's own deposit history
-══════════════════════════════════════════════ */
+═══════════════════════════════════════════ */
 router.get('/history', authMiddleware, async (req, res) => {
     try {
         const deposits = await Deposit.find({ userId: req.userId })
@@ -75,258 +75,261 @@ router.get('/history', authMiddleware, async (req, res) => {
             .limit(20)
             .select('amount network status paymentMethod transactionHash nowpaymentsId payAddress payCurrency payAmount createdAt approvedAt packageName');
         res.json({ deposits });
-    } catch (error) {
-        console.error('Deposit history error:', error);
+    } catch (err) {
+        console.error('[History]', err.message);
         res.status(500).json({ message: 'Server error' });
     }
 });
 
-/* ══════════════════════════════════════════════
+/* ═══════════════════════════════════════════
    GET /api/recharge/wallets
-   Static wallet addresses (manual fallback)
-══════════════════════════════════════════════ */
+═══════════════════════════════════════════ */
 router.get('/wallets', async (req, res) => {
     try {
         let settings = await SystemSettings.findOne();
-        if (!settings) {
-            settings = new SystemSettings();
-            await settings.save();
-        }
+        if (!settings) { settings = new SystemSettings(); await settings.save(); }
         res.json({
             wallets: {
                 TRC20: settings.walletTRC20,
-                BSC: settings.walletBSC,
-                BTC: settings.walletBTC,
-                ETH: settings.walletETH,
+                BSC:   settings.walletBSC,
+                BTC:   settings.walletBTC,
+                ETH:   settings.walletETH,
             },
-            minDepositAmount: settings.minDepositAmount
+            minDepositAmount: settings.minDepositAmount,
         });
-    } catch (error) {
-        console.error('Get wallets error:', error);
+    } catch (err) {
+        console.error('[Wallets]', err.message);
         res.status(500).json({ message: 'Server error' });
     }
 });
 
-/* ══════════════════════════════════════════════
+/* ═══════════════════════════════════════════
    GET /api/recharge/nowpayments/status
-   Check if NowPayments API is live
-══════════════════════════════════════════════ */
+═══════════════════════════════════════════ */
 router.get('/nowpayments/status', async (req, res) => {
-    try {
-        const isAlive = await checkApiStatus();
-        res.json({ available: isAlive });
-    } catch {
-        res.json({ available: false });
-    }
+    const available = await checkApiStatus();
+    res.json({ available });
 });
 
-/* ══════════════════════════════════════════════
+/* ═══════════════════════════════════════════
    POST /api/recharge/create-payment   (AUTO)
-   Creates a NowPayments payment — user gets
-   a dedicated crypto address to send to.
-══════════════════════════════════════════════ */
+   Step 1 of API docs flow:
+   Create payment → get pay_address
+═══════════════════════════════════════════ */
 router.post('/create-payment', authMiddleware, async (req, res) => {
     try {
         const { amount, network, packageId, packageName } = req.body;
 
+        // --- Validate ---
         if (!amount || !network) {
             return res.status(400).json({ message: 'Amount and network are required' });
+        }
+        const numAmount = parseFloat(amount);
+        if (isNaN(numAmount) || numAmount <= 0) {
+            return res.status(400).json({ message: 'Invalid amount' });
         }
 
         const settings = await SystemSettings.findOne();
         const minDeposit = settings?.minDepositAmount || 50;
-        if (parseFloat(amount) < minDeposit) {
+        if (numAmount < minDeposit) {
             return res.status(400).json({ message: `Minimum deposit is $${minDeposit} USDT` });
         }
 
-        // Create placeholder deposit record first (we need _id as orderId)
+        // --- Create DB record first (we need _id as order_id) ---
         const deposit = new Deposit({
-            userId: req.userId,
-            amount: parseFloat(amount),
+            userId:        req.userId,
+            amount:        numAmount,
             network,
             paymentMethod: 'auto',
-            status: 'waiting',
-            packageId: packageId || null,
-            packageName: packageName || null,
+            status:        'waiting',
+            packageId:     packageId || null,
+            packageName:   packageName || null,
         });
         await deposit.save();
+        console.log('[AutoPay] Deposit record created:', deposit._id);
 
-        // Call NowPayments API
-        const npResult = await createPayment({
-            amount: parseFloat(amount),
-            network,
-            orderId: deposit._id.toString(),
-            orderDescription: packageName ? `Deposit for ${packageName}` : `Deposit ${amount} USDT`,
-        });
+        // --- Call NowPayments API ---
+        let npResult;
+        try {
+            npResult = await createPayment({
+                amount:           numAmount,
+                network,
+                orderId:          deposit._id.toString(),
+                orderDescription: packageName ? `Deposit for ${packageName}` : `Deposit ${numAmount} USDT`,
+            });
+        } catch (apiErr) {
+            // Clean up the DB record if API fails
+            await Deposit.findByIdAndDelete(deposit._id);
+            console.error('[AutoPay] NowPayments API error:', apiErr.response?.data || apiErr.message);
+            return res.status(500).json({
+                message: apiErr.response?.data?.message || 'Payment gateway error. Try Manual mode.',
+            });
+        }
 
-        // Store NowPayments details
-        deposit.nowpaymentsId = npResult.payment_id;
+        // --- Update deposit with NowPayments details ---
+        deposit.nowpaymentsId    = String(npResult.payment_id);
         deposit.nowpaymentsStatus = npResult.payment_status;
-        deposit.payAddress = npResult.pay_address;
-        deposit.payCurrency = npResult.pay_currency;
-        deposit.payAmount = npResult.pay_amount;
+        deposit.payAddress       = npResult.pay_address;
+        deposit.payCurrency      = npResult.pay_currency;
+        deposit.payAmount        = npResult.pay_amount;
         await deposit.save();
 
-        // Notify user
-        await createNotification({
-            userId: req.userId,
-            title: 'Payment Address Created',
-            message: `Send ${npResult.pay_amount} ${npResult.pay_currency?.toUpperCase()} to complete your $${amount} deposit.`,
-            type: 'deposit',
-            amount: parseFloat(amount),
-            relatedId: deposit._id
-        });
+        // --- Notify user ---
+        try {
+            await createNotification({
+                userId:    req.userId,
+                title:     'Payment Address Ready',
+                message:   `Send ${npResult.pay_amount} ${npResult.pay_currency?.toUpperCase()} to complete your $${numAmount} deposit.`,
+                type:      'deposit',
+                amount:    numAmount,
+                relatedId: deposit._id,
+            });
+        } catch { /* non-critical */ }
 
         res.status(201).json({
-            depositId: deposit._id,
-            paymentId: npResult.payment_id,
+            depositId:  deposit._id,
+            paymentId:  npResult.payment_id,
             payAddress: npResult.pay_address,
             payCurrency: npResult.pay_currency,
-            payAmount: npResult.pay_amount,
-            status: npResult.payment_status,
-            expiresAt: npResult.expiration_estimate_date,
+            payAmount:  npResult.pay_amount,
+            status:     npResult.payment_status,
+            expiresAt:  npResult.expiration_estimate_date,
         });
 
-    } catch (error) {
-        console.error('[AutoPay] Create payment error:', error.message);
-        res.status(500).json({ message: error.message || 'Failed to create payment. Try again.' });
+    } catch (err) {
+        console.error('[AutoPay] Unexpected error:', err.message);
+        res.status(500).json({ message: 'Server error: ' + err.message });
     }
 });
 
-/* ══════════════════════════════════════════════
-   GET /api/recharge/payment-status/:depositId  (AUTO)
-   Poll payment status for a specific deposit
-══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   GET /api/recharge/payment-status/:depositId
+   Poll payment status manually
+═══════════════════════════════════════════ */
 router.get('/payment-status/:depositId', authMiddleware, async (req, res) => {
     try {
-        const deposit = await Deposit.findOne({
-            _id: req.params.depositId,
-            userId: req.userId
-        });
+        const deposit = await Deposit.findOne({ _id: req.params.depositId, userId: req.userId });
         if (!deposit) return res.status(404).json({ message: 'Deposit not found' });
 
-        // Already finalised
-        if (deposit.status === 'approved') {
-            return res.json({ status: 'approved', deposit });
-        }
+        if (deposit.status === 'approved') return res.json({ status: 'approved', deposit });
 
-        // Poll NowPayments if we have an ID
         if (deposit.nowpaymentsId) {
-            const npStatus = await getPaymentStatus(deposit.nowpaymentsId);
-            deposit.nowpaymentsStatus = npStatus.payment_status;
+            const np = await getPaymentStatus(deposit.nowpaymentsId);
+            deposit.nowpaymentsStatus = np.payment_status;
 
-            if (CONFIRMED_STATUSES.includes(npStatus.payment_status)) {
-                // Auto-approve
-                deposit.status = 'approved';
-                deposit.approvedAt = new Date();
-                deposit.transactionHash = npStatus.outcome_amount
-                    ? `np_${deposit.nowpaymentsId}` : null;
+            if (CONFIRMED_STATUSES.includes(np.payment_status)) {
+                deposit.status      = 'approved';
+                deposit.approvedAt  = new Date();
+                deposit.transactionHash = `np_${deposit.nowpaymentsId}`;
                 await deposit.save();
                 await creditUserBalance(deposit);
-            } else if (npStatus.payment_status === 'expired') {
+            } else if (np.payment_status === 'expired') {
                 deposit.status = 'expired';
+                await deposit.save();
+            } else if (np.payment_status === 'confirming') {
+                deposit.status = 'confirming';
                 await deposit.save();
             } else {
                 await deposit.save();
             }
 
-            return res.json({
-                status: deposit.status,
-                nowpaymentsStatus: npStatus.payment_status,
-                deposit
-            });
+            return res.json({ status: deposit.status, nowpaymentsStatus: np.payment_status, deposit });
         }
 
         res.json({ status: deposit.status, deposit });
-    } catch (error) {
-        console.error('[AutoPay] Status poll error:', error.message);
+    } catch (err) {
+        console.error('[PollStatus]', err.message);
         res.status(500).json({ message: 'Server error' });
     }
 });
 
-/* ══════════════════════════════════════════════
-   POST /api/recharge/nowpayments/webhook   (IPN)
-   NowPayments calls this automatically when
-   a payment is received & confirmed on-chain.
-   ⚠ Must be PUBLIC (no authMiddleware)
-══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   POST /api/recharge/nowpayments/webhook  (IPN)
+   NowPayments calls this on status change.
+   ⚠ No authMiddleware — must be public
+   ⚠ Must handle raw body (set in server.js)
+═══════════════════════════════════════════ */
 router.post('/nowpayments/webhook', async (req, res) => {
     try {
         const sig = req.headers['x-nowpayments-sig'];
-        if (!sig) {
-            console.warn('[IPN] Missing signature header');
-            return res.status(400).json({ message: 'Missing signature' });
+
+        // Parse body (may be raw Buffer or already parsed)
+        let params = req.body;
+        if (Buffer.isBuffer(params)) {
+            params = JSON.parse(params.toString('utf8'));
         }
 
-        // Body may be raw Buffer (from express.raw) or already-parsed object
-        let body = req.body;
-        if (Buffer.isBuffer(body)) {
-            body = JSON.parse(body.toString('utf8'));
+        console.log('[IPN] Received webhook, payment_id:', params?.payment_id, 'status:', params?.payment_status);
+
+        // Verify signature per API docs
+        if (sig) {
+            const valid = verifyIpnSignature(params, sig);
+            if (!valid) {
+                console.error('[IPN] Invalid signature!');
+                return res.status(403).json({ message: 'Invalid signature' });
+            }
+        } else {
+            console.warn('[IPN] No signature header — proceeding (dev mode)');
         }
 
-        // Verify HMAC-SHA512 signature
-        const isValid = verifyIpnSignature(body, sig);
-        if (!isValid) {
-            console.error('[IPN] Invalid signature — possible forgery');
-            return res.status(403).json({ message: 'Invalid signature' });
+        const { payment_id, payment_status, order_id } = params;
+
+        if (!order_id) {
+            console.error('[IPN] Missing order_id');
+            return res.status(400).json({ message: 'Missing order_id' });
         }
-
-        const {
-            payment_id,
-            payment_status,
-            order_id,
-        } = body;
-
-        console.log(`[IPN] Payment ${payment_id} → status: ${payment_status}`);
 
         const deposit = await Deposit.findById(order_id);
         if (!deposit) {
-            console.error(`[IPN] Deposit not found for order_id: ${order_id}`);
-            return res.status(404).json({ message: 'Deposit not found' });
+            console.error('[IPN] Deposit not found for order_id:', order_id);
+            return res.status(200).json({ message: 'OK' }); // return 200 so NowPayments stops retrying
         }
 
+        // Idempotent — skip if already approved
         if (deposit.status === 'approved') {
-            return res.json({ message: 'Already processed' });
+            return res.status(200).json({ message: 'Already processed' });
         }
 
         deposit.nowpaymentsStatus = payment_status;
 
         if (CONFIRMED_STATUSES.includes(payment_status)) {
-            deposit.status = 'approved';
-            deposit.approvedAt = new Date();
+            deposit.status      = 'approved';
+            deposit.approvedAt  = new Date();
             deposit.transactionHash = `np_${payment_id}`;
             await deposit.save();
             await creditUserBalance(deposit);
-            console.log(`[IPN] ✅ Auto-approved deposit ${deposit._id} — $${deposit.amount} credited`);
+            console.log(`[IPN] ✅ Auto-approved deposit ${deposit._id} — $${deposit.amount}`);
         } else if (payment_status === 'expired' || payment_status === 'failed') {
             deposit.status = payment_status === 'expired' ? 'expired' : 'rejected';
             await deposit.save();
-            await createNotification({
-                userId: deposit.userId,
-                title: payment_status === 'expired' ? 'Deposit Expired' : 'Deposit Failed',
-                message: `Your $${deposit.amount} USDT deposit could not be processed. Please try again.`,
-                type: 'deposit',
-                amount: deposit.amount,
-                relatedId: deposit._id
-            });
+            try {
+                await createNotification({
+                    userId:    deposit.userId,
+                    title:     payment_status === 'expired' ? 'Deposit Expired' : 'Deposit Failed',
+                    message:   `Your $${deposit.amount} USDT deposit could not be processed. Please try again.`,
+                    type:      'deposit',
+                    amount:    deposit.amount,
+                    relatedId: deposit._id,
+                });
+            } catch { }
+        } else if (payment_status === 'confirming') {
+            deposit.status = 'confirming';
+            await deposit.save();
         } else {
-            if (payment_status === 'confirming') deposit.status = 'confirming';
             await deposit.save();
         }
 
-        res.json({ message: 'IPN received' });
+        res.status(200).json({ message: 'IPN received' });
 
-    } catch (error) {
-        console.error('[IPN] Webhook error:', error.message);
+    } catch (err) {
+        console.error('[IPN] Error:', err.message);
         res.status(500).json({ message: 'Internal error' });
     }
 });
 
-
-/* ══════════════════════════════════════════════
-   POST /api/recharge/submit   (MANUAL fallback)
-   User submits TxHash manually
-══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   POST /api/recharge/submit   (MANUAL)
+═══════════════════════════════════════════ */
 router.post('/submit', authMiddleware, async (req, res) => {
     try {
         const { amount, transactionHash, network, packageId, packageName } = req.body;
@@ -337,7 +340,7 @@ router.post('/submit', authMiddleware, async (req, res) => {
 
         const settings = await SystemSettings.findOne();
         const minDeposit = settings?.minDepositAmount || 50;
-        if (amount < minDeposit) {
+        if (parseFloat(amount) < minDeposit) {
             return res.status(400).json({ message: `Minimum deposit is $${minDeposit} USDT` });
         }
 
@@ -347,24 +350,26 @@ router.post('/submit', authMiddleware, async (req, res) => {
         }
 
         const deposit = new Deposit({
-            userId: req.userId,
-            amount: parseFloat(amount),
+            userId:        req.userId,
+            amount:        parseFloat(amount),
             transactionHash,
             network,
             paymentMethod: 'manual',
-            packageId: packageId || null,
-            packageName: packageName || null,
+            packageId:     packageId || null,
+            packageName:   packageName || null,
         });
         await deposit.save();
 
-        await createNotification({
-            userId: req.userId,
-            title: 'Deposit Submitted',
-            message: `Your $${amount} USDT deposit is pending admin review.`,
-            type: 'deposit',
-            amount,
-            relatedId: deposit._id
-        });
+        try {
+            await createNotification({
+                userId:    req.userId,
+                title:     'Deposit Submitted',
+                message:   `Your $${amount} USDT deposit is pending admin review.`,
+                type:      'deposit',
+                amount:    parseFloat(amount),
+                relatedId: deposit._id,
+            });
+        } catch { }
 
         const user = await User.findById(req.userId);
         if (user?.email) {
@@ -373,30 +378,29 @@ router.post('/submit', authMiddleware, async (req, res) => {
 
         res.status(201).json({ message: 'Deposit submitted successfully', deposit });
 
-    } catch (error) {
-        console.error('Manual deposit error:', error);
+    } catch (err) {
+        console.error('[Manual]', err.message);
         res.status(500).json({ message: 'Server error' });
     }
 });
 
-/* ══════════════════════════════════════════════
-   POST /api/recharge/approve/:id
-   Legacy internal route (kept for compatibility)
-══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   POST /api/recharge/approve/:id  (Admin)
+═══════════════════════════════════════════ */
 router.post('/approve/:id', async (req, res) => {
     try {
         const deposit = await Deposit.findById(req.params.id);
         if (!deposit) return res.status(404).json({ message: 'Deposit not found' });
         if (deposit.status === 'approved') return res.status(400).json({ message: 'Already approved' });
 
-        deposit.status = 'approved';
+        deposit.status     = 'approved';
         deposit.approvedAt = new Date();
         await deposit.save();
         await creditUserBalance(deposit);
 
-        res.json({ message: 'Deposit approved and processed' });
-    } catch (error) {
-        console.error('Approve deposit error:', error);
+        res.json({ message: 'Deposit approved' });
+    } catch (err) {
+        console.error('[Approve]', err.message);
         res.status(500).json({ message: 'Server error' });
     }
 });

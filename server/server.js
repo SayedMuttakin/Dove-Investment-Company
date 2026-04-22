@@ -107,19 +107,23 @@ mongoose.connect(process.env.MONGODB_URI)
 
         // Auto-fix sparse indexes for live server deployment
         try {
-            const collection = mongoose.connection.collection('users');
-            // Drop existing indexes to ensure sparse flag is applied
-            await collection.dropIndex('phone_1').catch(() => { });
-            await collection.dropIndex('email_1').catch(() => { });
-            await collection.dropIndex('memberId_1').catch(() => { });
+            // ── Users ──
+            const usersCol = mongoose.connection.collection('users');
+            await usersCol.dropIndex('phone_1').catch(() => {});
+            await usersCol.dropIndex('email_1').catch(() => {});
+            await usersCol.dropIndex('memberId_1').catch(() => {});
+            await usersCol.createIndex({ phone: 1 }, { unique: true, sparse: true });
+            await usersCol.createIndex({ email: 1 }, { unique: true, sparse: true });
+            await usersCol.createIndex({ memberId: 1 }, { unique: true, sparse: true });
 
-            // Create them with sparse: true
-            await collection.createIndex({ phone: 1 }, { unique: true, sparse: true });
-            await collection.createIndex({ email: 1 }, { unique: true, sparse: true });
-            await collection.createIndex({ memberId: 1 }, { unique: true, sparse: true });
-            console.log('🚀 Database Indexes Synchronized (Sparse Mode Active)');
+            // ── Deposits — transactionHash sparse (null allowed for auto-payments) ──
+            const depositsCol = mongoose.connection.collection('deposits');
+            await depositsCol.dropIndex('transactionHash_1').catch(() => {});
+            await depositsCol.createIndex({ transactionHash: 1 }, { unique: true, sparse: true });
+
+            console.log('✅ Database indexes synchronized (sparse mode)');
         } catch (err) {
-            console.log('ℹ️ Index Sync Note:', err.message);
+            console.log('ℹ️ Index sync note:', err.message);
         }
     })
     .catch((error) => {
