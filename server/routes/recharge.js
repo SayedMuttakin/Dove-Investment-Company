@@ -129,12 +129,12 @@ router.post('/create-payment', authMiddleware, async (req, res) => {
             return res.status(400).json({ message: 'Invalid amount' });
         }
 
-        // Min deposit check disabled for testing (auto pay)
-        // const settings = await SystemSettings.findOne();
-        // const minDeposit = settings?.minDepositAmount || 50;
-        // if (numAmount < minDeposit) {
-        //     return res.status(400).json({ message: `Minimum deposit is $${minDeposit} USDT` });
-        // }
+        // Min deposit check
+        const settings = await SystemSettings.findOne();
+        const minDeposit = settings?.minDepositAmount || 10;
+        if (numAmount < minDeposit) {
+            return res.status(400).json({ message: `Minimum deposit is $${minDeposit} USDT` });
+        }
 
         // --- Create DB record first (we need _id as order_id) ---
         const deposit = new Deposit({
@@ -340,7 +340,7 @@ router.post('/submit', authMiddleware, async (req, res) => {
         }
 
         const settings = await SystemSettings.findOne();
-        const minDeposit = settings?.minDepositAmount || 50;
+        const minDeposit = settings?.minDepositAmount || 10;
         if (parseFloat(amount) < minDeposit) {
             return res.status(400).json({ message: `Minimum deposit is $${minDeposit} USDT` });
         }
