@@ -218,6 +218,14 @@ router.get('/payment-status/:depositId', authMiddleware, async (req, res) => {
             deposit.nowpaymentsStatus = np.payment_status;
 
             if (CONFIRMED_STATUSES.includes(np.payment_status)) {
+                // ── Use actually_paid so user gets credited what they ACTUALLY sent ──
+                const actuallyPaid = parseFloat(np.actually_paid) || 0;
+                if (actuallyPaid > 0) {
+                    if (actuallyPaid !== deposit.amount) {
+                        console.log(`[Poll] Amount adjustment: requested $${deposit.amount} → actually paid $${actuallyPaid}`);
+                    }
+                    deposit.amount = actuallyPaid;
+                }
                 deposit.status      = 'approved';
                 deposit.approvedAt  = new Date();
                 deposit.transactionHash = `np_${deposit.nowpaymentsId}`;
@@ -293,12 +301,21 @@ router.post('/nowpayments/webhook', async (req, res) => {
         deposit.nowpaymentsStatus = payment_status;
 
         if (CONFIRMED_STATUSES.includes(payment_status)) {
+            // ── Use actually_paid so user gets credited what they ACTUALLY sent ──
+            // NowPayments sends actually_paid in the pay_currency (USDT → 1:1 with USD)
+            const actuallyPaid = parseFloat(params.actually_paid) || 0;
+            if (actuallyPaid > 0) {
+                if (actuallyPaid !== deposit.amount) {
+                    console.log(`[IPN] Amount adjustment: requested $${deposit.amount} → actually paid $${actuallyPaid}`);
+                }
+                deposit.amount = actuallyPaid; // Credit what was actually received
+            }
             deposit.status      = 'approved';
             deposit.approvedAt  = new Date();
             deposit.transactionHash = `np_${payment_id}`;
             await deposit.save();
             await creditUserBalance(deposit);
-            console.log(`[IPN] ✅ Auto-approved deposit ${deposit._id} — $${deposit.amount}`);
+            console.log(`[IPN] ✅ Auto-approved deposit ${deposit._id} — $${deposit.amount} (actually paid)`);
         } else if (payment_status === 'expired' || payment_status === 'failed') {
             deposit.status = payment_status === 'expired' ? 'expired' : 'rejected';
             await deposit.save();
