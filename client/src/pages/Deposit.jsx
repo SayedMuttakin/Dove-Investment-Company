@@ -16,12 +16,12 @@ const StepBar = ({ current }) => (
     {['Network','Pay','Confirm'].map((s,i)=>(
       <React.Fragment key={i}>
         <div className="flex flex-col items-center">
-          <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${i<current?'bg-emerald-500 text-white':i===current?'bg-primary text-black':'bg-white/10 text-white/30'}`}>
+          <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-all ${i<current?'bg-emerald-500 text-white':i===current?'bg-primary text-black':'bg-gray-200 dark:bg-white/10 text-gray-400 dark:text-white/30'}`}>
             {i<current?<Check size={13}/>:i+1}
           </div>
-          <span className={`text-[10px] mt-1 whitespace-nowrap ${i===current?'text-primary':i<current?'text-emerald-400':'text-white/30'}`}>{s}</span>
+          <span className={`text-[10px] mt-1 whitespace-nowrap ${i===current?'text-primary':i<current?'text-emerald-500':'text-gray-400 dark:text-white/30'}`}>{s}</span>
         </div>
-        {i<2&&<div className={`h-[2px] flex-1 mx-1 mb-4 rounded-full ${i<current?'bg-emerald-500':'bg-white/10'}`}/>}
+        {i<2&&<div className={`h-[2px] flex-1 mx-1 mb-4 rounded-full ${i<current?'bg-emerald-500':'bg-gray-200 dark:bg-white/10'}`}/>}
       </React.Fragment>
     ))}
   </div>
@@ -121,37 +121,37 @@ export default function Deposit() {
   const stColor = s=>s==='approved'?'text-emerald-400 bg-emerald-400/10':s==='rejected'||s==='expired'?'text-red-400 bg-red-400/10':'text-amber-400 bg-amber-400/10';
 
   if(done) return(
-    <div className="min-h-screen bg-[#0b1120] flex flex-col items-center justify-center px-6 pb-24">
+    <div className="min-h-screen bg-gray-50 dark:bg-dark-300 flex flex-col items-center justify-center px-6 pb-24">
       <div className="text-center animate-modal-in">
         <div className="w-24 h-24 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-6 ring-4 ring-emerald-500/30">
           <CheckCircle2 size={48} className="text-emerald-400"/>
         </div>
-        <h2 className="text-white text-2xl font-bold mb-2">{autoMode?'Payment Confirmed!':'Deposit Submitted!'}</h2>
-        <p className="text-white/50 text-sm mb-6">{autoMode?'Your balance has been credited automatically.':'Under review — usually 10-30 minutes.'}</p>
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-left mb-6 max-w-xs mx-auto space-y-2">
+        <h2 className="text-gray-900 dark:text-white text-2xl font-bold mb-2">{autoMode?'Payment Confirmed!':'Deposit Submitted!'}</h2>
+        <p className="text-gray-500 dark:text-white/50 text-sm mb-6">{autoMode?'Your balance has been credited automatically.':'Under review — usually 10-30 minutes.'}</p>
+        <div className="glass-card p-4 text-left mb-6 max-w-xs mx-auto space-y-2">
           {[['Amount',`${amount} USDT`],['Network',net],['Method',autoMode?'Auto (NowPayments)':'Manual'],['Status',autoMode?'Confirmed':'Pending']].map(([k,v])=>(
-            <div key={k} className="flex justify-between text-xs"><span className="text-white/40">{k}</span><span className="text-white font-medium">{v}</span></div>
+            <div key={k} className="flex justify-between text-xs"><span className="text-gray-500 dark:text-white/40">{k}</span><span className="text-gray-900 dark:text-white font-medium">{v}</span></div>
           ))}
         </div>
         <button onClick={()=>navigate('/home')} className="w-full max-w-xs py-3 rounded-xl bg-gradient-to-r from-primary to-cyan-400 text-black font-bold mb-2">Back to Home</button>
-        <button onClick={()=>{setDone(false);setStep(0);setPayInfo(null);setTxHash('');setAmount(pkgInfo?.minAmount||'');}} className="w-full max-w-xs py-3 rounded-xl border border-white/10 text-white/50 text-sm">New Deposit</button>
+        <button onClick={()=>{setDone(false);setStep(0);setPayInfo(null);setTxHash('');setAmount(pkgInfo?.minAmount||'');}} className="w-full max-w-xs py-3 rounded-xl border border-gray-200 dark:border-white/10 text-gray-500 dark:text-white/50 text-sm">New Deposit</button>
       </div>
       <BottomNav/>
     </div>
   );
 
   return(
-    <div className="min-h-screen bg-[#0b1120] pb-24">
+    <div className="min-h-screen bg-gray-50 dark:bg-dark-300 pb-24">
       {/* Header */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-cyan-500/10 to-transparent pointer-events-none"/>
         <div className="max-w-md mx-auto px-4 pt-4 pb-3 flex items-center gap-3 relative z-10">
-          <button onClick={()=>step>0?setStep(s=>s-1):navigate(-1)} className="p-2 rounded-xl bg-white/10 text-white">
+          <button onClick={()=>step>0?setStep(s=>s-1):navigate(-1)} className="p-2 rounded-xl bg-gray-200 dark:bg-white/10 text-gray-700 dark:text-white">
             <ArrowLeft size={20}/>
           </button>
           <div>
-            <h1 className="text-white font-bold text-lg">Crypto Deposit</h1>
-            <p className="text-white/40 text-xs">USDT · Auto &amp; Manual</p>
+            <h1 className="text-gray-900 dark:text-white font-bold text-lg">Crypto Deposit</h1>
+            <p className="text-gray-500 dark:text-white/40 text-xs">USDT · Auto &amp; Manual</p>
           </div>
           <div className="ml-auto flex items-center gap-1.5 bg-emerald-500/15 border border-emerald-500/30 px-3 py-1.5 rounded-full">
             <Shield size={12} className="text-emerald-400"/><span className="text-emerald-400 text-xs font-semibold">Secure</span>
@@ -173,11 +173,11 @@ export default function Deposit() {
         {step===0&&(
           <div className="space-y-4 animate-fade-in">
             {/* Payment Mode Toggle */}
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-1 flex gap-1">
+            <div className="glass-card p-1 flex gap-1">
               {[{v:true,l:'🤖 Auto Pay',d:'NowPayments — instant'},{v:false,l:'✍️ Manual',d:'Submit TX hash'}].map(({v,l,d})=>(
-                <button key={String(v)} onClick={()=>setAutoMode(v)} className={`flex-1 py-2 rounded-xl text-center transition-all ${autoMode===v?'bg-primary text-black':'text-white/50 hover:text-white'}`}>
+                <button key={String(v)} onClick={()=>setAutoMode(v)} className={`flex-1 py-2 rounded-xl text-center transition-all ${autoMode===v?'bg-primary text-black':'text-gray-500 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'}`}>
                   <p className="text-xs font-bold">{l}</p>
-                  <p className={`text-[10px] ${autoMode===v?'text-black/70':'text-white/30'}`}>{d}</p>
+                  <p className={`text-[10px] ${autoMode===v?'text-black/70':'text-gray-400 dark:text-white/30'}`}>{d}</p>
                 </button>
               ))}
             </div>
@@ -191,32 +191,32 @@ export default function Deposit() {
 
             {/* Network */}
             <div>
-              <p className="text-white/50 text-xs font-medium uppercase tracking-wider mb-2">Select Network</p>
+              <p className="text-gray-500 dark:text-white/50 text-xs font-medium uppercase tracking-wider mb-2">Select Network</p>
               <div className="grid grid-cols-2 gap-2">
                 {NETWORKS.map(n=>(
-                  <button key={n.id} onClick={()=>setNet(n.id)} className={`p-3 rounded-2xl border text-left transition-all relative ${net===n.id?'border-primary/60 bg-primary/10':'border-white/10 bg-white/5 hover:border-white/20'}`}>
+                  <button key={n.id} onClick={()=>setNet(n.id)} className={`p-3 rounded-2xl border text-left transition-all relative ${net===n.id?'border-primary/60 bg-primary/10':'border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 hover:border-primary/30'}`}>
                     {net===n.id&&<div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-primary flex items-center justify-center"><Check size={10} className="text-black"/></div>}
                     <div className="flex items-center gap-2 mb-1">
                       <img src={n.logo} alt="" className="w-6 h-6 object-contain" onError={e=>e.target.style.display='none'}/>
-                      <span className="text-white font-bold text-sm">{n.label}</span>
+                      <span className="text-gray-900 dark:text-white font-bold text-sm">{n.label}</span>
                     </div>
                     <span className="text-[10px] px-1.5 py-0.5 rounded-full font-semibold" style={{background:n.color+'25',color:n.color}}>{n.badge}</span>
-                    <p className="text-white/30 text-[10px] mt-1">{n.speed}</p>
+                    <p className="text-gray-400 dark:text-white/30 text-[10px] mt-1">{n.speed}</p>
                   </button>
                 ))}
               </div>
             </div>
 
             {/* Amount */}
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-              <label className="flex items-center gap-2 text-white/50 text-xs uppercase tracking-wider mb-3">
+            <div className="glass-card p-4">
+              <label className="flex items-center gap-2 text-gray-500 dark:text-white/50 text-xs uppercase tracking-wider mb-3">
                 <DollarSign size={12} className="text-primary"/> Amount (USDT)
                 {pkgInfo&&<span className="ml-auto text-primary/70 normal-case">{pkgInfo.minAmount}–{pkgInfo.maxAmount}</span>}
               </label>
               <input type="number" value={amount} onChange={e=>setAmount(e.target.value)} placeholder={`Min: ${minDeposit}`}
-                className="w-full bg-transparent text-white text-xl font-bold placeholder-white/20 focus:outline-none"/>
-              <div className="h-px bg-white/10 mt-2"/>
-              <p className="text-white/30 text-xs mt-2">Min deposit: <span className="text-primary">{minDeposit} USDT</span></p>
+                className="w-full bg-transparent text-gray-900 dark:text-white text-xl font-bold placeholder-gray-300 dark:placeholder-white/20 focus:outline-none"/>
+              <div className="h-px bg-gray-200 dark:bg-white/10 mt-2"/>
+              <p className="text-gray-400 dark:text-white/30 text-xs mt-2">Min deposit: <span className="text-primary">{minDeposit} USDT</span></p>
             </div>
 
             <button onClick={autoMode&&npApi?handleAutoCreate:()=>setStep(1)}
@@ -251,20 +251,20 @@ export default function Deposit() {
                 </div>
 
                 {/* Pay details */}
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 space-y-3">
+                <div className="glass-card p-4 space-y-3">
                   <div>
-                    <p className="text-white/40 text-xs uppercase tracking-wider mb-1">Send Exactly</p>
-                    <p className="text-white text-2xl font-bold">{payInfo.payAmount} <span className="text-primary text-base">{payInfo.payCurrency?.toUpperCase()}</span></p>
+                    <p className="text-gray-500 dark:text-white/40 text-xs uppercase tracking-wider mb-1">Send Exactly</p>
+                    <p className="text-gray-900 dark:text-white text-2xl font-bold">{payInfo.payAmount} <span className="text-primary text-base">{payInfo.payCurrency?.toUpperCase()}</span></p>
                   </div>
-                  <div className="h-px bg-white/10"/>
+                  <div className="h-px bg-gray-200 dark:bg-white/10"/>
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <p className="text-white/40 text-xs uppercase tracking-wider">Payment Address</p>
+                      <p className="text-gray-500 dark:text-white/40 text-xs uppercase tracking-wider">Payment Address</p>
                       <button onClick={()=>copy(payInfo.payAddress)} className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-semibold ${copied?'bg-emerald-500/20 text-emerald-400':'bg-primary/20 text-primary'}`}>
                         {copied?<><CheckCircle2 size={11}/>Copied</>:<><Copy size={11}/>Copy</>}
                       </button>
                     </div>
-                    <p className="text-white font-mono text-xs break-all leading-relaxed">{payInfo.payAddress}</p>
+                    <p className="text-gray-900 dark:text-white font-mono text-xs break-all leading-relaxed">{payInfo.payAddress}</p>
                   </div>
                 </div>
 
@@ -278,26 +278,26 @@ export default function Deposit() {
             ):(
               // Manual submit form
               <>
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
+                <div className="glass-card p-4">
                   <div className="flex items-center justify-between mb-1">
-                    <p className="text-white/40 text-xs uppercase tracking-wider mb-2">Deposit Address</p>
+                    <p className="text-gray-500 dark:text-white/40 text-xs uppercase tracking-wider mb-2">Deposit Address</p>
                     <button onClick={()=>copy(wallets[net])} className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs ${copied?'bg-emerald-500/20 text-emerald-400':'bg-primary/20 text-primary'}`}>
                       {copied?<><CheckCircle2 size={11}/>Copied</>:<><Copy size={11}/>Copy</>}
                     </button>
                   </div>
                   {qr&&<div className="flex justify-center mb-3"><div className="p-3 bg-white rounded-xl"><img src={qr} alt="QR" className="w-36 h-36"/></div></div>}
-                  <p className="text-white font-mono text-xs break-all">{wallets[net]||'Not configured — contact admin'}</p>
+                  <p className="text-gray-900 dark:text-white font-mono text-xs break-all">{wallets[net]||'Not configured — contact admin'}</p>
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-                  <label className="flex items-center gap-2 text-white/50 text-xs uppercase tracking-wider mb-3">
+                <div className="glass-card p-4">
+                  <label className="flex items-center gap-2 text-gray-500 dark:text-white/50 text-xs uppercase tracking-wider mb-3">
                     <Hash size={12} className="text-primary"/> Transaction Hash
                   </label>
                   <input type="text" value={txHash} onChange={e=>setTxHash(e.target.value)}
                     placeholder="Paste blockchain TX hash here"
-                    className="w-full bg-transparent text-white text-sm font-mono placeholder-white/20 focus:outline-none"/>
-                  <div className="h-px bg-white/10 mt-2"/>
-                  <p className="text-white/30 text-xs mt-1">Copy from your wallet app</p>
+                    className="w-full bg-transparent text-gray-900 dark:text-white text-sm font-mono placeholder-gray-300 dark:placeholder-white/20 focus:outline-none"/>
+                  <div className="h-px bg-gray-200 dark:bg-white/10 mt-2"/>
+                  <p className="text-gray-400 dark:text-white/30 text-xs mt-1">Copy from your wallet app</p>
                 </div>
 
                 <button onClick={handleManualSubmit} disabled={submitting}
@@ -313,19 +313,19 @@ export default function Deposit() {
         {history.length>0&&(
           <div className="mt-4">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-white/50 text-xs font-semibold uppercase tracking-wider">Recent Deposits</p>
+              <p className="text-gray-500 dark:text-white/50 text-xs font-semibold uppercase tracking-wider">Recent Deposits</p>
               <button onClick={fetchHistory}><RefreshCw size={13} className="text-primary"/></button>
             </div>
             <div className="space-y-2">
               {history.slice(0,5).map(d=>(
-                <div key={d._id} className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/8">
+                <div key={d._id} className="glass-card flex items-center justify-between p-3 rounded-xl">
                   <div className="flex items-center gap-3">
-                    <div className="w-7 h-7 rounded-full bg-white/10 flex items-center justify-center">
-                      <Wallet size={13} className="text-white/50"/>
+                    <div className="w-7 h-7 rounded-full bg-gray-100 dark:bg-white/10 flex items-center justify-center">
+                      <Wallet size={13} className="text-gray-400 dark:text-white/50"/>
                     </div>
                     <div>
-                      <p className="text-white text-xs font-semibold">{d.amount} USDT</p>
-                      <p className="text-white/30 text-[10px]">{d.network} · {d.paymentMethod==='auto'?'Auto':'Manual'} · {new Date(d.createdAt).toLocaleDateString()}</p>
+                      <p className="text-gray-900 dark:text-white text-xs font-semibold">{d.amount} USDT</p>
+                      <p className="text-gray-400 dark:text-white/30 text-[10px]">{d.network} · {d.paymentMethod==='auto'?'Auto':'Manual'} · {new Date(d.createdAt).toLocaleDateString()}</p>
                     </div>
                   </div>
                   <span className={`text-[10px] font-semibold px-2 py-1 rounded-full ${stColor(d.status)}`}>{d.status}</span>
@@ -336,11 +336,11 @@ export default function Deposit() {
         )}
 
         {/* Precautions */}
-        <div className="p-4 rounded-2xl bg-white/3 border border-white/8">
-          <div className="flex items-center gap-2 mb-3"><Info size={13} className="text-primary"/><span className="text-white/50 text-xs font-semibold uppercase tracking-wider">Important Notes</span></div>
+        <div className="glass-card p-4">
+          <div className="flex items-center gap-2 mb-3"><Info size={13} className="text-primary"/><span className="text-gray-500 dark:text-white/50 text-xs font-semibold uppercase tracking-wider">Important Notes</span></div>
           <ul className="space-y-1.5">
             {[`Min deposit: ${minDeposit} USDT`,'Only send USDT to the given address','Auto Pay confirms within 1–3 blockchain confirmations','Wrong network = permanent loss','Contact support if payment not received in 1 hour'].map((t,i)=>(
-              <li key={i} className="flex items-start gap-2 text-white/40 text-xs"><span className="text-primary">•</span>{t}</li>
+              <li key={i} className="flex items-start gap-2 text-gray-500 dark:text-white/40 text-xs"><span className="text-primary">•</span>{t}</li>
             ))}
           </ul>
         </div>
