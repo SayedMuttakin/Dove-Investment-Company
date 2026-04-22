@@ -66,19 +66,18 @@ router.get('/packages', authMiddleware, async (req, res) => {
 
         // ===== Level 1 Auto-Cancel Logic =====
         // Only applies to Level 1 users (vipLevel === 0) viewing their own Level 1 packages.
-        // If their total lifetime approved deposits < $50, cancel active investments and refund.
+        // If their total funds (available balance + all active investment principals) < $50,
+        // cancel all active investments and return principal amounts to available balance.
         let level1AutoCancelled = false;
         let cancelledPackages = [];
 
         if (user.vipLevel === 0 && requestedVipLevel === 0) {
-            const depositAgg = await Deposit.aggregate([
-                { $match: { userId: user._id, status: 'approved' } },
-                { $group: { _id: null, total: { $sum: '$amount' } } }
-            ]);
-            const totalLifetimeDeposits = depositAgg.length > 0 ? depositAgg[0].total : 0;
+            // Calculate total active investment principal
             const activeInvestments = user.investments.filter(inv => inv.status === 'active');
+            const totalLockedInLend = activeInvestments.reduce((sum, inv) => sum + (inv.package.investmentAmount || 0), 0);
+            const totalFunds = user.balance + totalLockedInLend;
 
-            if (totalLifetimeDeposits < 50 && activeInvestments.length > 0) {
+            if (totalFunds < 50 && activeInvestments.length > 0) {
                 // Cancel all active investments and refund principals
                 let refundTotal = 0;
 
@@ -99,8 +98,8 @@ router.get('/packages', authMiddleware, async (req, res) => {
                 // Send notification to user
                 await createNotification({
                     userId: user._id,
-                    title: 'Investment Cancelled – Insufficient Deposits',
-                    message: `Your active lend package(s) (${cancelledPackages.join(', ')}) have been cancelled and $${refundTotal.toFixed(2)} has been returned to your available balance because your total deposits ($${totalLifetimeDeposits.toFixed(2)}) are below $50. Please deposit more to restart lending.`,
+                    title: 'Investment Cancelled – Low Balance',
+                    message: `Your active lend package(s) (${cancelledPackages.join(', ')}) have been cancelled and $${refundTotal.toFixed(2)} has been returned to your available balance because your total balance dropped below $50. Please deposit more to restart lending.`,
                     type: 'investment',
                     amount: refundTotal
                 });
