@@ -7,8 +7,7 @@ import { toast } from 'react-toastify';
 import BottomNav from '../components/BottomNav';
 
 const NETWORKS = [
-  { id: 'TRC20', label: 'TRC20', full: 'TRON Network', color: '#E84142', badge: 'Recommended', speed: 'Fast ~1 min', logo: 'https://cryptologos.cc/logos/tron-trx-logo.png' },
-  { id: 'BSC',   label: 'BSC',   full: 'BNB Smart Chain', color: '#F0B90B', badge: 'Low Fee', speed: 'Medium ~3 min', logo: 'https://cryptologos.cc/logos/bnb-bnb-logo.png' },
+  { id: 'BSC', label: 'BSC (BEP20)', full: 'BNB Smart Chain', color: '#F0B90B', badge: 'Low Fee', speed: '~3 min', logo: 'https://cryptologos.cc/logos/bnb-bnb-logo.png' },
 ];
 
 const StepBar = ({ current }) => (
@@ -31,7 +30,7 @@ export default function Deposit() {
   const navigate = useNavigate();
   const { state: pkgInfo } = useLocation();
   const [step, setStep] = useState(0);
-  const [net, setNet] = useState('TRC20');
+  const [net, setNet] = useState('BSC');
   const [amount, setAmount] = useState(pkgInfo?.minAmount || '');
   const [txHash, setTxHash] = useState('');
   const [minDeposit, setMinDeposit] = useState(50);
@@ -192,7 +191,7 @@ export default function Deposit() {
             {/* Network */}
             <div>
               <p className="text-gray-500 dark:text-white/50 text-xs font-medium uppercase tracking-wider mb-2">Select Network</p>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 gap-2">
                 {NETWORKS.map(n=>(
                   <button key={n.id} onClick={()=>setNet(n.id)} className={`p-3 rounded-2xl border text-left transition-all relative ${net===n.id?'border-primary/60 bg-primary/10':'border-gray-200 dark:border-white/10 bg-white dark:bg-white/5 hover:border-primary/30'}`}>
                     {net===n.id&&<div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-primary flex items-center justify-center"><Check size={10} className="text-black"/></div>}

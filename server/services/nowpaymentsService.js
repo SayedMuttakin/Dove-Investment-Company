@@ -28,7 +28,7 @@ export const checkApiStatus = async () => {
 
 /* ── POST /payment ── */
 export const createPayment = async ({ amount, network, orderId, orderDescription }) => {
-    const pay_currency = CURRENCY_MAP[network] || 'usdttrc20';
+    const pay_currency = CURRENCY_MAP[network] || 'usdtbsc';
 
     const body = {
         price_amount:     parseFloat(amount),
