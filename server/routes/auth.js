@@ -583,6 +583,13 @@ router.get('/me', authMiddleware, async (req, res) => {
             currentStarPoints = (starACount * 100) + (starBCount * 50);
         }
 
+        // ─── Calculate lifetime total approved deposits ───
+        const depositAgg = await Deposit.aggregate([
+            { $match: { userId: user._id, status: 'approved' } },
+            { $group: { _id: null, total: { $sum: '$amount' } } }
+        ]);
+        const totalLifetimeDeposits = depositAgg.length > 0 ? depositAgg[0].total : 0;
+
         res.json({
             id: user._id,
             phone: user.phone || '',
@@ -605,6 +612,7 @@ router.get('/me', authMiddleware, async (req, res) => {
             starPoints: currentStarPoints,
             starACount,
             starBCount,
+            totalLifetimeDeposits,
             stats: {
                 directResults: directCount,
                 teamMembers: teamCount,

@@ -52,10 +52,9 @@ const Lend = () => {
     // Determine which level to show: active state or current user level
     const targetLevel = location.state?.viewLevel !== undefined ? location.state.viewLevel : (user?.vipLevel || 0);
 
-    // Calculate total funds for Level 1 check: available balance + active lend package principals
-    const activeLendPrincipal = (user?.investments || []).filter(inv => inv.status === 'active').reduce((sum, inv) => sum + (inv.package?.investmentAmount || 0), 0);
-    const totalFunds = (user?.balance || 0) + activeLendPrincipal;
-    const isLevel1LowBalance = user?.vipLevel === 0 && totalFunds < 50;
+    // Check if Level 1 user has deposited at least $50 total (lifetime)
+    const totalLifetimeDeposits = user?.totalLifetimeDeposits || 0;
+    const isLevel1LowBalance = user?.vipLevel === 0 && totalLifetimeDeposits < 50;
 
     useEffect(() => {
         const fetchPackages = async () => {
@@ -193,11 +192,11 @@ const Lend = () => {
                     <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-2xl text-red-400 text-sm flex items-start gap-3">
                         <AlertCircle size={22} className="mt-0.5 shrink-0 text-red-400" />
                         <div>
-                            <p className="font-bold text-xs mb-1 text-red-400">⚠️ Investment Cancelled – Low Balance</p>
+                            <p className="font-bold text-xs mb-1 text-red-400">⚠️ Investment Cancelled – Insufficient Deposits</p>
                             <p className="text-[11px] leading-relaxed opacity-90">
-                                Your lend package(s) <strong>({autoCancelInfo.cancelled.join(', ')})</strong> have been automatically cancelled because your total balance dropped below <strong>$50.00</strong>. Your invested amount has been returned to your available balance (<strong>${(autoCancelInfo.newBalance || 0).toFixed(2)}</strong>).
+                                Your lend package(s) <strong>({autoCancelInfo.cancelled.join(', ')})</strong> have been automatically cancelled because your total deposits are below <strong>$50.00</strong>. Your invested amount has been returned to your available balance (<strong>${(autoCancelInfo.newBalance || 0).toFixed(2)}</strong>).
                             </p>
-                            <p className="text-[10px] mt-1.5 opacity-70">Please deposit more funds to restart lending.</p>
+                            <p className="text-[10px] mt-1.5 opacity-70">Please deposit at least $50 total to restart lending.</p>
                             <div className="flex gap-2 mt-3">
                                 <button
                                     onClick={() => navigate('/recharge')}
@@ -221,9 +220,9 @@ const Lend = () => {
                     <div className="p-4 bg-gradient-to-br from-amber-600 to-orange-600 rounded-2xl text-white shadow-lg shadow-orange-500/20 flex items-start gap-3 animate-pulse-slow">
                         <DollarSign size={22} className="mt-0.5 shrink-0 opacity-90" />
                         <div>
-                            <p className="font-bold text-xs mb-1">⚠️ Insufficient Balance for Lending</p>
+                            <p className="font-bold text-xs mb-1">⚠️ Deposit Required for Lending</p>
                             <p className="text-[11px] leading-relaxed opacity-90">
-                                Your available balance is <strong>${(user?.balance || 0).toFixed(2)}</strong>, which is below the required <strong>$50.00</strong> minimum for Level 1 investments. Please deposit more funds to start lending.
+                                Your total deposits are <strong>${totalLifetimeDeposits.toFixed(2)}</strong>, which is below the required <strong>$50.00</strong> minimum. Please deposit more funds to start lending.
                             </p>
                             <button
                                 onClick={() => navigate('/recharge')}

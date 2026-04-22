@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import Package from '../models/Package.js';
 import User from '../models/User.js';
+import Deposit from '../models/Deposit.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { createNotification } from '../utils/notifications.js';
 import Notification from '../models/Notification.js';
@@ -65,18 +66,19 @@ router.get('/packages', authMiddleware, async (req, res) => {
 
         // ===== Level 1 Auto-Cancel Logic =====
         // Only applies to Level 1 users (vipLevel === 0) viewing their own Level 1 packages.
-        // If their total funds (available balance + all active investment principals) < $50,
-        // cancel all active investments and return principal amounts to available balance.
+        // If their total lifetime approved deposits < $50, cancel active investments and refund.
         let level1AutoCancelled = false;
         let cancelledPackages = [];
 
         if (user.vipLevel === 0 && requestedVipLevel === 0) {
-            // Calculate total active investment principal
+            const depositAgg = await Deposit.aggregate([
+                { $match: { userId: user._id, status: 'approved' } },
+                { $group: { _id: null, total: { $sum: '$amount' } } }
+            ]);
+            const totalLifetimeDeposits = depositAgg.length > 0 ? depositAgg[0].total : 0;
             const activeInvestments = user.investments.filter(inv => inv.status === 'active');
-            const totalLockedInLend = activeInvestments.reduce((sum, inv) => sum + (inv.package.investmentAmount || 0), 0);
-            const totalFunds = user.balance + totalLockedInLend;
 
-            if (totalFunds < 50 && activeInvestments.length > 0) {
+            if (totalLifetimeDeposits < 50 && activeInvestments.length > 0) {
                 // Cancel all active investments and refund principals
                 let refundTotal = 0;
 
@@ -97,8 +99,8 @@ router.get('/packages', authMiddleware, async (req, res) => {
                 // Send notification to user
                 await createNotification({
                     userId: user._id,
-                    title: 'Investment Cancelled – Low Balance',
-                    message: `Your active lend package(s) (${cancelledPackages.join(', ')}) have been cancelled and $${refundTotal.toFixed(2)} has been returned to your available balance because your total balance dropped below $50. Please deposit more to restart lending.`,
+                    title: 'Investment Cancelled – Insufficient Deposits',
+                    message: `Your active lend package(s) (${cancelledPackages.join(', ')}) have been cancelled and $${refundTotal.toFixed(2)} has been returned to your available balance because your total deposits ($${totalLifetimeDeposits.toFixed(2)}) are below $50. Please deposit more to restart lending.`,
                     type: 'investment',
                     amount: refundTotal
                 });
@@ -165,19 +167,22 @@ router.post('/create', authMiddleware, async (req, res) => {
 
         const user = await User.findById(req.userId);
 
-        // ===== Level 1 (vipLevel 0) Minimum Balance Check =====
-        // Level 1 users must have at least $50 TOTAL funds (available balance + active invest packages)
-        // If their total funds are below $50, they cannot lend and must deposit more.
+        // ===== Level 1 (vipLevel 0) Minimum Total Deposit Check =====
+        // Fresh users must have deposited at least $50 TOTAL (sum of all approved deposits)
+        // Once they reach $50+ lifetime deposits, they can lend freely.
         if (user.vipLevel === 0) {
-            const activePrincipal = user.investments
-                .filter(inv => inv.status === 'active')
-                .reduce((sum, inv) => sum + (inv.package?.investmentAmount || 0), 0);
-            const totalFunds = user.balance + activePrincipal;
+            const depositAgg = await Deposit.aggregate([
+                { $match: { userId: user._id, status: 'approved' } },
+                { $group: { _id: null, total: { $sum: '$amount' } } }
+            ]);
+            const totalLifetimeDeposits = depositAgg.length > 0 ? depositAgg[0].total : 0;
 
-            if (totalFunds < 50) {
+            if (totalLifetimeDeposits < 50) {
                 return res.status(400).json({
-                    message: 'Your total balance is below $50. Please deposit more funds to start lending. Minimum $50 balance required for Level 1 investments.',
-                    code: 'LEVEL1_LOW_BALANCE'
+                    message: `Your total deposits are $${totalLifetimeDeposits.toFixed(2)}. You need at least $50 in total deposits to start lending. Please deposit more funds.`,
+                    code: 'LEVEL1_LOW_BALANCE',
+                    totalDeposited: totalLifetimeDeposits,
+                    required: 50
                 });
             }
         }
