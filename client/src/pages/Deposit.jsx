@@ -33,7 +33,7 @@ export default function Deposit() {
   const [net, setNet] = useState('BSC');
   const [amount, setAmount] = useState(pkgInfo?.minAmount || '');
   const [txHash, setTxHash] = useState('');
-  const [minDeposit, setMinDeposit] = useState(50);
+  const [minDeposit, setMinDeposit] = useState(10);
   const [wallets, setWallets] = useState({ TRC20:'', BSC:'' });
   const [autoMode, setAutoMode] = useState(true); // default: NowPayments
   const [npApi, setNpApi] = useState(true);
@@ -195,7 +195,7 @@ export default function Deposit() {
           </button>
           <div>
             <h1 className="text-gray-900 dark:text-white font-bold text-lg">Crypto Deposit</h1>
-            <p className="text-gray-500 dark:text-white/40 text-xs">USDT · Auto &amp; Manual</p>
+            <p className="text-gray-500 dark:text-white/40 text-xs">USDT · Auto</p>
           </div>
           <div className="ml-auto flex items-center gap-1.5 bg-emerald-500/15 border border-emerald-500/30 px-3 py-1.5 rounded-full">
             <Shield size={12} className="text-emerald-400"/><span className="text-emerald-400 text-xs font-semibold">Secure</span>
@@ -216,22 +216,7 @@ export default function Deposit() {
         {/* ── STEP 0: Config ── */}
         {step===0&&(
           <div className="space-y-4 animate-fade-in">
-            {/* Payment Mode Toggle */}
-            <div className="glass-card p-1 flex gap-1">
-              {[{v:true,l:'🤖 Auto Pay',d:'NowPayments — instant'},{v:false,l:'✍️ Manual',d:'Submit TX hash'}].map(({v,l,d})=>(
-                <button key={String(v)} onClick={()=>setAutoMode(v)} className={`flex-1 py-2 rounded-xl text-center transition-all ${autoMode===v?'bg-primary text-black':'text-gray-500 dark:text-white/50 hover:text-gray-900 dark:hover:text-white'}`}>
-                  <p className="text-xs font-bold">{l}</p>
-                  <p className={`text-[10px] ${autoMode===v?'text-black/70':'text-gray-400 dark:text-white/30'}`}>{d}</p>
-                </button>
-              ))}
-            </div>
 
-            {autoMode&&!npApi&&(
-              <div className="flex gap-2 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20">
-                <AlertCircle size={14} className="text-amber-400 flex-shrink-0 mt-0.5"/>
-                <p className="text-amber-300 text-xs">Auto Pay temporarily unavailable. Use Manual mode.</p>
-              </div>
-            )}
 
             {/* Network */}
             <div>
@@ -260,7 +245,7 @@ export default function Deposit() {
               <input type="number" value={amount} onChange={e=>setAmount(e.target.value)} placeholder={`Min: ${minDeposit}`}
                 className="w-full bg-transparent text-gray-900 dark:text-white text-xl font-bold placeholder-gray-300 dark:placeholder-white/20 focus:outline-none"/>
               <div className="h-px bg-gray-200 dark:bg-white/10 mt-2"/>
-              <p className="text-gray-400 dark:text-white/30 text-xs mt-2">Min deposit: <span className="text-primary">{autoMode ? '3' : minDeposit} USDT</span></p>
+              <p className="text-gray-400 dark:text-white/30 text-xs mt-2">Min deposit: <span className="text-primary">{minDeposit} USDT</span></p>
             </div>
 
             <button onClick={autoMode&&npApi?handleAutoCreate:()=>setStep(1)}
