@@ -89,7 +89,8 @@ export default function Deposit() {
   const validate = ()=>{
     const amt=parseFloat(amount);
     if(!amount||isNaN(amt)){ toast.error('Enter amount'); return false; }
-    if(amt<minDeposit){ toast.error(`Minimum ${minDeposit} USDT`); return false; }
+    // Skip min deposit check for auto pay (testing mode)
+    if(!autoMode && amt<minDeposit){ toast.error(`Minimum ${minDeposit} USDT`); return false; }
     if(pkgInfo){ if(amt<pkgInfo.minAmount){ toast.warning(`Min ${pkgInfo.minAmount} USDT`); return false; } if(amt>pkgInfo.maxAmount){ toast.warning(`Max ${pkgInfo.maxAmount} USDT`); return false; } }
     return true;
   };
@@ -253,7 +254,7 @@ export default function Deposit() {
                 <div className="glass-card p-4 space-y-3">
                   <div>
                     <p className="text-gray-500 dark:text-white/40 text-xs uppercase tracking-wider mb-1">Send Exactly</p>
-                    <p className="text-gray-900 dark:text-white text-2xl font-bold">{payInfo.payAmount} <span className="text-primary text-base">{payInfo.payCurrency?.toUpperCase()}</span></p>
+                    <p className="text-gray-900 dark:text-white text-2xl font-bold">{parseFloat(payInfo.payAmount).toFixed(2)} <span className="text-primary text-base">USDT</span></p>
                   </div>
                   <div className="h-px bg-gray-200 dark:bg-white/10"/>
                   <div>
@@ -269,7 +270,7 @@ export default function Deposit() {
 
                 <div className="flex gap-2 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20">
                   <AlertCircle size={13} className="text-amber-400 flex-shrink-0 mt-0.5"/>
-                  <p className="text-amber-300/80 text-xs">Send <strong>exactly {payInfo.payAmount} {payInfo.payCurrency?.toUpperCase()}</strong> to avoid issues. Payment auto-confirms in 1–3 confirmations.</p>
+                  <p className="text-amber-300/80 text-xs">Send <strong>exactly {parseFloat(payInfo.payAmount).toFixed(2)} USDT</strong> to avoid issues. Payment auto-confirms in 1–3 confirmations.</p>
                 </div>
 
                 <p className="text-white/30 text-center text-xs">Checking status automatically every 8 seconds…</p>
