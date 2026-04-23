@@ -557,6 +557,101 @@ router.post('/deposit/:id/reject', authMiddleware, adminMiddleware, async (req, 
     }
 });
 
+// ================= MANUAL DEPOSIT =================
+
+// Admin adds a deposit directly to a user's account
+router.post('/manual-deposit', authMiddleware, adminMiddleware, async (req, res) => {
+    try {
+        const { userId, amount, note } = req.body;
+
+        if (!userId || !amount || isNaN(amount) || parseFloat(amount) <= 0) {
+            return res.status(400).json({ message: 'Valid userId and positive amount are required.' });
+        }
+
+        const parsedAmount = parseFloat(amount);
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        // Create an approved deposit record
+        const deposit = new Deposit({
+            userId: user._id,
+            amount: parsedAmount,
+            network: 'manual-admin',
+            status: 'approved',
+            paymentMethod: 'manual',
+            approvedAt: new Date(),
+            transactionHash: `ADMIN-${Date.now()}-${user._id}`
+        });
+        await deposit.save();
+
+        // Add to user balance and mark as team member
+        user.balance += parsedAmount;
+        user.isTeamMember = true;
+
+        // Auto-unblock withdrawal if blocked
+        if (user.withdrawalBlockMessage) {
+            user.withdrawalBlockMessage = null;
+            console.log(`[Admin] Auto-unblocking user ${user._id} via manual deposit`);
+        }
+
+        await user.save();
+
+        // Auto-unblock referrer too
+        if (user.referredBy) {
+            const referrer = await User.findOne({ invitationCode: user.referredBy });
+            if (referrer && referrer.withdrawalBlockMessage) {
+                referrer.withdrawalBlockMessage = null;
+                await referrer.save();
+            }
+        }
+
+        // Distribute team commissions
+        try {
+            await distributeCommissions(user, parsedAmount);
+            console.log(`✅ Commissions distributed for manual deposit of $${parsedAmount} for user ${user._id}`);
+        } catch (commissionError) {
+            console.error('Commission distribution error (manual deposit):', commissionError);
+        }
+
+        // Notify the user
+        const notifMessage = note
+            ? `Your deposit of $${parsedAmount.toFixed(2)} has been successfully added to your account. Note: ${note}`
+            : `Your deposit of $${parsedAmount.toFixed(2)} has been successfully added to your account.`;
+
+        await createNotification({
+            userId: user._id,
+            title: 'Deposit Successful 🎉',
+            message: notifMessage,
+            type: 'deposit',
+            amount: parsedAmount,
+            relatedId: deposit._id
+        });
+
+        // Admin log
+        await AdminLog.create({
+            adminId: req.userId,
+            action: 'manual_deposit',
+            targetUserId: user._id,
+            targetResource: { resourceType: 'deposit', resourceId: deposit._id },
+            changes: { amount: parsedAmount, note: note || '' },
+            description: `Manual deposit of $${parsedAmount} to user ${user.phone || user.email || user._id}${note ? ` — Note: ${note}` : ''}`
+        });
+
+        res.json({
+            message: `Deposit of $${parsedAmount.toFixed(2)} successfully added to user's account.`,
+            deposit,
+            newBalance: user.balance
+        });
+
+    } catch (error) {
+        console.error('Manual deposit error:', error);
+        res.status(500).json({ message: 'Server error. Please try again.' });
+    }
+});
+
 // ================= ADMIN LOGIN AS USER =================
 router.post('/impersonate/:id', authMiddleware, adminMiddleware, async (req, res) => {
     try {

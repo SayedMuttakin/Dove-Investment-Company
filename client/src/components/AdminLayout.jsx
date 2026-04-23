@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Wallet, LogOut, ShieldCheck, Package, DollarSign, Settings, BarChart3, Menu, X, MessageSquare } from 'lucide-react';
+import { LayoutDashboard, Users, Wallet, LogOut, ShieldCheck, Package, DollarSign, Settings, BarChart3, Menu, X, MessageSquare, PlusCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const AdminLayout = () => {
@@ -12,6 +12,7 @@ const AdminLayout = () => {
     const menuItems = [
         { icon: LayoutDashboard, label: 'Dashboard', path: '/admin' },
         { icon: Wallet, label: 'Deposits', path: '/admin/deposits' },
+        { icon: PlusCircle, label: 'Manual Deposit', path: '/admin/manual-deposit' },
         { icon: DollarSign, label: 'Withdrawals', path: '/admin/withdrawals' },
         { icon: Users, label: 'Users', path: '/admin/users' },
         { icon: Package, label: 'Packages', path: '/admin/packages' },
