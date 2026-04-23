@@ -19,7 +19,8 @@ import {
     Briefcase,
     History,
     UserPlus,
-    Sparkles
+    Sparkles,
+    FileText
 } from 'lucide-react';
 import axios from 'axios';
 import { usePWA } from '../hooks/usePWA';
@@ -333,6 +334,23 @@ const Me = () => {
                             </div>
                             <ChevronRight size={16} className="text-gray-300 dark:text-white/20" />
                         </button>
+                    </div>
+
+                    <div className="bg-indigo-300 dark:bg-indigo-900/10 backdrop-blur-md overflow-hidden border border-indigo-400 dark:border-white/5 rounded-2xl shadow-sm shadow-indigo-500/20">
+                        <a
+                            href="/pdf/Dove Investment Gold Mine (1).pdf"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full flex items-center justify-between px-4 py-4 hover:bg-indigo-400/30 transition-colors"
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-indigo-100 dark:bg-indigo-500/10 rounded-xl text-indigo-600 dark:text-indigo-400 shadow-inner">
+                                    <FileText size={18} />
+                                </div>
+                                <span className="text-gray-800 dark:text-white text-sm font-bold uppercase tracking-tight">Official PDF</span>
+                            </div>
+                            <ChevronRight size={16} className="text-gray-300 dark:text-white/20" />
+                        </a>
                     </div>
 
                     <div className="bg-rose-300 dark:bg-rose-900/10 backdrop-blur-md overflow-hidden border border-rose-400 dark:border-white/5 rounded-2xl shadow-sm shadow-rose-500/20">
