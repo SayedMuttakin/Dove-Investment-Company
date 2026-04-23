@@ -18,11 +18,11 @@ const LevelRequirements = () => {
 
     const levelRequirements = [
         { from: 0, to: 1, members: null, minInvestment: 50, maxInvestment: 2000, tree: null, incomeRates: { d7: '0.90%', d30: '1.20%', d60: '1.50%', d90: '1.80%' }, teamIncome: null },
-        { from: 1, to: 2, members: 7, minInvestment: 300, maxInvestment: 3000, tree: { l1: 3, l2: 4 }, incomeRates: { d7: '1.10%', d30: '1.40%', d60: '1.70%', d90: '2.00%' }, teamIncome: { first: '10%', second: '7%', third: '4%' } },
-        { from: 2, to: 3, members: 18, minInvestment: 800, maxInvestment: 4000, tree: { l1: 8, l2: 10 }, incomeRates: { d7: '1.40%', d30: '1.70%', d60: '2.00%', d90: '2.40%' }, teamIncome: { first: '10%', second: '7%', third: '4%' } },
-        { from: 3, to: 4, members: 50, minInvestment: 1300, maxInvestment: 5000, tree: { l1: 15, l2: 35 }, incomeRates: { d7: '1.80%', d30: '2.20%', d60: '2.70%', d90: '3.20%' }, teamIncome: { first: '10%', second: '7%', third: '4%' } },
-        { from: 4, to: 5, members: 80, minInvestment: 2000, maxInvestment: 6000, tree: { l1: 30, l2: 50 }, incomeRates: { d7: '2.20%', d30: '2.60%', d60: '3.10%', d90: '3.70%' }, teamIncome: { first: '10%', second: '7%', third: '4%' } },
-        { from: 5, to: 6, members: 140, minInvestment: 3000, maxInvestment: 7000, tree: { l1: 45, l2: 95 }, incomeRates: { d7: '2.70%', d30: '3.30%', d60: '4.00%', d90: '4.70%' }, teamIncome: { first: '10%', second: '7%', third: '4%' } }
+        { from: 1, to: 2, members: 7, minInvestment: 300, maxInvestment: 3000, tree: { l1: 3, l2: 4 }, incomeRates: { d7: '1.10%', d30: '1.40%', d60: '1.70%', d90: '2.00%' }, teamIncome: { first: '0.10%', second: '0.07%', third: '0.04%' } },
+        { from: 2, to: 3, members: 18, minInvestment: 800, maxInvestment: 4000, tree: { l1: 8, l2: 10 }, incomeRates: { d7: '1.40%', d30: '1.70%', d60: '2.00%', d90: '2.40%' }, teamIncome: { first: '0.10%', second: '0.07%', third: '0.04%' } },
+        { from: 3, to: 4, members: 50, minInvestment: 1300, maxInvestment: 5000, tree: { l1: 15, l2: 35 }, incomeRates: { d7: '1.80%', d30: '2.20%', d60: '2.70%', d90: '3.20%' }, teamIncome: { first: '0.10%', second: '0.07%', third: '0.04%' } },
+        { from: 4, to: 5, members: 80, minInvestment: 2000, maxInvestment: 6000, tree: { l1: 30, l2: 50 }, incomeRates: { d7: '2.20%', d30: '2.60%', d60: '3.10%', d90: '3.70%' }, teamIncome: { first: '0.10%', second: '0.07%', third: '0.04%' } },
+        { from: 5, to: 6, members: 140, minInvestment: 3000, maxInvestment: 7000, tree: { l1: 45, l2: 95 }, incomeRates: { d7: '2.70%', d30: '3.30%', d60: '4.00%', d90: '4.70%' }, teamIncome: { first: '0.10%', second: '0.07%', third: '0.04%' } }
     ];
 
     const TeamStructureTree = ({ l1, l2 }) => {
