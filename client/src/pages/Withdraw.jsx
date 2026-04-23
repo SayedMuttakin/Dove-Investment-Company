@@ -10,7 +10,7 @@ const Withdraw = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
     const [amount, setAmount] = useState('');
-    const [paymentMethod, setPaymentMethod] = useState('trc20');
+    const [paymentMethod, setPaymentMethod] = useState('bsc');
     const [showSuccess, setShowSuccess] = useState(false);
     const [blockMessage, setBlockMessage] = useState(null);
     const [twoFactorToken, setTwoFactorToken] = useState('');
@@ -82,8 +82,7 @@ const Withdraw = () => {
     const [loading, setLoading] = useState(false);
 
     const methods = [
-        { id: 'trc20', name: 'USDT (TRC20)', color: '#26A17B', symbol: '₮' },
-        { id: 'bsc', name: 'BSC', color: '#F0B90B', symbol: 'B' }
+        { id: 'bsc', name: 'BSC (BEP20)', color: '#F0B90B', symbol: 'B' }
     ];
 
     const isCrypto = true; // All methods are now crypto
@@ -92,9 +91,9 @@ const Withdraw = () => {
         setPaymentMethod(method);
     };
 
-    // Fee rate: TRC20 = 10%, BSC = 5%
-    const feeRate = paymentMethod === 'trc20' ? 0.10 : 0.05;
-    const feePercent = paymentMethod === 'trc20' ? '10%' : '5%';
+    // Fee rate: BSC = 5%
+    const feeRate = 0.05;
+    const feePercent = '5%';
 
     const handleSetMaxAmount = () => {
         if (eligibility) {
