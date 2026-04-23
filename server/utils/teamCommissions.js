@@ -97,9 +97,9 @@ export function calculateCommission(vipLevel, teamLevel, investmentAmount) {
 
 // Daily Team Income Rates (When a member collects their daily loan income)
 const DAILY_TEAM_INCOME_RATES = {
-    1: 0.0010, // 1st Gen gets 0.10%
-    2: 0.0007, // 2nd Gen gets 0.07%
-    3: 0.0004  // 3rd Gen gets 0.04%
+    1: 0.10, // 1st Gen gets 10%
+    2: 0.07, // 2nd Gen gets 7%
+    3: 0.04  // 3rd Gen gets 4%
 };
 
 /**
