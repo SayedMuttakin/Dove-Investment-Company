@@ -206,7 +206,7 @@ const DiamondSalary = () => {
                                         </div>
                                         <div className="text-right">
                                             <p className="text-[9px] text-gray-400 dark:text-white/30 font-bold uppercase tracking-wider">Monthly</p>
-                                            <p className={`text-2xl font-black ${isAchieved ? 'text-emerald-600' : 'text-gray-300 dark:text-white/20'}`}>${lvl.monthlyUSD}</p>
+                                            <p className={`text-2xl font-black drop-shadow-md ${isAchieved ? '' : 'opacity-40'}`} style={{color: '#ccff00'}}>${lvl.monthlyUSD}</p>
                                         </div>
                                     </div>
 
