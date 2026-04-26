@@ -167,6 +167,11 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: null
     },
+    // 💎 Diamond Salary System
+    claimedSalaryLevels: {
+        type: [String],
+        default: []
+    },
     twoFactorSecret: {
         type: String,
         default: null

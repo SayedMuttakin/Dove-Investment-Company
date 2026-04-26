@@ -6,133 +6,78 @@ import { createNotification } from '../utils/notifications.js';
 
 const router = express.Router();
 
-const REWARD_TIERS = [
-    { id: 'tier1', points: 700, amount: 50, stars: 1 },
-    { id: 'tier2', points: 1200, amount: 85, stars: 2 },
-    { id: 'tier3', points: 1800, amount: 130, stars: 3 }
+// 💎 DOVE INVESTMENT GOLD MINE — DIAMOND SALARY LEVELS
+const DIAMOND_SALARY_LEVELS = [
+    {
+        id: 'diamond1',
+        level: 1,
+        aRequired: 20,
+        bcRequired: 70,
+        monthlyUSD: 150,
+        gift: 'Smart Phone',
+        giftEmoji: '📱',
+        giftType: 'phone'
+    },
+    {
+        id: 'diamond2',
+        level: 2,
+        aRequired: 30,
+        bcRequired: 150,
+        monthlyUSD: 250,
+        gift: 'Laptop',
+        giftEmoji: '💻',
+        giftType: 'laptop'
+    },
+    {
+        id: 'diamond3',
+        level: 3,
+        aRequired: 35,
+        bcRequired: 510,
+        monthlyUSD: 350,
+        gift: 'iPhone 17 Pro Max',
+        giftEmoji: '📱',
+        giftType: 'iphone'
+    },
+    {
+        id: 'diamond4',
+        level: 4,
+        aRequired: 55,
+        bcRequired: 1010,
+        monthlyUSD: 450,
+        gift: '2 Wheeler Scooty',
+        giftEmoji: '🛵',
+        giftType: 'scooty'
+    },
+    {
+        id: 'diamond5',
+        level: 5,
+        aRequired: 65,
+        bcRequired: 1510,
+        monthlyUSD: 1000,
+        gift: 'Super Bike',
+        giftEmoji: '🏍️',
+        giftType: 'bike'
+    },
+    {
+        id: 'diamond6',
+        level: 6,
+        aRequired: 85,
+        bcRequired: 2510,
+        monthlyUSD: 2000,
+        gift: '4 Wheeler Car',
+        giftEmoji: '🚗',
+        giftType: 'car'
+    }
 ];
 
-router.get('/status', authMiddleware, async (req, res) => {
+// GET /api/rewards/salary-status — returns team counts + salary level info
+router.get('/salary-status', authMiddleware, async (req, res) => {
     try {
         const user = await User.findById(req.userId);
         if (!user) return res.status(404).json({ message: 'User not found' });
 
-        const now = new Date();
-        let missionStart = user.starMissionStart;
-
-        // Logic to maintain the 10-day cycle
-        // If mission exists but is older than 10 days, we need to reset or find next cycle
-        if (missionStart && now > new Date(missionStart.getTime() + 10 * 24 * 60 * 60 * 1000)) {
-            missionStart = null;
-            user.starMissionStart = null;
-            user.claimedStarRewards = [];
-            // We'll save later after checking for a new start
-        }
-
-        // If no active mission, try to find the earliest referral that starts a new 10-day window
-        if (!missionStart) {
-            // Find all referrals, sorted by date
-            const allRefs = await User.find({ referredBy: user.invitationCode }).sort({ createdAt: 1 });
-
-            for (const ref of allRefs) {
-                const potentialEnd = new Date(ref.createdAt.getTime() + 10 * 24 * 60 * 60 * 1000);
-                if (now <= potentialEnd) {
-                    // This referral is the start of an currently valid or future-valid 10-day cycle
-                    missionStart = ref.createdAt;
-                    user.starMissionStart = missionStart;
-                    user.claimedStarRewards = [];
-                    await user.save();
-                    break;
-                }
-            }
-        }
-
-        let aCount = 0;
-        let bCount = 0;
-        let totalPoints = 0;
-
-        if (missionStart) {
-            const missionEnd = new Date(missionStart.getTime() + 10 * 24 * 60 * 60 * 1000);
-
-            // Gen 1 (Directs) within the mission window
-            const directs = await User.find({
-                referredBy: user.invitationCode,
-                createdAt: { $gte: missionStart, $lte: missionEnd }
-            });
-
-            // Only count directs who have at least one approved deposit
-            const directIds = directs.map(u => u._id);
-            const depositedDirectIds = await Deposit.distinct('userId', {
-                userId: { $in: directIds },
-                status: 'approved'
-            });
-            aCount = depositedDirectIds.length;
-
-            // Gen 2 (Indirects) within the mission window - only deposited directs' referrals
-            const depositedDirects = directs.filter(u => depositedDirectIds.some(id => id.equals(u._id)));
-            const directCodes = depositedDirects.map(u => u.invitationCode);
-            const secondGen = await User.find({
-                referredBy: { $in: directCodes },
-                createdAt: { $gte: missionStart, $lte: missionEnd }
-            });
-
-            // Only count indirects who have at least one approved deposit
-            const secondGenIds = secondGen.map(u => u._id);
-            const depositedSecondGenIds = await Deposit.distinct('userId', {
-                userId: { $in: secondGenIds },
-                status: 'approved'
-            });
-            bCount = depositedSecondGenIds.length;
-
-            totalPoints = (aCount * 100) + (bCount * 50);
-        }
-
-        res.json({
-            points: totalPoints,
-            aCount,
-            bCount,
-            claimed: user.claimedStarRewards || [],
-            tiers: REWARD_TIERS,
-            windowDays: 10,
-            missionStart: missionStart,
-            missionEnd: missionStart ? new Date(missionStart.getTime() + 10 * 24 * 60 * 60 * 1000) : null
-        });
-    } catch (error) {
-        console.error('Reward status error:', error);
-        res.status(500).json({ message: 'Server error' });
-    }
-});
-
-router.post('/claim', authMiddleware, async (req, res) => {
-    try {
-        const { tierId } = req.body;
-        const tier = REWARD_TIERS.find(t => t.id === tierId);
-        if (!tier) return res.status(400).json({ message: 'Invalid tier' });
-
-        const user = await User.findById(req.userId);
-        if (!user) return res.status(404).json({ message: 'User not found' });
-
-        if (user.claimedStarRewards.includes(tierId)) {
-            return res.status(400).json({ message: 'Reward already claimed' });
-        }
-
-        const missionStart = user.starMissionStart;
-        if (!missionStart) return res.status(400).json({ message: 'No active mission' });
-
-        const now = new Date();
-        const missionEnd = new Date(missionStart.getTime() + 10 * 24 * 60 * 60 * 1000);
-
-        if (now > missionEnd) {
-            return res.status(400).json({ message: 'Mission has expired' });
-        }
-
-        // Re-calculate points for verification within the mission cycle
-        const directs = await User.find({
-            referredBy: user.invitationCode,
-            createdAt: { $gte: missionStart, $lte: missionEnd }
-        });
-
-        // Only count directs who have at least one approved deposit
+        // Count Gen A (direct referrals with approved deposit)
+        const directs = await User.find({ referredBy: user.invitationCode });
         const directIds = directs.map(u => u._id);
         const depositedDirectIds = await Deposit.distinct('userId', {
             userId: { $in: directIds },
@@ -140,50 +85,150 @@ router.post('/claim', authMiddleware, async (req, res) => {
         });
         const aCount = depositedDirectIds.length;
 
-        // Gen 2 - only from deposited directs
-        const depositedDirects = directs.filter(u => depositedDirectIds.some(id => id.equals(u._id)));
-        const directCodes = depositedDirects.map(u => u.invitationCode);
-        const secondGen = await User.find({
-            referredBy: { $in: directCodes },
-            createdAt: { $gte: missionStart, $lte: missionEnd }
-        });
+        // Count Gen B+C (2nd + 3rd gen with approved deposit)
+        // Gen B — referrals of active Gen A members
+        const depositedDirectUsers = directs.filter(u =>
+            depositedDirectIds.some(id => id.equals(u._id))
+        );
+        const genACodes = depositedDirectUsers.map(u => u.invitationCode);
 
-        // Only count indirects who have at least one approved deposit
-        const secondGenIds = secondGen.map(u => u._id);
-        const depositedSecondGenIds = await Deposit.distinct('userId', {
-            userId: { $in: secondGenIds },
+        const genBUsers = await User.find({ referredBy: { $in: genACodes } });
+        const genBIds = genBUsers.map(u => u._id);
+        const depositedGenBIds = await Deposit.distinct('userId', {
+            userId: { $in: genBIds },
             status: 'approved'
         });
-        const bCount = depositedSecondGenIds.length;
+        const bCount = depositedGenBIds.length;
 
-        const totalPoints = (aCount * 100) + (bCount * 50);
+        // Gen C — referrals of active Gen B members
+        const depositedGenBUsers = genBUsers.filter(u =>
+            depositedGenBIds.some(id => id.equals(u._id))
+        );
+        const genBCodes = depositedGenBUsers.map(u => u.invitationCode);
 
-        if (totalPoints < tier.points) {
-            return res.status(400).json({ message: 'Insufficient points for this tier' });
+        let cCount = 0;
+        if (genBCodes.length > 0) {
+            const genCUsers = await User.find({ referredBy: { $in: genBCodes } });
+            const genCIds = genCUsers.map(u => u._id);
+            const depositedGenCIds = await Deposit.distinct('userId', {
+                userId: { $in: genCIds },
+                status: 'approved'
+            });
+            cCount = depositedGenCIds.length;
         }
 
-        // Processing claim
-        user.balance += tier.amount;
-        user.bonusIncome = (user.bonusIncome || 0) + tier.amount;
-        user.claimedStarRewards.push(tierId);
+        const bcCount = bCount + cCount;
+
+        // Determine current achieved salary level
+        let achievedLevel = 0;
+        for (const lvl of DIAMOND_SALARY_LEVELS) {
+            if (aCount >= lvl.aRequired && bcCount >= lvl.bcRequired) {
+                achievedLevel = lvl.level;
+            }
+        }
+
+        res.json({
+            aCount,
+            bCount,
+            cCount,
+            bcCount,
+            achievedLevel,
+            claimedSalaryLevels: user.claimedSalaryLevels || [],
+            levels: DIAMOND_SALARY_LEVELS,
+            // maintenance ratio info
+            maintenanceRatioMin: 28,
+            maintenanceRatioMax: 30
+        });
+    } catch (error) {
+        console.error('Diamond salary status error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// POST /api/rewards/claim-salary — claim the one-time gift for a salary level
+router.post('/claim-salary', authMiddleware, async (req, res) => {
+    try {
+        const { levelId } = req.body;
+        const salaryLevel = DIAMOND_SALARY_LEVELS.find(l => l.id === levelId);
+        if (!salaryLevel) return res.status(400).json({ message: 'Invalid salary level' });
+
+        const user = await User.findById(req.userId);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        const claimed = user.claimedSalaryLevels || [];
+        if (claimed.includes(levelId)) {
+            return res.status(400).json({ message: 'Gift for this level already claimed' });
+        }
+
+        // Verify they actually qualify
+        const directs = await User.find({ referredBy: user.invitationCode });
+        const directIds = directs.map(u => u._id);
+        const depositedDirectIds = await Deposit.distinct('userId', {
+            userId: { $in: directIds },
+            status: 'approved'
+        });
+        const aCount = depositedDirectIds.length;
+
+        const depositedDirectUsers = directs.filter(u =>
+            depositedDirectIds.some(id => id.equals(u._id))
+        );
+        const genACodes = depositedDirectUsers.map(u => u.invitationCode);
+        const genBUsers = await User.find({ referredBy: { $in: genACodes } });
+        const genBIds = genBUsers.map(u => u._id);
+        const depositedGenBIds = await Deposit.distinct('userId', {
+            userId: { $in: genBIds },
+            status: 'approved'
+        });
+        const bCount = depositedGenBIds.length;
+
+        const depositedGenBUsers = genBUsers.filter(u =>
+            depositedGenBIds.some(id => id.equals(u._id))
+        );
+        const genBCodes = depositedGenBUsers.map(u => u.invitationCode);
+        let cCount = 0;
+        if (genBCodes.length > 0) {
+            const genCUsers = await User.find({ referredBy: { $in: genBCodes } });
+            const genCIds = genCUsers.map(u => u._id);
+            const depositedGenCIds = await Deposit.distinct('userId', {
+                userId: { $in: genCIds },
+                status: 'approved'
+            });
+            cCount = depositedGenCIds.length;
+        }
+        const bcCount = bCount + cCount;
+
+        if (aCount < salaryLevel.aRequired || bcCount < salaryLevel.bcRequired) {
+            return res.status(400).json({ message: 'You do not meet the requirements for this salary level' });
+        }
+
+        // Record the claim
+        user.claimedSalaryLevels = [...claimed, levelId];
         await user.save();
 
-        // Create notification
         await createNotification({
             userId: user._id,
-            title: 'Star Reward Claimed!',
-            message: `Congratulations! You claimed $${tier.amount} for Star Member ${tier.stars} Mission.`,
+            title: `💎 Diamond Level ${salaryLevel.level} Gift Claimed!`,
+            message: `Congratulations! You have claimed your ${salaryLevel.gift} (One Time Gift) for Diamond Level ${salaryLevel.level}. Your monthly salary of $${salaryLevel.monthlyUSD} is now active!`,
             type: 'reward'
         });
 
         res.json({
-            message: `Successfully claimed $${tier.amount}`,
-            newBalance: user.balance
+            message: `Successfully claimed Diamond Level ${salaryLevel.level} gift: ${salaryLevel.gift}!`,
+            level: salaryLevel.level
         });
     } catch (error) {
-        console.error('Reward claim error:', error);
+        console.error('Diamond salary claim error:', error);
         res.status(500).json({ message: 'Server error' });
     }
+});
+
+// ─── Legacy star routes kept for backward compat (returns empty/no-op) ───────
+router.get('/status', authMiddleware, async (req, res) => {
+    res.json({ points: 0, aCount: 0, bCount: 0, claimed: [], tiers: [], missionStart: null, missionEnd: null });
+});
+
+router.post('/claim', authMiddleware, async (req, res) => {
+    res.status(410).json({ message: 'Star rewards system has been replaced with Diamond Salary system.' });
 });
 
 export default router;

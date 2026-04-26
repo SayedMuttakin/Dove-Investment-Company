@@ -19,7 +19,6 @@ import {
     Briefcase,
     History,
     UserPlus,
-    Sparkles,
     FileText
 } from 'lucide-react';
 import axios from 'axios';
@@ -276,46 +275,36 @@ const Me = () => {
                 {/* Level Status Card */}
                 <LevelStatusCard />
 
-                {/* Star Reward System Entry */}
+                {/* Monthly Salary - Diamond System */}
                 <div
-                    onClick={() => navigate('/star-rewards')}
-                    className="relative overflow-hidden bg-amber-300 dark:bg-amber-900/10 backdrop-blur-md rounded-3xl p-5 border border-amber-400 dark:border-white/5 group cursor-pointer active:scale-[0.98] transition-all shadow-sm shadow-amber-500/20 dark:shadow-none"
+                    onClick={() => navigate('/diamond-salary')}
+                    className="relative overflow-hidden backdrop-blur-md rounded-3xl p-5 group cursor-pointer active:scale-[0.98] transition-all shadow-md"
+                    style={{background: 'linear-gradient(135deg, #ccff00, #b8e600, #d4ff33)', border: '1px solid rgba(180,220,0,0.5)'}}
                 >
-                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-700">
-                        <Star size={60} className="text-yellow-500" fill="currentColor" />
+                    <div className="absolute top-0 right-0 p-1 opacity-25 group-hover:scale-110 transition-transform duration-700">
+                        <img src="/images/diamond.png" alt="" className="w-24 h-24 object-contain mix-blend-overlay" />
                     </div>
                     <div className="flex items-center gap-4 relative z-10">
-                        <div className="w-12 h-12 rounded-2xl bg-yellow-100 dark:bg-yellow-500/10 shadow-inner flex items-center justify-center border border-yellow-200 dark:border-yellow-500/20">
-                            <Sparkles size={24} className="text-yellow-500" />
+                        <div className="w-14 h-14 rounded-2xl bg-black/10 shadow-inner flex items-center justify-center border border-black/10">
+                            <img src="/images/diamond.png" alt="Diamond" className="w-10 h-10 object-contain drop-shadow-[0_0_6px_rgba(204,255,0,0.6)]" />
                         </div>
                         <div className="flex-1">
-                            <h3 className="text-gray-900 dark:text-white font-black text-sm uppercase tracking-wider italic leading-none">Star Member Rewards</h3>
-                            <div className="flex items-center gap-1.5 mt-1.5">
-                                {[
-                                    { id: 'tier1', pts: 7 },
-                                    { id: 'tier2', pts: 12 },
-                                    { id: 'tier3', pts: 18 }
-                                ].map((tier, idx) => {
-                                    const isReached = (user?.starPoints || 0) >= tier.pts || user?.claimedStarRewards?.includes(tier.id);
+                            <h3 className="text-gray-900 font-black text-sm uppercase tracking-wider italic leading-none">Monthly Salary</h3>
+                            <div className="flex items-center gap-1 mt-1.5">
+                                {[1,2,3,4,5,6].map((lvl) => {
+                                    const isReached = (user?.claimedSalaryLevels || []).includes(`diamond${lvl}`);
                                     return (
-                                        <div key={tier.id} className="relative">
-                                            <Star
-                                                size={22}
-                                                className={`transition-all duration-500 ${isReached ? 'text-yellow-500 drop-shadow-[0_0_8px_rgba(234,179,8,0.5)]' : 'text-gray-200 dark:text-white/10'}`}
-                                                fill={isReached ? "currentColor" : "none"}
-                                            />
-                                            {isReached && (
-                                                <div className="absolute inset-0 bg-yellow-400 blur-md opacity-20 animate-pulse rounded-full"></div>
-                                            )}
-                                        </div>
+                                        <img
+                                            key={lvl}
+                                            src="/images/diamond.png"
+                                            alt=""
+                                            className={`w-6 h-6 object-contain transition-all duration-500 ${isReached ? 'drop-shadow-[0_0_6px_rgba(0,0,0,0.3)]' : 'brightness-0 opacity-20'}`}
+                                        />
                                     );
                                 })}
-                                <span className="text-gray-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-tighter ml-1">
-                                    {(user?.starPoints || 0)} pts
-                                </span>
                             </div>
                         </div>
-                        <ChevronRight size={18} className="text-gray-400 dark:text-white/20 group-hover:text-primary transition-colors" />
+                        <ChevronRight size={18} className="text-gray-700 group-hover:text-gray-900 transition-colors" />
                     </div>
                 </div>
 
