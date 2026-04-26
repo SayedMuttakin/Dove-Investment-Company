@@ -34,7 +34,7 @@ const DiamondIcon = ({ size = 40, filled = false, glow = false }) => (
 
 /* ─── Gift images ─── */
 const GIFT_IMAGES = {
-    phone: 'https://images.unsplash.com/photo-1598327105666-5b89351cb315?w=200&h=200&fit=crop&q=80',
+    phone: 'https://images.unsplash.com/photo-1523206489230-c012c64b2b48?w=200&h=200&fit=crop&q=80',
     laptop: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=120&h=120&fit=crop&q=80',
     iphone: 'https://images.unsplash.com/photo-1632633173522-47456de71b76?w=120&h=120&fit=crop&q=80',
     bike: 'https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=120&h=120&fit=crop&q=80',
